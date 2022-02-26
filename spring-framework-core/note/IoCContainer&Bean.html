@@ -1,0 +1,746 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/><title>IoC Container &amp; Environment</title><style>
+/* cspell:disable-file */
+/* webkit printing magic: print all background colors */
+html {
+	-webkit-print-color-adjust: exact;
+}
+* {
+	box-sizing: border-box;
+	-webkit-print-color-adjust: exact;
+}
+
+html,
+body {
+	margin: 0;
+	padding: 0;
+}
+@media only screen {
+	body {
+		margin: 2em auto;
+		max-width: 900px;
+		color: rgb(55, 53, 47);
+	}
+}
+
+body {
+	line-height: 1.5;
+	white-space: pre-wrap;
+}
+
+a,
+a.visited {
+	color: inherit;
+	text-decoration: underline;
+}
+
+.pdf-relative-link-path {
+	font-size: 80%;
+	color: #444;
+}
+
+h1,
+h2,
+h3 {
+	letter-spacing: -0.01em;
+	line-height: 1.2;
+	font-weight: 600;
+	margin-bottom: 0;
+}
+
+.page-title {
+	font-size: 2.5rem;
+	font-weight: 700;
+	margin-top: 0;
+	margin-bottom: 0.75em;
+}
+
+h1 {
+	font-size: 1.875rem;
+	margin-top: 1.875rem;
+}
+
+h2 {
+	font-size: 1.5rem;
+	margin-top: 1.5rem;
+}
+
+h3 {
+	font-size: 1.25rem;
+	margin-top: 1.25rem;
+}
+
+.source {
+	border: 1px solid #ddd;
+	border-radius: 3px;
+	padding: 1.5em;
+	word-break: break-all;
+}
+
+.callout {
+	border-radius: 3px;
+	padding: 1rem;
+}
+
+figure {
+	margin: 1.25em 0;
+	page-break-inside: avoid;
+}
+
+figcaption {
+	opacity: 0.5;
+	font-size: 85%;
+	margin-top: 0.5em;
+}
+
+mark {
+	background-color: transparent;
+}
+
+.indented {
+	padding-left: 1.5em;
+}
+
+hr {
+	background: transparent;
+	display: block;
+	width: 100%;
+	height: 1px;
+	visibility: visible;
+	border: none;
+	border-bottom: 1px solid rgba(55, 53, 47, 0.09);
+}
+
+img {
+	max-width: 100%;
+}
+
+@media only print {
+	img {
+		max-height: 100vh;
+		object-fit: contain;
+	}
+}
+
+@page {
+	margin: 1in;
+}
+
+.collection-content {
+	font-size: 0.875rem;
+}
+
+.column-list {
+	display: flex;
+	justify-content: space-between;
+}
+
+.column {
+	padding: 0 1em;
+}
+
+.column:first-child {
+	padding-left: 0;
+}
+
+.column:last-child {
+	padding-right: 0;
+}
+
+.table_of_contents-item {
+	display: block;
+	font-size: 0.875rem;
+	line-height: 1.3;
+	padding: 0.125rem;
+}
+
+.table_of_contents-indent-1 {
+	margin-left: 1.5rem;
+}
+
+.table_of_contents-indent-2 {
+	margin-left: 3rem;
+}
+
+.table_of_contents-indent-3 {
+	margin-left: 4.5rem;
+}
+
+.table_of_contents-link {
+	text-decoration: none;
+	opacity: 0.7;
+	border-bottom: 1px solid rgba(55, 53, 47, 0.18);
+}
+
+table,
+th,
+td {
+	border: 1px solid rgba(55, 53, 47, 0.09);
+	border-collapse: collapse;
+}
+
+table {
+	border-left: none;
+	border-right: none;
+}
+
+th,
+td {
+	font-weight: normal;
+	padding: 0.25em 0.5em;
+	line-height: 1.5;
+	min-height: 1.5em;
+	text-align: left;
+}
+
+th {
+	color: rgba(55, 53, 47, 0.6);
+}
+
+ol,
+ul {
+	margin: 0;
+	margin-block-start: 0.6em;
+	margin-block-end: 0.6em;
+}
+
+li > ol:first-child,
+li > ul:first-child {
+	margin-block-start: 0.6em;
+}
+
+ul > li {
+	list-style: disc;
+}
+
+ul.to-do-list {
+	text-indent: -1.7em;
+}
+
+ul.to-do-list > li {
+	list-style: none;
+}
+
+.to-do-children-checked {
+	text-decoration: line-through;
+	opacity: 0.375;
+}
+
+ul.toggle > li {
+	list-style: none;
+}
+
+ul {
+	padding-inline-start: 1.7em;
+}
+
+ul > li {
+	padding-left: 0.1em;
+}
+
+ol {
+	padding-inline-start: 1.6em;
+}
+
+ol > li {
+	padding-left: 0.2em;
+}
+
+.mono ol {
+	padding-inline-start: 2em;
+}
+
+.mono ol > li {
+	text-indent: -0.4em;
+}
+
+.toggle {
+	padding-inline-start: 0em;
+	list-style-type: none;
+}
+
+/* Indent toggle children */
+.toggle > li > details {
+	padding-left: 1.7em;
+}
+
+.toggle > li > details > summary {
+	margin-left: -1.1em;
+}
+
+.selected-value {
+	display: inline-block;
+	padding: 0 0.5em;
+	background: rgba(206, 205, 202, 0.5);
+	border-radius: 3px;
+	margin-right: 0.5em;
+	margin-top: 0.3em;
+	margin-bottom: 0.3em;
+	white-space: nowrap;
+}
+
+.collection-title {
+	display: inline-block;
+	margin-right: 1em;
+}
+
+.simple-table {
+	margin-top: 1em;
+	font-size: 0.875rem;
+}
+
+.simple-table-header {
+	background: rgb(247, 246, 243);
+	color: black;
+	font-weight: 500;
+}
+
+time {
+	opacity: 0.5;
+}
+
+.icon {
+	display: inline-block;
+	max-width: 1.2em;
+	max-height: 1.2em;
+	text-decoration: none;
+	vertical-align: text-bottom;
+	margin-right: 0.5em;
+}
+
+img.icon {
+	border-radius: 3px;
+}
+
+.user-icon {
+	width: 1.5em;
+	height: 1.5em;
+	border-radius: 100%;
+	margin-right: 0.5rem;
+}
+
+.user-icon-inner {
+	font-size: 0.8em;
+}
+
+.text-icon {
+	border: 1px solid #000;
+	text-align: center;
+}
+
+.page-cover-image {
+	display: block;
+	object-fit: cover;
+	width: 100%;
+	max-height: 30vh;
+}
+
+.page-header-icon {
+	font-size: 3rem;
+	margin-bottom: 1rem;
+}
+
+.page-header-icon-with-cover {
+	margin-top: -0.72em;
+	margin-left: 0.07em;
+}
+
+.page-header-icon img {
+	border-radius: 3px;
+}
+
+.link-to-page {
+	margin: 1em 0;
+	padding: 0;
+	border: none;
+	font-weight: 500;
+}
+
+p > .user {
+	opacity: 0.5;
+}
+
+td > .user,
+td > time {
+	white-space: nowrap;
+}
+
+input[type="checkbox"] {
+	transform: scale(1.5);
+	margin-right: 0.6em;
+	vertical-align: middle;
+}
+
+p {
+	margin-top: 0.5em;
+	margin-bottom: 0.5em;
+}
+
+.image {
+	border: none;
+	margin: 1.5em 0;
+	padding: 0;
+	border-radius: 0;
+	text-align: center;
+}
+
+.code,
+code {
+	background: rgba(135, 131, 120, 0.15);
+	border-radius: 3px;
+	padding: 0.2em 0.4em;
+	border-radius: 3px;
+	font-size: 85%;
+	tab-size: 2;
+}
+
+code {
+	color: #eb5757;
+}
+
+.code {
+	padding: 1.5em 1em;
+}
+
+.code-wrap {
+	white-space: pre-wrap;
+	word-break: break-all;
+}
+
+.code > code {
+	background: none;
+	padding: 0;
+	font-size: 100%;
+	color: inherit;
+}
+
+blockquote {
+	font-size: 1.25em;
+	margin: 1em 0;
+	padding-left: 1em;
+	border-left: 3px solid rgb(55, 53, 47);
+}
+
+.bookmark {
+	text-decoration: none;
+	max-height: 8em;
+	padding: 0;
+	display: flex;
+	width: 100%;
+	align-items: stretch;
+}
+
+.bookmark-title {
+	font-size: 0.85em;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	height: 1.75em;
+	white-space: nowrap;
+}
+
+.bookmark-text {
+	display: flex;
+	flex-direction: column;
+}
+
+.bookmark-info {
+	flex: 4 1 180px;
+	padding: 12px 14px 14px;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+}
+
+.bookmark-image {
+	width: 33%;
+	flex: 1 1 180px;
+	display: block;
+	position: relative;
+	object-fit: cover;
+	border-radius: 1px;
+}
+
+.bookmark-description {
+	color: rgba(55, 53, 47, 0.6);
+	font-size: 0.75em;
+	overflow: hidden;
+	max-height: 4.5em;
+	word-break: break-word;
+}
+
+.bookmark-href {
+	font-size: 0.75em;
+	margin-top: 0.25em;
+}
+
+.sans { font-family: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol"; }
+.code { font-family: "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace; }
+.serif { font-family: Lyon-Text, Georgia, ui-serif, serif; }
+.mono { font-family: iawriter-mono, Nitti, Menlo, Courier, monospace; }
+.pdf .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK JP'; }
+.pdf:lang(zh-CN) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK SC'; }
+.pdf:lang(zh-TW) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK TC'; }
+.pdf:lang(ko-KR) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK KR'; }
+.pdf .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK JP'; }
+.pdf:lang(zh-CN) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC'; }
+.pdf:lang(zh-TW) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK TC'; }
+.pdf:lang(ko-KR) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK KR'; }
+.pdf .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK JP'; }
+.pdf:lang(zh-CN) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK SC'; }
+.pdf:lang(zh-TW) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK TC'; }
+.pdf:lang(ko-KR) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK KR'; }
+.pdf .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK JP'; }
+.pdf:lang(zh-CN) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC'; }
+.pdf:lang(zh-TW) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK TC'; }
+.pdf:lang(ko-KR) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK KR'; }
+.highlight-default {
+	color: rgba(55, 53, 47, 1);
+}
+.highlight-gray {
+	color: rgba(120, 119, 116, 1);
+	fill: rgba(120, 119, 116, 1);
+}
+.highlight-brown {
+	color: rgba(159, 107, 83, 1);
+	fill: rgba(159, 107, 83, 1);
+}
+.highlight-orange {
+	color: rgba(217, 115, 13, 1);
+	fill: rgba(217, 115, 13, 1);
+}
+.highlight-yellow {
+	color: rgba(203, 145, 47, 1);
+	fill: rgba(203, 145, 47, 1);
+}
+.highlight-teal {
+	color: rgba(68, 131, 97, 1);
+	fill: rgba(68, 131, 97, 1);
+}
+.highlight-blue {
+	color: rgba(51, 126, 169, 1);
+	fill: rgba(51, 126, 169, 1);
+}
+.highlight-purple {
+	color: rgba(144, 101, 176, 1);
+	fill: rgba(144, 101, 176, 1);
+}
+.highlight-pink {
+	color: rgba(193, 76, 138, 1);
+	fill: rgba(193, 76, 138, 1);
+}
+.highlight-red {
+	color: rgba(212, 76, 71, 1);
+	fill: rgba(212, 76, 71, 1);
+}
+.highlight-gray_background {
+	background: rgba(241, 241, 239, 1);
+}
+.highlight-brown_background {
+	background: rgba(244, 238, 238, 1);
+}
+.highlight-orange_background {
+	background: rgba(251, 236, 221, 1);
+}
+.highlight-yellow_background {
+	background: rgba(251, 243, 219, 1);
+}
+.highlight-teal_background {
+	background: rgba(237, 243, 236, 1);
+}
+.highlight-blue_background {
+	background: rgba(231, 243, 248, 1);
+}
+.highlight-purple_background {
+	background: rgba(244, 240, 247, 0.8);
+}
+.highlight-pink_background {
+	background: rgba(249, 238, 243, 0.8);
+}
+.highlight-red_background {
+	background: rgba(253, 235, 236, 1);
+}
+.block-color-default {
+	color: inherit;
+	fill: inherit;
+}
+.block-color-gray {
+	color: rgba(120, 119, 116, 1);
+	fill: rgba(120, 119, 116, 1);
+}
+.block-color-brown {
+	color: rgba(159, 107, 83, 1);
+	fill: rgba(159, 107, 83, 1);
+}
+.block-color-orange {
+	color: rgba(217, 115, 13, 1);
+	fill: rgba(217, 115, 13, 1);
+}
+.block-color-yellow {
+	color: rgba(203, 145, 47, 1);
+	fill: rgba(203, 145, 47, 1);
+}
+.block-color-teal {
+	color: rgba(68, 131, 97, 1);
+	fill: rgba(68, 131, 97, 1);
+}
+.block-color-blue {
+	color: rgba(51, 126, 169, 1);
+	fill: rgba(51, 126, 169, 1);
+}
+.block-color-purple {
+	color: rgba(144, 101, 176, 1);
+	fill: rgba(144, 101, 176, 1);
+}
+.block-color-pink {
+	color: rgba(193, 76, 138, 1);
+	fill: rgba(193, 76, 138, 1);
+}
+.block-color-red {
+	color: rgba(212, 76, 71, 1);
+	fill: rgba(212, 76, 71, 1);
+}
+.block-color-gray_background {
+	background: rgba(241, 241, 239, 1);
+}
+.block-color-brown_background {
+	background: rgba(244, 238, 238, 1);
+}
+.block-color-orange_background {
+	background: rgba(251, 236, 221, 1);
+}
+.block-color-yellow_background {
+	background: rgba(251, 243, 219, 1);
+}
+.block-color-teal_background {
+	background: rgba(237, 243, 236, 1);
+}
+.block-color-blue_background {
+	background: rgba(231, 243, 248, 1);
+}
+.block-color-purple_background {
+	background: rgba(244, 240, 247, 0.8);
+}
+.block-color-pink_background {
+	background: rgba(249, 238, 243, 0.8);
+}
+.block-color-red_background {
+	background: rgba(253, 235, 236, 1);
+}
+.select-value-color-pink { background-color: rgba(245, 224, 233, 1); }
+.select-value-color-purple { background-color: rgba(232, 222, 238, 1); }
+.select-value-color-green { background-color: rgba(219, 237, 219, 1); }
+.select-value-color-gray { background-color: rgba(227, 226, 224, 1); }
+.select-value-color-opaquegray { background-color: rgba(255, 255, 255, 0.0375); }
+.select-value-color-orange { background-color: rgba(250, 222, 201, 1); }
+.select-value-color-brown { background-color: rgba(238, 224, 218, 1); }
+.select-value-color-red { background-color: rgba(255, 226, 221, 1); }
+.select-value-color-yellow { background-color: rgba(253, 236, 200, 1); }
+.select-value-color-blue { background-color: rgba(211, 229, 239, 1); }
+
+.checkbox {
+	display: inline-flex;
+	vertical-align: text-bottom;
+	width: 16;
+	height: 16;
+	background-size: 16px;
+	margin-left: 2px;
+	margin-right: 5px;
+}
+
+.checkbox-on {
+	background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20width%3D%2216%22%20height%3D%2216%22%20fill%3D%22%2358A9D7%22%2F%3E%0A%3Cpath%20d%3D%22M6.71429%2012.2852L14%204.9995L12.7143%203.71436L6.71429%209.71378L3.28571%206.2831L2%207.57092L6.71429%2012.2852Z%22%20fill%3D%22white%22%2F%3E%0A%3C%2Fsvg%3E");
+}
+
+.checkbox-off {
+	background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20x%3D%220.75%22%20y%3D%220.75%22%20width%3D%2214.5%22%20height%3D%2214.5%22%20fill%3D%22white%22%20stroke%3D%22%2336352F%22%20stroke-width%3D%221.5%22%2F%3E%0A%3C%2Fsvg%3E");
+}
+	
+</style></head><body><article id="23b4535c-52a7-42bc-a198-3dbf07416a03" class="page sans"><header><div class="page-header-icon undefined"><span class="icon">💼</span></div><h1 class="page-title">IoC Container &amp; Environment</h1></header><div class="page-body"><ul id="a14babb9-9e71-4bdd-a6bc-ad092eb8ffdf" class="toggle"><li><details open=""><summary><em>content</em></summary><nav id="1807bef3-710b-4c73-9cee-128cac0ff54d" class="block-color-gray table_of_contents"><div class="table_of_contents-item table_of_contents-indent-0"><a class="table_of_contents-link" href="#02b7b0bd-583b-4b6d-b6fb-c26c9ba861f4">IoC 컨테이너 6부: Environment 1부. 프로파일</a></div><div class="table_of_contents-item table_of_contents-indent-1"><a class="table_of_contents-link" href="#aa8d51a3-ad1e-4145-b71c-596227656bd1">프로파일</a></div><div class="table_of_contents-item table_of_contents-indent-1"><a class="table_of_contents-link" href="#d074d60f-899e-4a0f-a3a9-88582ea052c6">프로파일 유즈케이스</a></div><div class="table_of_contents-item table_of_contents-indent-1"><a class="table_of_contents-link" href="#a63ef484-8aad-4f8e-a66a-301975fcbac9">프로파일 정의하기</a></div><div class="table_of_contents-item table_of_contents-indent-1"><a class="table_of_contents-link" href="#bc9fe592-985b-42e6-a798-95f1a0c90c76">프로파일 설정하기</a></div><div class="table_of_contents-item table_of_contents-indent-1"><a class="table_of_contents-link" href="#bf00a94e-b69c-464c-844b-6fd2ae023378">프로파일 표현식</a></div><div class="table_of_contents-item table_of_contents-indent-0"><a class="table_of_contents-link" href="#67aa2272-593d-4b89-b80e-266d20b4bfbf">IoC 컨테이너 6부: Environment 2부. 프로퍼티</a></div><div class="table_of_contents-item table_of_contents-indent-1"><a class="table_of_contents-link" href="#e88d14f2-7f55-457b-8bbc-c74660a74faf">프로퍼티</a></div><div class="table_of_contents-item table_of_contents-indent-1"><a class="table_of_contents-link" href="#7a95cefe-15c4-4c00-862c-ca7fc32bb7c8">@PropertySource</a></div></nav></details></li></ul><p id="b820d524-d824-4877-9d5c-747a26c33a77" class="">
+</p><p id="9b49f67d-964b-4a01-b3bf-7f153c44952d" class="">ApplicationContext가 BeanFactory 기능만 하는 것은 아님</p><p id="e1015b97-e677-4c98-b1c7-e68270008d1b" class="">많은 인터페이스들을 상속받는데, EnvironmentCapable 인터페이스가 포함.</p><p id="00baaba4-4514-4c2f-9671-e00208a8e930" class="">EnvironmentCapable 크게 두 가지 기능을 갖는데, Capable 기능을 알아봄</p><p id="9158ff46-ae77-4cff-b740-f12eb7d2fc57" class="">
+</p><h2 id="02b7b0bd-583b-4b6d-b6fb-c26c9ba861f4" class="">IoC 컨테이너 6부: Environment 1부. 프로파일</h2><p id="8406dd46-18a3-4467-959d-92f0e8e675a1" class="">프로파일과 프로퍼티를 다루는 인터페이스.</p><p id="389a9719-4a29-4268-beb1-a6b9abfc3e55" class="">프로파일 : 어떤 환경. 테스트환경에서는 ~ 빈들을 쓰고, 알파에는 ~ 빈들을 사용하겠다. </p><p id="2fec5d7a-b045-4603-a2d7-5b925139ba79" class="">각각의 환경 혹은 특정 환경에서 다른 빈들을 사용하거나 등록해야하는 경우에 대한 요구사항을 충족시키기 위해 프로파일 기능이 추가되었고, 그걸 Environment 로 사용할 수 있음.</p><p id="b3c48e09-f141-4d59-bfd4-837f1e48aa07" class="">
+</p><p id="3db17ba1-7471-4519-b6c3-e26348573fb3" class="">
+</p><p id="4e544e25-b24e-4125-88ce-664be3ab64ec" class="">ApplicationContext extends <a href="https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/core/env/EnvironmentCapable.html">EnvironmentCapable</a></p><ul id="984b72ed-63bd-499a-98d8-18a42a5ee81d" class="toggle"><li><details open=""><summary>✔️ getEnvironment()</summary><pre id="68e6d82f-8480-466a-8d72-9d52b0dbc79d" class="code code-wrap"><code>public interface EnvironmentCapable {
+    Environment getEnvironment();
+}</code></pre><p id="83b076a8-8184-4bcf-8e6d-512ed5125daa" class="">
+</p></details></li></ul><p id="198cab0c-64fe-4330-81ca-7cd1e5074b3c" class="">
+</p><h3 id="aa8d51a3-ad1e-4145-b71c-596227656bd1" class="">프로파일</h3><p id="27a01668-f616-492a-9a9e-8f20d68883a5" class="">✔️ 빈들의 그룹</p><p id="aecb479b-176c-4fb5-a177-a7a88b7d082e" class="">✔️ <a href="https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/core/env/Environment.html">Environment</a>의 역할은 활성화할 프로파일 확인 및 설정</p><p id="7643e860-d10c-4282-a7b3-74ccb9910256" class="">
+</p><h3 id="d074d60f-899e-4a0f-a3a9-88582ea052c6" class="">프로파일 유즈케이스</h3><p id="0ad5be3d-2779-4c08-babb-279e8f503d8b" class="">✔️ 테스트 환경에서는 A라는 빈을 사용하고, 배포 환경에서는 B라는 빈을 쓰고 싶다.</p><p id="aec55a03-6f54-4a87-81e0-5a714a27be73" class="">✔️ 이 빈은 모니터링 용도니까 테스트할 때는 필요가 없고 배포할 때만 등록이 되면 좋겠다.</p><p id="1c60dc38-aae7-4f3d-a1bc-adec0dfa2dfe" class="">
+</p><h3 id="a63ef484-8aad-4f8e-a66a-301975fcbac9" class="">프로파일 정의하기</h3><p id="e5b523c2-92b7-40d6-959d-22cd31f4daec" class=""><a href="https://docs.spring.io/spring-framework/docs/current/reference/html/core.html#beans-definition-profiles-java">🔗 Spring Docs</a></p><p id="36e064e3-965d-45ff-bc79-0d9a3364a253" class="">
+</p><p id="6d7314ba-4853-4156-80d0-9e430111b890" class="">✔️ 클래스에 정의</p><ul id="d8a242e1-22a6-426f-b34d-f4a9000dd091" class="toggle"><li><details open=""><summary> @Configuration @Profile(“test”)</summary><pre id="054376b4-7fbe-459d-8ae4-995889421205" class="code code-wrap"><code>@Configuration
+@Profile(&quot;test&quot;)
+public class TestConfiguration {
+
+    @Bean
+    public BookRepository getBookRepository() {
+        return new TestBookRepository();
+    }
+}</code></pre><p id="51fafa5c-1cb9-4950-baa7-9212677a9db6" class="">test 환경일 때에만 실행됨</p><pre id="beabd969-277d-460b-b3dd-a30bb955586c" class="code code-wrap"><code>@Component
+public class AppRunner2 implements ApplicationRunner {
+		...
+    @Autowired
+    ApplicationContext ctx;
+		...
+}
+
+/* 위 코드는 test 환경이 아닐 때에 Bean을 생성하지 못하니까 ERROR
+*  Error:(14, 16) java: incompatible types: com.gngsn.springcore.environment.TestBookRepository cannot be converted to com.gngsn.springcore.book.BookRepository
+*
+*/</code></pre><p id="b708d4bd-c076-4d87-ba56-819ecd648dc8" class="">
+</p></details></li></ul><ul id="9e6229ee-ef38-4383-98dc-a58de43fa9b0" class="toggle"><li><details open=""><summary> @Component @Profile(“test”)</summary><pre id="85132835-b11b-47d0-9ee8-7975d96298dd" class="code code-wrap"><code>@Configuration
+public class TestConfiguration {
+
+    @Bean
+    public BookRepository getBookRepository() {
+        return new TestBookRepository();
+    }
+}</code></pre></details></li></ul><p id="ef08d600-044b-4a82-8cd4-0b0e9c48faa3" class="">✔️ 메소드에 정의</p><p id="d7c4f8ee-2da4-43b8-8416-bed9baff38f4" class="">- @Bean @Profile(“test”)</p><p id="477a51b6-d61c-4223-8415-c597efbd3211" class="">
+</p><h3 id="bc9fe592-985b-42e6-a798-95f1a0c90c76" class="">프로파일 설정하기</h3><p id="e0d1fc13-6262-42cb-a0e3-a5b96edf4528" class="">✔️ -Dspring.profiles.avtive=”test,A,B,...”</p><p id="5791e07e-23d0-4a9c-bcd2-0182738b0018" class="">✔️ <a href="https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/test/context/ActiveProfiles.html">@ActiveProfiles</a> (테스트용)</p><div id="df8280a9-4b45-43fc-afad-09a479a55341" class="column-list"><div id="d54503a9-6e04-4ccb-a99b-5b84584873e4" style="width:50%" class="column"><figure id="f17f323b-6dae-4d4d-8a6c-bdeec46f16ac" class="image"><a href="img/%E1%84%89%E1%85%B3%E1%84%8F%E1%85%B3%E1%84%85%E1%85%B5%E1%86%AB%E1%84%89%E1%85%A3%E1%86%BA_2022-02-26_%E1%84%8B%E1%85%A9%E1%84%92%E1%85%AE_8.28.29.png"><img style="width:336px" src="img/%E1%84%89%E1%85%B3%E1%84%8F%E1%85%B3%E1%84%85%E1%85%B5%E1%86%AB%E1%84%89%E1%85%A3%E1%86%BA_2022-02-26_%E1%84%8B%E1%85%A9%E1%84%92%E1%85%AE_8.28.29.png"/></a></figure></div><div id="76212fa8-2fcd-44a7-9d07-236c29760b9f" style="width:50.000000000000014%" class="column"><figure id="39c033f3-7572-4d97-a0d3-2044def2351f" class="image"><a href="img/%E1%84%89%E1%85%B3%E1%84%8F%E1%85%B3%E1%84%85%E1%85%B5%E1%86%AB%E1%84%89%E1%85%A3%E1%86%BA_2022-02-26_%E1%84%8B%E1%85%A9%E1%84%92%E1%85%AE_8.35.30.png"><img style="width:2156px" src="img/%E1%84%89%E1%85%B3%E1%84%8F%E1%85%B3%E1%84%85%E1%85%B5%E1%86%AB%E1%84%89%E1%85%A3%E1%86%BA_2022-02-26_%E1%84%8B%E1%85%A9%E1%84%92%E1%85%AE_8.35.30.png"/></a></figure></div></div><p id="1d9db8c3-2d45-439c-929e-c11e998e8bc1" class="">
+</p><p id="25b71831-48f1-4723-87be-e02dbafc3344" class="">
+</p><h3 id="bf00a94e-b69c-464c-844b-6fd2ae023378" class="">프로파일 표현식</h3><ul id="0e98e57c-695f-4fec-b1e0-c15608641c16" class="toggle"><li><details open=""><summary><code>!</code>  : A logical “not” of the profile</summary><p id="26d3d6e0-c0cd-4455-a8a8-f1476de72417" class=""><code>@Profile(&quot;!prod&quot;)</code></p><p id="e634f1d0-3563-49b3-80f3-2d8555dc6608" class="">prod 환경이 아닌 모든 환경</p><p id="de4bdad1-47f0-48fa-97ba-f38ded22986d" class="">
+</p></details></li></ul><p id="2921375c-3a3d-4ca1-ab3d-76c99818a3fe" class="">✔️ <code>&amp;</code> : A logical “and” of the profiles</p><p id="4d91d233-7f96-41b5-bc29-c20aba3d46ee" class="">✔️ <code>|</code> : A logical “or” of the profiles</p><p id="8120da33-cf1e-4f53-84f5-82d514b12413" class="">
+</p><p id="8a8bc7bf-8991-4f84-94b3-31b9ec7c8dc7" class="">
+</p><hr id="58738c56-c128-4ae1-8e2e-dbcc554a6006"/><p id="81910008-4edd-44bc-bb59-bf54aca8d413" class="">
+</p><h2 id="67aa2272-593d-4b89-b80e-266d20b4bfbf" class="">IoC 컨테이너 6부: Environment 2부. 프로퍼티</h2><p id="906f16d1-865c-4178-bd5b-c91d1aec17f4" class="">
+</p><h3 id="e88d14f2-7f55-457b-8bbc-c74660a74faf" class="">프로퍼티</h3><p id="d2a93c0e-0efe-497b-8ab1-c41eeacac8cd" class="">✔️ 다양한 방법으로 정의할 수 있는 설정값</p><p id="ebb4e46b-edfe-4aae-bb86-e630c71c8321" class="">✔️ <a href="https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/core/env/Environment.html">Environment</a>의 역할은 프로퍼티 소스 설정 및 프로퍼티 값 가져오기</p><p id="bc421786-a5ed-46aa-9d39-fa7ef8ffac29" class="">
+</p><p id="d3dbbbdf-3c3e-47ac-93af-9c1f862102c6" class="">
+</p><p id="7a3bc8a5-8c45-4713-b943-588dc6a91118" class="">
+</p><p id="847e44d9-b310-4294-9a1b-c9a18de1635e" class=""><strong>프로퍼티에는 우선 순위가 있다.</strong></p><p id="02839ec1-5cc6-4bd5-a6c2-77698aaaa17d" class="">✔️ StandardServletEnvironment의 우선순위<div class="indented"><p id="2e2638ea-1012-4b4a-9729-b8de2c5b976b" class="">- ServletConfig 매개변수</p><p id="c3fe640b-e75a-416f-8b83-7529ae1e54dc" class="">- ServletContext 매개변수</p><p id="5054131e-868a-44d9-a93f-18d1fd3ef5c7" class="">- JNDI (java:comp/env/)</p><ul id="1ddd4444-b998-4a60-8c47-03aa8bfd5399" class="toggle"><li><details open=""><summary> JVM 시스템 프로퍼티 (-Dkey=”value”)</summary><figure id="7489ca5e-b7ba-4e47-9e41-d291569945aa" class="image"><a href="img/%E1%84%89%E1%85%B3%E1%84%8F%E1%85%B3%E1%84%85%E1%85%B5%E1%86%AB%E1%84%89%E1%85%A3%E1%86%BA_2022-02-26_%E1%84%8B%E1%85%A9%E1%84%92%E1%85%AE_8.56.54.png"><img style="width:384px" src="img/%E1%84%89%E1%85%B3%E1%84%8F%E1%85%B3%E1%84%85%E1%85%B5%E1%86%AB%E1%84%89%E1%85%A3%E1%86%BA_2022-02-26_%E1%84%8B%E1%85%A9%E1%84%92%E1%85%AE_8.56.54.png"/></a></figure><pre id="7ac54058-e6fd-454c-84aa-7a747d12608e" class="code code-wrap"><code>@Component
+public class AppRunner implements ApplicationRunner {
+
+    @Autowired
+    ApplicationContext ctx;
+
+    @Override
+    public void run(ApplicationArguments args) throws Exception {
+        Environment env = ctx.getEnvironment();
+        System.out.println(&quot;app.name : &quot; + env.getProperty(&quot;app.name&quot;));
+    }
+}
+
+// app.name : spring5</code></pre><p id="d294be47-ca61-46a3-b93b-3db804e12c53" class="">
+</p></details></li></ul><ul id="01a254bf-7ea4-4c48-9d2d-2573752043b7" class="toggle"><li><details open=""><summary> JVM 시스템 환경 변수 (운영 체제 환경 변수)</summary><pre id="c8d00e0a-38dd-432b-80c0-2633f3b7de7b" class="code code-wrap"><code>@SpringBootApplication
+@PropertySource(&quot;classpath:/app.properties&quot;) &lt;- 추가
+public class SpringCoreApplication { ... }</code></pre><pre id="5676d49a-48a8-4551-b0be-833952ccabe1" class="code code-wrap"><code>@Component
+public class AppRunner2 implements ApplicationRunner {
+    @Autowired
+    ApplicationContext ctx;
+
+    @Override
+    public void run(ApplicationArguments args) throws Exception {
+        Environment env = ctx.getEnvironment();
+        System.out.println(&quot;app.name : &quot; + env.getProperty(&quot;app.name&quot;));
+        System.out.println(&quot;app.about : &quot; + env.getProperty(&quot;app.about&quot;));
+    }
+}
+
+/*
+app.name : spring5
+app.about : spring
+*/</code></pre></details></li></ul></div></p><p id="25fca2c4-a7e6-496a-96d4-b18e17a565d3" class="">
+</p><h3 id="7a95cefe-15c4-4c00-862c-ca7fc32bb7c8" class="">@PropertySource</h3><p id="819ebfdd-ed00-4dd7-8f43-8299f61d0b9b" class="">✔️ Environment를 통해 프로퍼티 추가하는 방법</p><p id="aa09051a-92ea-4bd3-8627-424b6d2fa11d" class="">
+</p><p id="e1ea1c8c-12e6-4ad7-b7c3-addfa0cc24e9" class=""><strong>스프링 부트의 외부 설정 참고</strong></p><p id="488eeb55-b2a9-479b-a464-062cbff68ab3" class="">✔️ 기본 프로퍼티 소스 지원 (application.properties)</p><p id="8def5393-4bd1-4fd5-8185-1d681e70dc82" class="">✔️ 프로파일까지 고려한 계층형 프로퍼티 우선 순위 제공</p><p id="08c03cbd-22b8-499a-8967-9c3cee72849c" class="">
+</p><p id="c30402e4-c10c-4b8a-bddd-2db65d06d2dd" class="">
+</p><p id="298554d0-4388-4859-a710-8cc681739857" class="">
+</p><p id="22930f76-02f0-4550-a858-c8c70289502e" class="">
+</p><p id="2d12dc4a-e15d-45fa-acb6-5dcbffeb93e0" class="">
+</p><p id="b384c881-66f3-4ead-a8ba-df5e45db3610" class="">
+</p></div></article></body></html>
