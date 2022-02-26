@@ -13,8 +13,8 @@ public class BookServiceRunner implements ApplicationRunner {
     @Autowired
     BookService bookService;
 
-//    @Autowired
-//    ApplicationContext applicationContext;
+    @Autowired
+    ApplicationContext applicationContext;
 
     // 2. 혹은 AutowiredAnnotationBeanPostProcessor가 Bean으로 등록되었다는 것을 확인하기 위해 직접 Autowired를 사용할 수도 있음
 //    @Autowired
