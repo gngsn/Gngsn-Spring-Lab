@@ -10,7 +10,7 @@ public class BookServiceTest {
 
     @Test
     public void save() {
-        BookRepository bookRepository = new BookRepository();
-        BookService bookService = new BookService(bookRepository);
+//        BookRepository bookRepository = new BookRepository();
+//        BookService bookService = new BookService(bookRepository);
     }
 }

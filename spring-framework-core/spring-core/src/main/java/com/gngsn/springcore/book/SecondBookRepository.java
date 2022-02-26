@@ -3,5 +3,5 @@ package com.gngsn.springcore.book;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public class BookRepository {
+public class SecondBookRepository implements BookRepository {
 }
