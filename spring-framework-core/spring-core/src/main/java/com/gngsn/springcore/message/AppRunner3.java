@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.Locale;
 
-@Component
+//@Component
 public class AppRunner3 implements ApplicationRunner {
 
     @Autowired
@@ -16,6 +16,7 @@ public class AppRunner3 implements ApplicationRunner {
 
     @Override
     public void run(ApplicationArguments args) throws Exception {
+        System.out.println("======= Message AppRunner =======");
 //        while(true) {
             System.out.println(messageSource.getMessage("greeting", new String[]{"gngsn"}, Locale.KOREA));
             System.out.println(messageSource.getMessage("greeting", new String[]{"gngsn"}, Locale.getDefault()));

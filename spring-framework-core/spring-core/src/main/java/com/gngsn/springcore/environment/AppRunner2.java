@@ -8,7 +8,7 @@ import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
 
-@Component
+//@Component
 public class AppRunner2 implements ApplicationRunner {
 
     @Autowired
@@ -19,6 +19,7 @@ public class AppRunner2 implements ApplicationRunner {
 
     @Override
     public void run(ApplicationArguments args) throws Exception {
+        System.out.println("======= Environment AppRunner =======");
         Environment env = ctx.getEnvironment();
         System.out.println("app.name : " + env.getProperty("app.name"));
         System.out.println("app.about : " + env.getProperty("app.about"));
