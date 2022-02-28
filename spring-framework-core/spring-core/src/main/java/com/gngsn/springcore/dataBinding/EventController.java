@@ -9,11 +9,11 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class EventController {
 
-    @InitBinder
-    public void init(WebDataBinder webDataBinder) {
-        // 여기에서 정의한 databBinder에 들어있는 propertyEditor를 사용, 문자열로 들어온 이벤트 객체로 변경되는 것
-        webDataBinder.registerCustomEditor(Event.class, new EventEditor());
-    }
+//    @InitBinder
+//    public void init(WebDataBinder webDataBinder) {
+//        // 여기에서 정의한 databBinder에 들어있는 propertyEditor를 사용, 문자열로 들어온 이벤트 객체로 변경되는 것
+//        webDataBinder.registerCustomEditor(Event.class, new EventEditor());
+//    }
 
     @GetMapping("/event/{event}")
     public String getEvent(@PathVariable Event event) {

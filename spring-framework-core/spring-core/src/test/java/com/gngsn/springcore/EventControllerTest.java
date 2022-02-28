@@ -1,5 +1,7 @@
 package com.gngsn.springcore;
 
+import com.gngsn.springcore.dataBinding.EventController;
+import com.gngsn.springcore.dataBinding.converter.EventConverter;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,7 +14,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @RunWith(SpringRunner.class)
-@WebMvcTest
+@WebMvcTest({
+        EventConverter.class,
+        EventController.class
+}) // component-scan이 가능한 웹과 관련된 빈들을 설정
 public class EventControllerTest {
 
     @Autowired
