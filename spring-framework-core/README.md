@@ -10,7 +10,7 @@
 <tr width="100%">
 <td width="40%">
 
-### [1. IoC Container & Bean](https://github.com/gngsn/Gngsn-Spring-Lab/blob/master/spring-framework-core/note/IoCContainer%26Bean.html)
+### [1. IoC Container & Bean](https://github.com/gngsn/Gngsn-Spring-Lab/blob/master/spring-framework-core/note/IoCContainer%26Bean.md)
 
 </td>
 <td width="100%">
@@ -29,7 +29,7 @@
 </tr><tr width="100%">
 <td width="40%">
 
-### [2. IoC Container & Environment](https://github.com/gngsn/Gngsn-Spring-Lab/blob/master/spring-framework-core/note/IoCContainer%26Environment.html)
+### [2. IoC Container & Environment](https://github.com/gngsn/Gngsn-Spring-Lab/blob/master/spring-framework-core/note/IoCContainer%26Environment.md)
 
 </td>
 <td width="100%">
@@ -42,7 +42,7 @@
 </tr><tr width="100%">
 <td width="40%">
 
-### [3. IoC Container & Etc](https://github.com/gngsn/Gngsn-Spring-Lab/blob/master/spring-framework-core/note/IoCContainer%26ETC.html)
+### [3. IoC Container & Etc](https://github.com/gngsn/Gngsn-Spring-Lab/blob/master/spring-framework-core/note/IoCContainer%26ETC.md)
 
 </td>
 <td width="100%">
