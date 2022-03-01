@@ -36,24 +36,23 @@
 
 - IoC 컨테이너 9부: ResourceLoader
 
-<!--
 
 <br/><hr/><br/>
 
-### [4. Resource]()
+### [4. Resource](https://github.com/gngsn/Gngsn-Spring-Lab/blob/master/spring-framework-core/note/ResourceAbstraction.md)
 
 - Resource 추상화
 
 <br/><hr/><br/>
 
 
-### [5. Resource]()
+### [5. Validation](https://github.com/gngsn/Gngsn-Spring-Lab/blob/master/spring-framework-core/note/ValidationAbstraction.md)
 
 - Validation 추상화
 
 <br/><hr/><br/>
 
-### [6. Data Binding]()
+### [6. Data Binding](https://github.com/gngsn/Gngsn-Spring-Lab/blob/master/spring-framework-core/note/DataBinding.md)
 
 - 데이터 바인딩 추상화: PropertyEditor
 
@@ -61,13 +60,13 @@
 
 <br/><hr/><br/>
 
-### [6. Data Binding]()
+### [7. SpEL](https://github.com/gngsn/Gngsn-Spring-Lab/blob/master/spring-framework-core/note/SpEL.md)
 
 - SpEL (스프링 Expression Language)
 
 <br/><hr/><br/>
 
-### [7. Spring AOP]()
+### [8. Spring AOP](https://github.com/gngsn/Gngsn-Spring-Lab/blob/master/spring-framework-core/note/SpringAOP.md)
 
 - 스프링 AOP: 개념 소개
 
@@ -77,8 +76,7 @@
 
 <br/><hr/><br/>
 
-### [8. Null-Safety]()
+### [8. Null-Safety](https://github.com/gngsn/Gngsn-Spring-Lab/blob/master/spring-framework-core/note/NullSafety.md)
 
 - Null-safety
 
--->
