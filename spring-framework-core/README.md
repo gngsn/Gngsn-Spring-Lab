@@ -6,7 +6,14 @@
 
 <br/><br/>
 
+<table>
+<tr>
+<td width="40%">
+
 ### [1. IoC Container & Bean](https://github.com/gngsn/Gngsn-Spring-Lab/blob/master/spring-framework-core/note/IoCContainer%26Bean.html)
+
+</td>
+<td width="100%">
 
 - IoC 컨테이너 1부: 스프링 IoC 컨테이너와 빈
 
@@ -18,17 +25,27 @@
 
 - IoC 컨테이너 5부: 빈의 스코프
 
-<br/><hr/><br/>
+</td>
+</tr><tr>
+<td width="40%">
 
 ### [2. IoC Container & Environment](https://github.com/gngsn/Gngsn-Spring-Lab/blob/master/spring-framework-core/note/IoCContainer%26Environment.html)
+
+</td>
+<td width="100%">
 
 - IoC 컨테이너 6부: Environment 1부. 프로파일
 
 - IoC 컨테이너 6부: Environment 2부. 프로퍼티
 
-<br/><hr/><br/>
+</td>
+</tr><tr>
+<td width="40%">
 
 ### [3. IoC Container & Etc](https://github.com/gngsn/Gngsn-Spring-Lab/blob/master/spring-framework-core/note/IoCContainer%26ETC.html)
+
+</td>
+<td width="100%">
 
 - IoC 컨테이너 7부: MessageSource
 
@@ -36,37 +53,60 @@
 
 - IoC 컨테이너 9부: ResourceLoader
 
-
-<br/><hr/><br/>
+</td>
+</tr><tr>
+<td width="40%">
 
 ### [4. Resource](https://github.com/gngsn/Gngsn-Spring-Lab/blob/master/spring-framework-core/note/ResourceAbstraction.md)
 
+</td>
+<td width="100%">
+
 - Resource 추상화
 
-<br/><hr/><br/>
-
+</td>
+</tr><tr>
+<td width="40%">
 
 ### [5. Validation](https://github.com/gngsn/Gngsn-Spring-Lab/blob/master/spring-framework-core/note/ValidationAbstraction.md)
 
+</td>
+<td width="100%">
+
 - Validation 추상화
 
-<br/><hr/><br/>
+</td>
+</tr><tr>
+<td width="40%">
 
 ### [6. Data Binding](https://github.com/gngsn/Gngsn-Spring-Lab/blob/master/spring-framework-core/note/DataBinding.md)
+
+</td>
+<td width="100%">
 
 - 데이터 바인딩 추상화: PropertyEditor
 
 - 데이터 바인딩 추상화: Converter와 Formatter
 
-<br/><hr/><br/>
+</td>
+</tr><tr>
+<td width="40%">
 
 ### [7. SpEL](https://github.com/gngsn/Gngsn-Spring-Lab/blob/master/spring-framework-core/note/SpEL.md)
 
+</td>
+<td width="100%">
+
 - SpEL (스프링 Expression Language)
 
-<br/><hr/><br/>
+</td>
+</tr><tr>
+<td width="40%">
 
 ### [8. Spring AOP](https://github.com/gngsn/Gngsn-Spring-Lab/blob/master/spring-framework-core/note/SpringAOP.md)
+
+</td>
+<td width="100%">
 
 - 스프링 AOP: 개념 소개
 
@@ -74,9 +114,17 @@
 
 - 스프링 AOP: @AOP
 
-<br/><hr/><br/>
+</td>
+</tr><tr>
+<td width="40%">
 
-### [8. Null-Safety](https://github.com/gngsn/Gngsn-Spring-Lab/blob/master/spring-framework-core/note/NullSafety.md)
+### [9. Null-Safety](https://github.com/gngsn/Gngsn-Spring-Lab/blob/master/spring-framework-core/note/NullSafety.md)
+
+</td>
+<td width="100%">
 
 - Null-safety
 
+</td>
+</tr>
+</table>
