@@ -9,7 +9,7 @@
 <tr width="100%">
 <td width="40%">
 
-### [4장. Exception]()
+### [4장. Exception](https://github.com/gngsn/Gngsn-Spring-Lab/blob/master/spring-toby/note/Exception.md)
 
 <br/>
 
