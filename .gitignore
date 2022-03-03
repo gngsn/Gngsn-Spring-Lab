@@ -12,6 +12,8 @@ target/
 .settings
 .springBeans
 .sts4-cache
+*.properties
+
 
 ### IntelliJ IDEA ###
 .idea
@@ -37,3 +39,7 @@ mvnw
 mvnw.*
 .mvn
 .gitignore
+
+
+spring-test/emo/src/main/resources/jdbc.properties
+jdbc.properties
