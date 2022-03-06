@@ -90,7 +90,7 @@ try {
 
 <br/>
 
-### Error
+### 📌 Error
 
 > *`java.lang.Error` 클래스의 서브클래스*
 > 
@@ -106,7 +106,7 @@ Error는 주로 **자바 VM**에서 발생시키는 것이고 애플리케이션
 
 <br/>
 
-### Exception과 체크 예외
+### 📌 Exception과 체크 예외
 
 <br>
 
@@ -145,6 +145,8 @@ catch 문으로 잡든지, 아니면 다시 throws를 정의해서 메소드 밖
 그래서 IOException이나 SQLException을 비롯해서 예외적인 상황에서 던져질 가능성이 있는 것들 대부분이 체크 예외로 만들어 졌다.
 
 <br><br>
+
+### 📌 RuntimeException과 언체크/런타임 예외
 
 **✔️ Unchecked Exception**
 
@@ -329,7 +331,7 @@ API가 발생하는 기술적인 로우레벨을 상황에 적합한 의미를 �
          // 그런 기능을 가진 다른 SQLException을 던지는 메소드를 호출하는 코드
      } catch (SQLException e) {
          // ErrorCode가 MySQL의 "Duplicte Entry(1062)"이면 예외 전환
-         if (e.getErrorCode() == MySqlErrorNumvers.ER_DUP_ENTRY)
+         if (e.getErrorCode() == MySqlErrorNumbers.ER_DUP_ENTRY)
              throw DuplicateUserIdException();
          else
              throw e;  // 그 외의 경우는 SQLException 그대로
@@ -398,6 +400,104 @@ EJBException는 RuntimeException 클래스를 상속한 런타임 예외다.
 
 위와 같이 처리하는 게 바람직하다.
 
+<br><br>
 
 ## 예외처리 전략
+
+일반적으로는 체크 예외가 일반적인 예외를 다루고, 언체크 예외는 시스템 장애나 프로그램상의 오류에 사용한다고 했다.
+
+하지만 점점 체크 예외의 활용도와 가치는 점점 떨어지고 있고, 
+
+**대응이 불가능한 체크 예외라면 빨리 언타임 예외로 전환해서 던지는 게 낫다.**
+
+<br>
+
+### 예외처리 예시 - DuplicatedUserIdException
+
+위에서 보았던 add 메소드는 DuplicatedUserIdException와 SQLException, 두 가지 체크 예외를 던지게 했다.
+
+``` java
+    public void add(User user) throws DuplicateUserIdException, SQLException {}
+```
+
+
+위와 같이 ID 중복은 의미 있는 예외인 DuplicateUserIdException로 전환해주고, 아니라면 SQLException를 그대로 던지게 했다.
+
+DuplicateUserIdException은 앞 단에서 대응할 수 있는 예외이기 때문에 잡아서 대응할 수 있지만,
+
+SQLException은 대부분 복구 불가능한 예외이기 때문에 잡아봤자 처리할 것도 없고, throws를 계속 던지다가 애플리케이션 밖으로 던져질 것이다.
+
+DuplicateUserIdException을 잡아서 처리할 수 있다면 굳이 체크 예외로 만들지 않고 런타임 예외로 만드는 게 낫다. 
+
+대신 add() 메소드는 명시적으로 DuplicateUserIdException을 던진다고 선언해야 한다.
+
+그래야 add() 메소드를 사용하는 코드를 만드는 개발자에게 의미 이쓴ㄴ 정보를 전달해줄 수 있다. 
+
+런타임 예외도 throws로 던질 수 있으니 문제 될 것은 없다.
+
+코드를 수정해보면 아래와 같다.
+
+``` java
+public class DuplicateUserIdException extends RuntimeException {
+    public DuplicateUserIdException(Throwable cause) {
+        super(cause);
+    }
+}
+```
+``` java
+public void add(User user) throws DuplicateUserIdException {
+        try {
+            // JDBC를 이용해 user 정보를 DB에 추가하는 코드 또는
+            // 그런 기능을 가진 다른 SQLException을 던지는 메소드를 호출하는 코드
+        } catch (SQLException e) {
+            if (e.getErrorCode() == MysqlErrorNumbers.ER_DUP_ENTRY)
+                throw new DuplicateUserIdException(e);              // 예외 전환
+            else
+                throw new RuntimeException(e);                      // 예외 포장
+        }
+    }
+```
+
+SQLException를 처리하기 위해 불필요한 throws를 없애고, 필요한 경우 아이디 중복 상황을 처리하기 위해 DuplicateUserIdException을 이용할 수 있다. 
+
+
+이렇게 런타임 예외를 일반화해서 사용하는 방법은 여러모로 장점이 많지만, 런타임 예외로 만들었기 때문에 사용에 더 주의를 기울일 필요도 있다.
+
+컴파일러가 예외처리흫 강제하지 않으므로로 신경쓰지 않으면 예외 상황을 출분히 고려하지 않을 수도 있기 때문이다.
+런타임 예외를 사용하는 경우에는 API 문서나 레퍼런스 문서등을 통해 메소드를 사용할 때 발생할 수 있는 예외의 종류와 원인, 활용 방법을 자세히 설명해두자.
+
+<br><br>
+
+### 애플리케이션 예외
+
+런타임 예외 -> 낙관적인 예외와 가깝다. 
+
+복구할 수 있는 예외는 없다고 가정하고 예외가 생겨도 어차피 런타임 예외이므로 시스템 레벨에서 알아서 처리해줄 것이고, 필요한 경우에 잡아서 복구하거나 대응할 수 있기 때문
+
+<br>
+
+**애플리케이션 예외**
+
+: 시스템 또는 외부의 예외 상황이 원인이 아니라 애플리케이션 자체의 로직에 의해 의도적으로 발생시키고, 반드시 catch해서 무엇인가 조치를 취하도록 요구하는 예외
+
+<br>
+
+예를 들어 은행 시스템에서 출금을 요청하는 사용자가 있을 때, 사용자의 잔액을 먼저 확인해야 한다.
+
+허용 범위를 넘으면 출금 작업을 중단하고 적절한 경고를 사용자에게 보내야 한다. 
+
+처리 방법에는 아래 두 가지가 있다.
+
+<br>
+
+- 성공/실패 경우 각각 다른 종류의 리턴 값 반환
+
+예를 들어 실패 시 -1이나 0 등의 특별히 정한 특정 값을 반환한다. 
+
+물론 시스템 오류가 아니기 때문에 두 가지 모두 정상 흐름이다.
+
+
+
+
+
 
