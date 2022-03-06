@@ -41,5 +41,16 @@ mvnw.*
 .gitignore
 
 
+### Gradle ###
+gradle/
+gradlew
+gradlew.*
+*.gradle
+!src/**/build/
+gradle-app.setting
+!gradle-wrapper.jar
+!gradle-wrapper.properties
+.gradletasknamecache
+
 spring-test/emo/src/main/resources/jdbc.properties
 jdbc.properties
