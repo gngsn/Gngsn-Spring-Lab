@@ -19,16 +19,27 @@
 <td width="100%">
 
 - 사라진 SQLException
+  
+  <small>
+
   - 초난감 예외처리
   - 예외의 종류와 특징
   - 예외처리 방법
   - 예외처리 전략
   - SQLException은 어떻게 됐나?
+
+  </small>
+
 - 예외 전환
+  
+  <small>
+
   - JDBC의 한계
   - DB 에러 코드 매핑을 통한 전환
   - DAO 인터페이스와 DataAccessException 계층구조
   - 기술에 독립적인 UserDao 만들기
+
+  </small>
 
 </td>
 </tr>

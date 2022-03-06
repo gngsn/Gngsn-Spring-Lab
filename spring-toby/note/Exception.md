@@ -68,11 +68,11 @@ try {
 
 <br/>
 
-### 무의미하고 무책임한 throws
+### 무의미하고 무책임한 `throws`
 
-예외를 일일이 catch하기 귀찮고, 별 필요도 없으며 매번 정확하게 예외 이름을 적어서 선언하기도 귀찮으니 아예 throws Exception이라는, 모든 예외를 무조건 던져버리는 선언을 모든 메소드에 기계적으로 넣는 개발자들이 있다.
+예외를 일일이 catch하기 귀찮고, 별 필요도 없으며 매번 정확하게 예외 이름을 적어서 선언하기도 귀찮으니 아예 `throws` Exception이라는, 모든 예외를 무조건 던져버리는 선언을 모든 메소드에 기계적으로 넣는 개발자들이 있다.
 
-이런 무책임한 throws 선언도 심각한 문제점이 있다.
+이런 무책임한 `throws` 선언도 심각한 문제점이 있다.
 
 실제로 실행 중에 예외적인 상황이 발생할 수 있다는 것인가? 아님 그냥 습관적으로 복사해서 붙여놓은 것인가? 알 수 없다.
 
@@ -86,7 +86,7 @@ try {
 ## 예외의 종류와 특징
 
 
-자바에서 throws를 통해 발생시킬 수 있는 예외는 크게 세 가지가 있다.
+자바에서 `throws`를 통해 발생시킬 수 있는 예외는 크게 세 가지가 있다.
 
 <br/>
 
@@ -134,7 +134,7 @@ RuntimeException은 Exception의 서브클래스이므로 Exception의 일종이
 
 체크 예외가 발생할 수 있는 메소드를 가용할 경우 반드시 예외를 처리하는 코드를 함께 작성해야 한다.
 
-catch 문으로 잡든지, 아니면 다시 throws를 정의해서 메소드 밖으로 던져야 한다.
+catch 문으로 잡든지, 아니면 다시 `throws`를 정의해서 메소드 밖으로 던져야 한다.
 
 그렇지 않으면 컴파일 에러가 발생한다. 
 
@@ -162,7 +162,7 @@ catch 문으로 잡든지, 아니면 다시 throws를 정의해서 메소드 밖
 
 대표 클래스 이름을 따서 런타임 예외라고도 한다. 
 
-이 런타임 예외는 catch 문이나 아니면 throws로 선언해줘도, 안해줘도 상관없다.
+이 런타임 예외는 catch 문이나 아니면 `throws`로 선언해줘도, 안해줘도 상관없다.
 
 <br><br>
 
@@ -176,7 +176,7 @@ catch 문으로 잡든지, 아니면 다시 throws를 정의해서 메소드 밖
 
 <br><br>
 
-체크 예외의 불필요성을 주장하는 사람들이 늘어나고 예외 블랙홀이나 무책임한 throws 같은 코드가 남발되며
+체크 예외의 불필요성을 주장하는 사람들이 늘어나고 예외 블랙홀이나 무책임한 `throws` 같은 코드가 남발되며
 
 최근 새로 등장하는 자바 표준 스펙의 API들은 예상 가능한 예외상황을 다루는 예외ㅇ를 체크 예외로 만들지 않는 경향이 있다.
 
@@ -244,7 +244,7 @@ throw new RetryFailedException();  // 최대 재시도 횟수를 넘기면 직�
 
 <br>
 
-throws 문으로 선언해서 예외가 발생하면 알아서 던져지게 하거나 catch 문으로 일단 예외를 잡은 후에 로그를 남기고 다시 예외를 던지는<small>rethrow</small>것이다.
+`throws` 문으로 선언해서 예외가 발생하면 알아서 던져지게 하거나 catch 문으로 일단 예외를 잡은 후에 로그를 남기고 다시 예외를 던지는<small>rethrow</small>것이다.
 
 예외처리를 회피하려면 반드시 다른 오브젝트나 메소드가 예외를 대신 처리할 수 있도록 아래와 같이 던져야한다.
 
@@ -272,7 +272,7 @@ public void add() throws SQLException {
 
 JdbcContext나 JdbcTemplate이 사용하는 콜백 오브젝트는 메소드 선언을 보면 알겠지만 ResultSet이나 PreparedStatement 등을 이용해서 작업하다 발생하는 SQLException을 자신이 처리하지 않고 템플릿으로 던져버린다.
 
-콜백 로브젝트의 메소드는 모두 throws SQLException이 붙어 있다. SQLException을 처리하는 일은 콜백 오브젝트의 역할이 아니라고 보기 때문이다. 콜백 오브젝트의 메소드는 SQLException에 대한 예외를 회피라고 템플릿 레벨에서 처리하도록 던져준다.
+콜백 로브젝트의 메소드는 모두 `throws` SQLException이 붙어 있다. SQLException을 처리하는 일은 콜백 오브젝트의 역할이 아니라고 보기 때문이다. 콜백 오브젝트의 메소드는 SQLException에 대한 예외를 회피라고 템플릿 레벨에서 처리하도록 던져준다.
 
 <br>
 
@@ -384,7 +384,7 @@ EJBException는 RuntimeException 클래스를 상속한 런타임 예외다.
 
 이렇게 **런타임 예외로 만들어서 전달하면 EJB는 이를 시스템 익셉션으로 인식하고 트랜잭션을 자동으로 롤백**해준다.
 
-어차피 복구가 불가능한 예외라면 가능한 한 빨리 런타임 예외로 포장해 던지게 해서 다른 계층의 메소드를 작성할 때 불필요한 throws 선언이 들어가지 않도록 해줘야 한다. 
+어차피 복구가 불가능한 예외라면 가능한 한 빨리 런타임 예외로 포장해 던지게 해서 다른 계층의 메소드를 작성할 때 불필요한 `throws` 선언이 들어가지 않도록 해줘야 한다. 
 
 </details>
 
@@ -425,7 +425,7 @@ EJBException는 RuntimeException 클래스를 상속한 런타임 예외다.
 
 DuplicateUserIdException은 앞 단에서 대응할 수 있는 예외이기 때문에 잡아서 대응할 수 있지만,
 
-SQLException은 대부분 복구 불가능한 예외이기 때문에 잡아봤자 처리할 것도 없고, throws를 계속 던지다가 애플리케이션 밖으로 던져질 것이다.
+SQLException은 대부분 복구 불가능한 예외이기 때문에 잡아봤자 처리할 것도 없고, `throws`를 계속 던지다가 애플리케이션 밖으로 던져질 것이다.
 
 DuplicateUserIdException을 잡아서 처리할 수 있다면 굳이 체크 예외로 만들지 않고 런타임 예외로 만드는 게 낫다. 
 
@@ -433,7 +433,7 @@ DuplicateUserIdException을 잡아서 처리할 수 있다면 굳이 체크 예�
 
 그래야 add() 메소드를 사용하는 코드를 만드는 개발자에게 의미 이쓴ㄴ 정보를 전달해줄 수 있다. 
 
-런타임 예외도 throws로 던질 수 있으니 문제 될 것은 없다.
+런타임 예외도 `throws`로 던질 수 있으니 문제 될 것은 없다.
 
 코드를 수정해보면 아래와 같다.
 
@@ -450,7 +450,7 @@ public void add(User user) throws DuplicateUserIdException {
             // JDBC를 이용해 user 정보를 DB에 추가하는 코드 또는
             // 그런 기능을 가진 다른 SQLException을 던지는 메소드를 호출하는 코드
         } catch (SQLException e) {
-            if (e.getErrorCode() == MysqlErrorNumbers.ER_DUP_ENTRY)
+            if (e.getErrorCode() == MysqlErrorNumbers.ER_DUP_ENTRY) // MySQL 전용 코드 - 호환성 제한
                 throw new DuplicateUserIdException(e);              // 예외 전환
             else
                 throw new RuntimeException(e);                      // 예외 포장
@@ -458,7 +458,7 @@ public void add(User user) throws DuplicateUserIdException {
     }
 ```
 
-SQLException를 처리하기 위해 불필요한 throws를 없애고, 필요한 경우 아이디 중복 상황을 처리하기 위해 DuplicateUserIdException을 이용할 수 있다. 
+SQLException를 처리하기 위해 불필요한 `throws`를 없애고, 필요한 경우 아이디 중복 상황을 처리하기 위해 DuplicateUserIdException을 이용할 수 있다. 
 
 
 이렇게 런타임 예외를 일반화해서 사용하는 방법은 여러모로 장점이 많지만, 런타임 예외로 만들었기 때문에 사용에 더 주의를 기울일 필요도 있다.
@@ -496,8 +496,103 @@ SQLException를 처리하기 위해 불필요한 throws를 없애고, 필요한 
 
 물론 시스템 오류가 아니기 때문에 두 가지 모두 정상 흐름이다.
 
+<br>
+
+하지만, 사전에 상수로 정의해둔 표준 코드를 사용하지 않는다면 자칫 개발자 사이의 의사소통 문제로 인해 제대로 동작하지 않을 위험이 있기 때문에
+
+예외 상황에 대한 리턴 값을 명확하게 코드화하고 장 관리하지 않으면 혼란이 생길 수 있다.
+
+예외상황에서의 결과 값에 대한 표준 값이 존재하지 않고, 개발자 간의 의사소통이 미흡해 문제가 생길 수 있다.
+
+또, if 블록으로 범벅된 코드가 될지도 모른다.
 
 
+<br>
+
+- 비즈니스적인 의미를 띤 예외를 던지기
+
+예를 들어 잔고 부족과 같은 경우라면, InsufficientBalanceException 등을 던질 수 있다. 
+
+번거로운 if 문을 남발하지 않아도 된다.
+
+이때 사용하는 예외는 의도적으로 **체크 예외**로 만든다.
+
+그래서 개발자가 잊지 않고 잔고부족처럼 자주 발생할 수 있는 예외 상황에 대한 로직을 구현하도록 강제해주는 것이 좋다.
+
+무책임한 `throws`로 이뤄질 수도 있지만, 런타임 예외로 만들어두는 것보다는 상대적으로 안전하다.
+
+<br><br>
+
+### SQLException
+
+`SQLException`은 99%는 코드 레벨에서 복구할 방법이 없다. 
+
+프로그램 오류나 개발자의 부주의 때문에 발생하는 경우거나 통제 불가능한 상황으로 인해 발생한다.
+
+<small>DB 서버 다운, 불안정한 네트워크, 가득찬 DB 커넥션 풀로 인해 사용 불가 등 ...</small>
+
+그래서 언체크/런타임 예외로 전환해줘야 한다.
+
+`JdbcTemplate`은 모든 `SQLException`을 런타임 예외인 `DataAccessException`으로 포장해서 던져준다.
+
+때문에 필요한 경우에만 `DataAccessException`을 잡아서 처리할 수 있다.
 
 
+``` java
+public interface JdbcOperations {
+    ...
 
+    <T> T query(String sql, ResultSetExtractor<T> rse) throws DataAccessException;
+
+    int update(String sql) throws DataAccessException;
+
+    ...
+}
+```
+<br>
+
+위와 같이 모든 메서드에서 `DataAccessException`를 던지는 것을 확인할 수 있다.
+
+<br>
+
+이 밖에도 스프링의 API메소드에 정의되어 있는 대부분의 예외는 런타임 예외다.
+
+따라서 발생 가능한 예외가 있다고 하더라도 이를 처리하도록 강제하지는 않는다. 
+
+<br><br><br>
+
+# 예외 전환
+
+예외 전환의 목적 
+
+- 런타임 예외로 포장 -> catch/throws 줄이기 위함
+- 로우레벨의 예외를 의미있고 추상화된 예외로 바꾸기 위함
+
+<br>
+
+커스텀 예외인 `DuplicateUserIdException`를 처리하고 싶다면 `DuplicateKeyException` **예외를 전환**해주는 코드를 넣을 수 있다.
+
+``` java
+public void add() throws DuplicateUserIdException {
+    try {
+        // JDBC를 이용해 user 정보를 DB에 추가하는 코드
+    } catch (DuplicateKeyException e) {
+        // logging 등 필요 작업
+        throw new DuplicateUserIdException(e);
+    }
+}
+```
+
+<br>
+
+## 정리
+
+- 예외를 잡아서 아무런 조취를 취하지 않거나 의미 없는 throws 선언을 남발하는 것은 위험 하다.
+- 예외는 복구하거나 예외처리 오브젝트로 의도적으로 전달하거나 적절한 예외로 전환해야 한다.
+- 좀 더 의미 있는 예외로 변경하거나, 불필요한 catch/throws 를 피하기 위해 런타임 예외로 포장하는 두 가지 방법의 예외 전환이 있다. 
+- 복구할 수 없는 예외는 가능한 한 빨리 런타임 예외로 전환하는 것이 바람직하다. 
+- 애플리케이션의 로직을 담기 위한 예외는 체크 예외로 만든다. 
+- JDBC의 SQLException 은 대부분 복구할 수 없는 예외이므로 런타임 예외로 포장해야 한다.
+- SQLException 의 에러 코드는 DB에 종속되기 때문에 DB에 독립적인 예외로 전환될 필요가 있다.
+- 스프링은 DataAccessException 을 통해 DB에 독립적으로 적용 가능한 추상화된 런타임 예외 계층을 제공한다.
+- DAO를 데이터 액세스 기술에서 독립시키려면 인터페이스 도입과 런타임 예외 전환, 기술에 독립적인 추상화된 예외로 전환이 필요하다.
