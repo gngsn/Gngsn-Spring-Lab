@@ -596,3 +596,20 @@ public void add() throws DuplicateUserIdException {
 - SQLException 의 에러 코드는 DB에 종속되기 때문에 DB에 독립적인 예외로 전환될 필요가 있다.
 - 스프링은 DataAccessException 을 통해 DB에 독립적으로 적용 가능한 추상화된 런타임 예외 계층을 제공한다.
 - DAO를 데이터 액세스 기술에서 독립시키려면 인터페이스 도입과 런타임 예외 전환, 기술에 독립적인 추상화된 예외로 전환이 필요하다.
+
+<br><br>
+
+
+---
+
+
+*추가할 내용*
+
+## 트랜잭션
+
+
+| | Checked Exception | Unchecked Exception |
+|--| ----------------- | ----------------- |
+| Compile Error 여부 | 반드시 예외 처리 해야함 (처리하지 않으면 Compile Error) | 예외 처리 하지 않아도됨 |
+| 트랜잭션 | Rollback X | Rollback O |
+| ex | IOException, SQLException | NullPointerException, IllegalArgumentException |
