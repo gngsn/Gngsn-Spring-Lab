@@ -58,7 +58,7 @@
 <tr width="100%">
 <td width="20%"  rowspan="1">
 
-### [2장. 데이터 액세스 기술]()
+### [2장. Data Access]()
 
 <br/>
 
@@ -67,7 +67,7 @@
 </td>
 <td width="20%">
 
-[**2.6 Transaction**]()
+[**2.6 Transaction**](https://github.com/gngsn/Gngsn-Spring-Lab/blob/master/spring-toby/note/Transaction.md#transaction)
 
 <br/>
 
