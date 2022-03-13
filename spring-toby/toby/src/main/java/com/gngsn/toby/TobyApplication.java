@@ -9,7 +9,6 @@ import org.springframework.context.annotation.PropertySource;
     "classpath:jdbc.properties"
 })
 public class TobyApplication {
-
     public static void main(String[] args) {
         SpringApplication.run(TobyApplication.class, args);
     }
