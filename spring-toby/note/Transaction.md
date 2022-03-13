@@ -298,7 +298,7 @@ public class TestService {
 
 데코레이터 패턴을 적용한 트랜잭션 프록시 빈을 사용해야 한다.
 
-선언적 트랜잳션 경계설정은 트랜잭션 **프록시 빈** 덕분에 가능한 것이다. 
+선언적 트랜잭션 경계설정은 트랜잭션 **프록시 빈** 덕분에 가능한 것이다. 
 
 트랜잭션은 대부분 성격이 비슷하다. 때문에 적용 대상마다 일일이 선언해주기보다는 일괄적으로 선언하는 것이 편리하다.
 
@@ -306,11 +306,315 @@ public class TestService {
 
 <br/>
 
+### ✔️ AOP
+
+트랜잭션 경계설정 부가기능을 사용할 어드바이스의 정의와 부여 대상인 포인트컷을 선정하여 어드바이저를 사용할 수 있다.
+
+AOP의 어드바이스가 적용되는 위치인 조인 포인트는 메소드이다.
+
+**포인트컷은 원한다면 메소드 단위까지 상세하게 지정할 수 있고, 기본적으로 인터페이스에 적용된다는 사실도 기억하자.**
+
+인터페이스를 적용하는 이유는 AOP의 동작원리인 JDK 다이내믹 프록시는 인터페이스를 이용해 프록시를 만들기 때문이다. 
+
+인터페이스 없이 설정을 통해 등록된 빈에도 AOP를 적용할 수 있다. 하지만 AOP의 타깃은 가능한 한 인터페이스를 사용할 것을 권장한다. 
+
+-> 트랜잭션을 반영하고 싶은 범위나 메소드가 있을 텐데, 하나하나 설정해주기에는 불필요한 수정자나 내부에서 사용할 메소드(가령 private 메소드같은)까지 트랜잭션이 적용되면
+쓸데없는 트랜잭션 경계설정 작업을 수행하느라 그만큼 시간과 리소스를 소모하게 된다.
+
+<br/>
+
+### ✔️ @Transactional
+
+이 접근 방법에선 설정파일에 명시적으로 포인트컷과 어드바이스를 정의하지 않는다.
+
+트랜잭션이 적용될 타깃 인터페이스나 클래스, 메소드 등에 @Transactional 애노테이션을 부여해서 트랜잭션 대상으로 지정하고 트랜잭션의 속성을 제공한다.
+
+Transactional Annotation은 Target이 `TYPE`과 `METHOD` 다. 
+즉, `TYPE` - Class, interface, enum 이나, `METHOD` - Method 에 적용할 수 있다는 말이다.
+
+혹은 동시에 붙일 수 있는데, 만약 아래와 같이 동시에 붙으면 메소드에 붙은 애노테이션이 우선시되어 적용된다.
+
+<br/>
+
+``` java
+@Transactional
+public interface MemberAnnotService {
+    @Transactional(readOnly=true)
+    void readMember(long memberId);
+
+    void addMember(List<Member> members);
+}
+```
+<small>`readOnly=true` Option: true 시 insert, update, delete 실행 시 예외 발생</small>
+<br/>
+
+@Transactional 적용 대상은 미리 결정하고 애플리케이션 안에서 통일하는 게 좋다.
+타입 레벨과 메소드 레벨에 동시에 @Transactional이 혼용되어 적용되는 건 바람직하지 못하다.
+
+<br/><br/>
+
+### AOP VS @Transactional
+
+이 두 방법은 각각 장단점이 있다. 
+AOP는 조금 복잡해보이지만 코드에는 영향을 주지 않고 일괄적으로 트랜잭션을 적용하거나 변경할 수 있다는 장점이 있다.
+@Transactional는 일일이 대상에 부여하여 번거롭지만, 훨씬 세밀한 설정이 가능하다.
+
+<br/><br/>
+
+### 프록시 모드
+
+스프링의 AOP는 기본적으로 다이내믹 프록시 기법을 이용해 동작한다. 다이내믹 프록시를 적용하려면 인터페이스가 있어야 한다.
+인터페이스의 사용은 DI에서도 가장 기본 원칙인 만큼 문제 될 것 없지만 클래스에 사용할 수 밖에 없는 경우에는 클래스 프록시 모드를 사용할 수 있다. 
+
+프록시는 기능을 사용하려는 오브젝트인 클라이언트와 서비스를 제공하는 오브젝트인 타깃 오브젝트 사이에 데코레이터 패턴을 써서 투명하게 추가된다. 
+투명하다는 건, 프록시가 추가되더라도 클라이언트와 타깃 오브젝트의 코드를 수정할 필요도 없고 기본 기능에도 영향을 주지 않는다는 뜻이다.
+
+프록시가 적용되면 클라이언트는 프록시를 타깃 오브젝트라고 생각하고 프록시의 메소드를 호출한다. 프록시는 클라이언트로부터 요청을 받으면 타깃 오브젝트의 메소드로 위임해준다. 타깃 오브젝트에 위임하는 과정에서 부가 작업을 추가할 수 있다. 트랜잭션 AOP에 의해 추가된 프록시하면 타깃 오브젝트 메소드 호출 전에 트랜잭션을 시작하고 호출 후에 트랜잭션을 커밋하거나 롤백해줄 것이다.
+
+여기서 프록시는 클라이언트가 타깃 오브젝트를 호출하는 과정에서만 동작한다는 점을 주목하자.
+
+타깃 오브젝트의 메소드가 자기 자신의 다른 메소드를 호출할 때는 어떻게 될까? 이때도 프록시가 동작할까? 
+그렇지 않다. 이미 프록시를 거쳐서 타깃 오브젝트 까지 작업이 진행됐으므로 타깃 오브젝트에서 자신의 메소드를 호출할 때는 프록시를 거치지 않는다. 
+클라이언트에서 프록시를 통해 들어온 호출은 당연히 프록시의 기능이 동작한다. 
+타깃 오브젝트 안에서의 호출 이므로 프록시를 통하지 않고 직접 타깃 오브젝트의 메소드로 호출이 일어난다.
+
+만약, 이것이 문제가 된다면 AspectJ AOP 사용을 고려해볼 수 있다.
+<small>프록시 대신 클래스 바이트코드를 직접 변경해서 부가기능을 수행하기 때문에 위의 문제를 해결된다. </small>
 
 
 <br/><br/>
 
 ## 트랜잭션 속성
+
+트랜잭션의 경계를 설정할 때 네 가지 트랜잭션 속성을 지정할 수 있다.
+
+또, 선언적 트랜잭션에서는 롤백과 커밋의 기준을 변경하기 위해 두 가지 추가 속성을 지정할 수 있다.
+즉, 선언적 트랜잭션은 여섯가지의 속성을 가진다고 볼 수 있는 것이다.
+
+``` java 
+@Transactional(
+	readOnly=...,
+	isolation=...,
+	propagation=...,
+	timeout=...,
+	rollbackFor=..., rollbackForClassName=...,
+	noRollbackFor=..., noRollbackForClassName=...
+)
+```
+
+<br/><br/>
+
+### 📌 Propagation
+***트랜잭션 전파***
+
+<br/>
+
+트랜잭션을 시작하거나 기존 트랜잭션에 참여하는 방법을 결정하는 속성이다.
+
+선언적 트랜잭션 방식의 장점은 여러 트랜잭션 적용 범위를 묶어서 커다란 트랜잭션 경계를 만들 수 있다.
+
+그렇다면 어떤 속성을 지정할 수 있는지 알아보자.
+
+<br/>
+
+<details>
+<summary>✔️ REQUIRED - (Default) 이미 시작된 트랜잭션이 있으면 참여하고, 없으면 새로 생성해 시작한다 </summary>
+Default. 모든 트랜잭션 매니저가 지원하며, 대개 이 속성이면 충분.
+미리 시작된 트랜잭션이 있으면 참여하고, 없으면 새로 시작.
+
+자연스럽고 간단한 트랜잭션 전파 바이식이지만 사용해보면 매우 강력하고 유용하다.
+
+하나의 트랜잭션이 시작된 후 다른 트랜잭션 경계가 설정된 메소드를 호출하면 자연스럽게 같은 트랜잭션으로 묶인다.
+
+</details>
+
+<details>
+<summary>✔️ SUPPORT - 이미 시작된 트랜잭션이 있으면 참여하고, 없으면 트랜잭션 없이 진행한다 </summary>
+ 트랜잭션이 없지만 해당 경계 안에서 Connection이나 하이버네이트 Session을 공유할 수 있다.
+
+</details>
+
+<details>
+<summary>✔️ MANDATORY - 이미 시작된 트랜잭션이 있으면 참여하고, 없으면 예외를 발생한다 </summary>
+혼자서는 독립적으로 트랜잭션을 진행하면 안되는 경우에 사용한다.
+</details>
+
+✔️ REQUIRES_NEW - 항상 새로운 트랜잭션을 시작하고, 이미 시작된 트랜잭션이 있으면 보류하고 생성한다
+
+✔️ NOT_SUPPORTED - 트랜잭션을 전혀 사용하지 않고, 이미 시작된 트랜잭션이 있으면 보류한다
+
+✔️ NEVER - 강제로 트랜잭션을 사용하지 않고, 이미 시작된 트랜잭션이 있으면 예외를 발생한다
+
+✔️ NESTED - 이미 시작된 트랜잭션이 있으면 중첩 트랜잭션을 시작하고, 부모 트랜잭션에 영향을 주지 않는다
+
+<details>
+<summary>✔️ NESTED - 이미 시작된 트랜잭션이 있으면 중첩 트랜잭션을 시작하고,부모 트랜잭션에 영향을 주지 않는다 </summary>
+중첩 트랜잭션이라 트랜잭션 안에 트랜잭션을 만든다.
+먼저 시작된 부모 트랜잭션의 커밋과 롤백에는 영향을 받지만 자신의 커밋과 롤백은 부모 트랜잭션에 영향을 주지 않는다.
+
+예를 들어 로그 파일을 저장하는 로직은 메인 로직의 중첩 트랜잭션으로 진행 될 수 있는데,
+로그 저장 로직에 문제가 있어도 메인 로직은 실행이 되어야 하기 때문에 영향을 주면 안되지만
+메인 로직에 문제가 있어서 롤백을 하면 로그 저장 로직에도 영향을 줄 수 있어야 한다.
+</details>
+
+<br/><br/>
+
+
+**AOP를 통한 propagation 설정 방법**
+
+<br/>
+
+``` java
+	TransactionInterceptor txAdvice = new TransactionInterceptor();
+	Properties txAttrProperty = new Properties();
+
+	// case 1
+	DefaultTransactionAttribute defaultAttribute = new DefaultTransactionAttribute(TransactionDefinition.PROPAGATION_REQUIRED);
+	// or
+	DefaultTransactionAttribute defaultAttribute = new DefaultTransactionAttribute();
+	masterAttribute.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRED);
+	// case 2
+
+	String transactionAttributesDefinition = defaultAttribute.toString();
+
+    txAttributes.setProperty("*", transactionAttributesDefinition);
+	txAdvice.setTransactionAttributes(txAttributes);
+```
+
+
+<br/>
+
+**@Transactional를 통한 propagation 설정 방법**
+
+``` java
+public interface MemberService {
+    @Transactional(propagation = Propagation.PROPAGATION_REQUIRED)
+    void addMember(List<Member> members);
+}
+```
+
+<br/><br/>
+
+### 📌 Isolation
+***트랜잭션 격리 수준***
+
+<br/>
+
+트랜잭션 격리 수준은 동시에 여러 트랜잭션이 진행될 때에 트랜잭션의 작업 결과를 다른 트랜잭션에게 어떻게 노출할 것인지를 결정하는 기준이다.
+
+<details>
+<summary>✔️ DEFAULT - 데이터 액세스 기술 또는 DB의 디폴트 설정을 따름</summary>
+대부분의 DB는 READ_COMMITTED를 기본 격리 수준으로 갖지만, 다를수도 있기 때문에 DB와 드라이버 문서를 살펴봐야한다.
+</details>
+<details>
+<summary>✔️ READ_UNCOMMITTED (level 0) - 커밋되지 않는 데이터에 대한 읽기 허용</summary>
+- <b>Dirty Read</b>가 발생 가능
+<br><br>
+가장 낮은 격리 수준이다. 하나의 트랜잭션이 커밋되기 전에 그 변화가 다른 트랜잭션에 그대로 노출되는 문제가 있다.
+
+하지만 가장 빠르기 때문에 데이터의 일관성이 조금 떨어지더라도 성능을 극대화할 때 의도적으로 사용할 수 있다. 
+</details>
+<details>
+<summary>✔️ READ_COMMITTED (level 1) - 커밋된 데이터에 대한 읽기 허용</summary>
+-<b>Dirty Read</b> 방지
+<br><br>
+가장 많이 사용되는 격리 수준이다.
+커밋되지 않은 정보는 읽을 수 없다. 대신 하나의 트랜잭션이 읽은 로우를 다른 트랜잭션이 수정할 수 있다.
+이 때문에 처음 트랜잭션이 같은 로우를 다시 읽었을 때 다른 내용일 수 있다.
+</details>
+
+<details>
+<summary>✔️ REPEATABLE_READ (level 2) - 동일 필드에 대해 다중 접근 시 모두 동일한 결과를 보장</summary>
+- <b>Non-Repeatable Read</b> 방지
+<br><br>
+하나의 트랜잭션이 읽은 로우를 다른 트랜잭션이 수정하는 것을 막아준다. 하지만 새로운 로우를 추가하는 것은 제한하지 않는다.
+따라서 SELECT로 조건에 맞는 로우를 전부 가져오는 경우 트랜잭션이 끝나기 전에 새로 추가된 로우가 발견될 수 있다.
+</details>
+<details>
+<summary>✔️ SERIALIZABLE (level 3) - 동일 필드에 대해 다중 접근 시 모두 동일한 결과를 보장</summary>
+- <b>Phantom Read</b> 방지
+<br><br>
+데이터의 일관성 및 동시성을 위해 MVCC(Multi Version Concurrency Control)을 사용하지 않는다.
+(MVCC: 다중 사용자 데이터베이스 성능을 위한 기술로 데이터 조회 시 LOCK을 사용하지 않고 데이터의 버전을 관리해 데이터의 일관성 및 동시성을 높이는 기술)
+트랜잭션이 완료될 때까지 SELECT 문장이 사용하는 모든 데이터에 shared lock이 걸리므로 다른 사용자는 그 영역에 해당되는 데이터에 대한 수정 및 입력이 불가능하다.
+
+가장 안전한 격리수준이지만 가장 성능이 떨어지기 때문에 극단적으로 안전한 작업이 필요한 경우가 아니라면 자주 사용되지 않는다.
+</details>
+
+<br/>
+
+Isolation은 아래와 같이 설정할 수 있습니다.
+
+**AOP를 통한 propagation 설정 방법**
+
+``` java
+	DefaultTransactionAttribute defaultAttribute = new DefaultTransactionAttribute(TransactionDefinition.PROPAGATION_REQUIRED);
+	masterAttribute.setIsolationLevel(1);
+```
+
+<br/>
+
+**@Transactional를 통한 propagation 설정 방법**
+
+``` java
+	@Transactional(isolation = Isolation.READ_UNCOMMITTED)
+```
+
+<br/><br/>
+
+### 📌 Timeout
+***트랜잭션 제한시간***
+
+**초 단위**로 제한 시간을 지정할 수 있다.
+디폴트는 시스템의 제한 시간을 따르는 것이다. 
+직접 지정하는 경우 이 기능을 지원하지 못하는 일부 트랜잭션 매니저는 예외를 발생할 수 있다.
+
+<br/><br/>
+
+### 📌 ReadOnly
+***트랜잭션 읽기 전용***
+
+트랜잭션을 읽기 전용으로 설정할 수 있다.
+성능을 최적화하기 위해 사용할 수도 있고, 특정 트랜잭션 작업 안에서 쓰기 작업이 일어나는 것을 의도적으로 방지하기 위해 사용할 수도 있다.
+하지만 일부 트랜잭션 매니저의 경우 읽기 전용 속성을 무시할 수도 있으니 주의해야 한다.
+일반적으로 INSERT, UPDATE, DELETE 같은 쓰기 작업이 진행되면 예외가 발생한다.
+
+<br/><br/>
+
+### 📌 RollbackFor, RollbackForClassName
+***트랜잭션 롤백 대상 지정***
+
+선언적 트랜잭션에서는 런타임 예외가 발생하면 롤백한다.
+예외가 발생하지 않거나 **체크 예외가 발생하면 커밋**한다.
+
+체크 예외를 커밋 대상으로 삼는 이유는 체크예외가 예외적인 상황에서 사용되기 보다는, 리턴값을 대신해서 비즈니스 적인 의미를 담은 결과를 돌려주는 용도로 많이 사용되기 때문이다.
+스프링에서는 데이터 액세스 기술의 예외는 런타임 예외로 전화돼서 던져지므로 런타임 예외만 롤백 대상으로 삼은 것이다.
+
+하지만 원한다면 기본 동작장식을 바꿀 수 있다. 체크 예외지만 롤백 대상으로 삼아햐 하는 것이 있다면 `rollbackFor`이나 `rollbackForClassName`로 설정할 수 있다.
+
+**AOP를 통한 propagation 설정 방법**
+
+``` java 
+RuleBasedTransactionAttribute masterAttribute = new RuleBasedTransactionAttribute();
+masterAttribute.setRollbackRules(rollbackRules);
+```
+
+<br/>
+
+**@Transactional를 통한 propagation 설정 방법**
+
+``` java 
+@Transactional(rollbackFor = Exception.class)
+```
+
+<br/><br/>
+
+### 📌 noRollbackFor, noRollbackForClassName
+***트랜잭션 롤백 예외 대상 지정***
+
+기본적으로 롤백 대상인 런타임 예외를 트랙잭션 커밋 대상으로 지정해준다.
+사용법은 위와 동일하다.
+
 
 <br/><br/>
 
