@@ -26,7 +26,7 @@ Interceptor의 경우 스프링에서 관리되기 때문에 스프링 내의 �
 
 <br>
 
-<img width="30%" src="https://supawer0728.github.io/images/spring-filter-interceptor/spring-request-lifecycle.jpg" alt="Spring MVC LifeCycle" />
+<img width="30%" src="./img/spring-request-lifecycle.jpg" alt="Spring MVC LifeCycle" />
 
 <br>
 
