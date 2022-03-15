@@ -1,26 +1,32 @@
 package com.gngsn.toby.transaction;
 
 import com.gngsn.toby.transaction.AnnotBoundary.MemberAnnotService;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
+import com.gngsn.toby.transaction.AnnotBoundary.MemberAnnotServiceImpl;
+import org.aspectj.lang.annotation.Before;
+import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
+//import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.ArrayList;
 import java.util.List;
 
 /* Annotation 트랜잭션 Test
  */
-@SpringBootTest
+@DisplayName("어노테이션을 이용한 트랜잭션 테스트")
 public class AnnotBoundaryTests {
-    @Autowired
-    MemberService memberService;
+    private MemberService memberService;
+    private MemberAnnotService memberAnnotService;
 
-    @Autowired
-    MemberAnnotService memberAnnotService;
+    @BeforeEach
+    public void init() {
+        MemberDAO memberDAO = new MemberDAO();
+        memberService = new MemberServiceImpl(memberDAO);
+        memberAnnotService = new MemberAnnotServiceImpl(memberDAO);
+    }
 
     @Test
     void successTest() {
+        // given
         final List<Member> members = new ArrayList<>();
 
         members.add(new Member("success1", "gngsn1@mail.com", "qwerty"));
@@ -28,10 +34,12 @@ public class AnnotBoundaryTests {
         members.add(new Member("success3", "gngsn3@mail.com", "qwerty"));
         members.add(new Member("success4", "gngsn4@mail.com", "qwerty"));
 
+        // when
         int beforeCnt = memberService.getMembersCnt();
         memberAnnotService.addMember(members);
         int afterCnt = memberService.getMembersCnt();
 
+        // then
         System.out.println("before : " + beforeCnt + ", afterCnt : " + afterCnt);
         Assertions.assertTrue(afterCnt-beforeCnt == members.size());
     }
@@ -45,8 +53,10 @@ public class AnnotBoundaryTests {
      * */
     @Test
     void failTestNameTooLong() {
+        // given
         List<Member> members = setErrorMemberList();
 
+        // when
         int beforeCnt = memberService.getMembersCnt();
         Assertions.assertThrows(
                 RuntimeException.class,
@@ -54,6 +64,7 @@ public class AnnotBoundaryTests {
         );
         int afterCnt = memberService.getMembersCnt();
 
+        // then
         System.out.println("before : " + beforeCnt + ", afterCnt : " + afterCnt);
         Assertions.assertTrue(beforeCnt == afterCnt);
     }
