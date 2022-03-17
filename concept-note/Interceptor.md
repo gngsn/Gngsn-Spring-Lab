@@ -117,7 +117,6 @@ public boolean preHandle(HttpServletRequest request,
 	System.out.println("Method: " + method);
 		
 	return true;
-}
 ```
 handler를 HandlerMethod 타입으로 캐스팅한 후 원래의 메소드와 객체(빈)를 확인할 수 있다.
 
@@ -241,7 +240,7 @@ public class AuthInterceptor extends HandlerInterceptorAdapter {
 			session.setAttribute(LOGIN, userVO);
 		}
 		Object dest = session.getAttribute("dest");
-		response.sendRedirect(dest != null ?(String) dest : "/");
+		response.sendRedirect(dest != null ? (String) dest : "/");
 	}
 }
 ```
