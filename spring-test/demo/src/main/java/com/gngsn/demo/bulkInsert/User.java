@@ -1,4 +1,4 @@
-package com.gngsn.demo;
+package com.gngsn.demo.bulkInsert;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

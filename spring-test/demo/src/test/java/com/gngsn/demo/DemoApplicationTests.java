@@ -1,8 +1,8 @@
 package com.gngsn.demo;
 
+import com.gngsn.demo.bulkInsert.InsertService;
+import com.gngsn.demo.bulkInsert.User;
 import com.gngsn.demo.utils.RandomString;
-import com.mysql.cj.exceptions.MysqlErrorNumbers;
-import org.junit.Before;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

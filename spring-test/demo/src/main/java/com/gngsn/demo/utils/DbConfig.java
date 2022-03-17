@@ -1,5 +1,6 @@
 package com.gngsn.demo.utils;
 
+import lombok.RequiredArgsConstructor;
 import org.mybatis.spring.SqlSessionFactoryBean;
 import org.mybatis.spring.SqlSessionTemplate;
 import org.mybatis.spring.annotation.MapperScan;
@@ -12,7 +13,8 @@ import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import javax.sql.DataSource;
 
 @Configuration
-@MapperScan("com.gngsn.demo.UserMapper")
+//@RequiredArgsConstructor
+@MapperScan("com.gngsn.demo.bulkInsert.UserMapper")
 public class DbConfig {
     @Autowired
     JdbcProperties jdbcProperties;
@@ -26,6 +28,7 @@ public class DbConfig {
         dataSource.setPassword(jdbcProperties.getPassword());
         return dataSource;
     }
+
     @Bean
     public SqlSessionFactoryBean factoryBean() {
         SqlSessionFactoryBean factory = new SqlSessionFactoryBean();
