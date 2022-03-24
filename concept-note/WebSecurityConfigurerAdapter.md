@@ -9,25 +9,25 @@
 
 Spring Security를 사용하면서 보안 구성을 원하는 대로 조작해서 적용하길 원할 때,
 
-WebSecurityConfigurerAdapter을 상속받아 구현할 수 있습니다.
+WebSecurityConfigurerAdapter을 상속받아 구현할 수 있다.
 
 
 
-즉, Spring Security에서 각종 인증/인가와 관련된 설정 관리를 할 수 있는 기능을 제공합니다.
+즉, Spring Security에서 각종 인증/인가와 관련된 설정 관리를 할 수 있는 기능을 제공한다.
 
 
 
 해당 추상 클래스를 상속받아 사용하게 되면,
 
-기본 자동 구성이 비활성화되고 사용자 지정 보안 구성을 활성화 시킬 수 있습니다.
+기본 자동 구성이 비활성화되고 사용자 지정 보안 구성을 활성화 시킬 수 있다.
 
 
 
-@EnableWebSecurity 어노테이션과 WebSecurityConfigurerAdapter는 웹 기반 보안을 제공하기 위해 같이 동작합니다.
+@EnableWebSecurity 어노테이션과 WebSecurityConfigurerAdapter는 웹 기반 보안을 제공하기 위해 같이 동작한다.
 
 같이 동작을 하기 때문에 선언도 같이 해주어야 하는데요.
 
-예시를 통해 확인해보면, 보통 아래와 같이 정의하여 관리합니다.
+예시를 통해 확인해보면, 보통 아래와 같이 정의하여 관리한다.
 
 
 
@@ -39,22 +39,19 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
 
 
-
-그렇다면 어떻게, 어떤 설정들을 할 수 있을까요?
-
-WebSecurityConfigurerAdapter가 갖고 있는 WebSecurity와 HttpSecurity 객체를 다루는 config method를 통해 사용자가 원하는대로 맞춤 변경할 수 있도록 합니다.
+WebSecurityConfigurerAdapter가 갖고 있는 WebSecurity와 HttpSecurity 객체를 다루는 config method를 통해 사용자가 원하는대로 맞춤 변경할 수 있도록 한다.
 
 
 
-WebSecurityConfigurerAdapter는 Configure(WebSecurity), Configure(HttpSecurity) 메소드를 정의해두었습니다.
+WebSecurityConfigurerAdapter는 Configure(WebSecurity), Configure(HttpSecurity) 메소드를 정의해두었다.
 
-이 메소드들을 Override해서 각각의 객체를 인자로 받아 설정 값들을 설정합니다.
+이 메소드들을 Override해서 각각의 객체를 인자로 받아 설정 값들을 설정한다.
 
 
 
 그럼 WebSecurity와 HttpSecurity를 어떻게 다루는지 자세히 확인해보며
 
-인증/인가 관련 설정 방법에 대해 알아보겠습니다.
+인증/인가 관련 설정 방법에 대해 알아보겠다.
 
 
 
@@ -77,19 +74,15 @@ protected void configure(HttpSecurity http) throws Exception {
 
 추상 클래스인 WebSecurityConfigurerAdapter는 HttpSecurity객체를 인자로 받는
 
-configure method를 위와 같이 정의해 두었습니다.
+configure method를 위와 같이 정의해 두었다.
 
 
 
-만약, 따로 오버라이딩을 하지 않는다면 기본적으로 정의되어 있는 위의 메소드가 실행되겠죠.
-
-우리는 인증/인가에 대한 커스텀 설정을 원하기 때문에,
-
-해당 메소드를 오버라이딩해서 사용하는 방법에 대해 알아봅시다.
+만약, 따로 오버라이딩을 하지 않는다면 기본적으로 정의되어 있는 위의 메소드가 실행된다.
 
 
 
-먼저, HttpSecurity를 사용해서 구성할 수 있는 것은 아래와 같습니다.
+먼저, HttpSecurity를 사용해서 구성할 수 있는 것은 아래와 같다.
 
 
 
@@ -105,32 +98,32 @@ configure method를 위와 같이 정의해 두었습니다.
 
 
 
-위와 같이 다양한 내용들을 지원합니다.
+위와 같이 다양한 내용들을 지원한다.
 
-그럼, 인증과 인가 설정 방법을 순서대로 알아보겠습니다.
+그럼, 인증과 인가 설정 방법을 순서대로 알아보겠다.
 
 
 
 
 
 Authentication
-어플리케이션을 사용하기 위해서는 사용하는 그 사람이 누구인지, 그 사람이 맞는지를 확인해야합니다.
+어플리케이션을 사용하기 위해서는 사용하는 그 사람이 누구인지, 그 사람이 맞는지를 확인해야한다.
 
 
 
 Spring Security는 기본적으로 제공하는 로그인 페이지가 있지만
 
-대부분의 서비스들은 자체 로그인 페이지를 갖죠.
+대부분의 서비스들은 자체 로그인 페이지를 갖는다.
 
 
 
-뿐만 아니라, 서비스에 맞는 인증 설정들을 따로 적용시켜주어야 합니다.
+뿐만 아니라, 서비스에 맞는 인증 설정들을 따로 적용시켜주어야 한다.
 
-가령, 로그인 성공/실패 시의 액션들을 핸들링하는 것처럼 말이죠.
+가령, 로그인 성공/실패 시의 액션들을 핸들링하는 것과 같다.
 
 
 
-먼저, 인증 설정으로 적용되는 예시를 보며 하나씩 살펴보겠습니다.
+먼저, 인증 설정으로 적용되는 예시를 보며 하나씩 살펴보겠다.
 
 
 
@@ -149,13 +142,13 @@ protected void configure(HttpSecurity http) throws Exception {
 
 위의 주석을 따라 살펴보면 어렵지 않게 이해하실 수 있을텐데요.
 
-원하는 내용만 찾아서 적용하면 됩니다.
+원하는 내용만 찾아서 적용하면 된다.
 
 
 
 위 말고도 다양한 기능을 지원하는데요.
 
-인증과 관련된 대표적인 설정들을 간단히 표시하면 아래와 같습니다.
+인증과 관련된 대표적인 설정들을 간단히 표시하면 아래와 같다.
 
 
 
@@ -169,22 +162,22 @@ http.ExceptionHandling()
 http.addFilter()
 
 
-위의 키워드를 확인하며, 필요한 것들을 살펴보고 적용하시면 되겠습니다.
+위의 키워드를 확인하며, 필요한 것들을 살펴보고 적용하시면 되겠다.
 
 
 
 
 
-Authorization
-이번엔 인가와 관련된 설정에 대해 알아보겠습니다.
+## Authorization
+이번엔 인가와 관련된 설정에 대해 알아보겠다.
 
 유저의 권한으로 접근할 수 있는 URI와 접근할 수 없는 URI를 구별할 수 있어야겠죠.
 
-이를 위해 각각 ROLE 마다 접근할 수 있는 경로 패턴을 설정할 수 있습니다.
+이를 위해 각각 ROLE 마다 접근할 수 있는 경로 패턴을 설정할 수 있다.
 
 
 
-위와 마찬가지로, 적용되는 예시를 보며 하나씩 살펴보겠습니다.
+위와 마찬가지로, 적용되는 예시를 보며 하나씩 살펴보겠다.
 
 
 
@@ -197,7 +190,7 @@ protected void configure(HttpSecurity http) throws Exception {
 }
 
 
-위의 설정을 설명하자면, 아래와 같습니다.
+위의 설정을 설명하자면, 아래와 같다.
 
 ① : /design, /orders 의 요청은 ROLE_USER 의 권한을 갖는 사용자에게만 허용
 
@@ -205,24 +198,21 @@ protected void configure(HttpSecurity http) throws Exception {
 
 
 
-여기서 주의할 사항!
+#### 주의사항!
 
-⚠️ 설정 시 구체적인 경로가 먼저 오고 그것 보다 큰 범위의 경로가 뒤에 오도록 해야 합니다.
+⚠️ 설정 시 구체적인 경로가 먼저 오고 그것 보다 큰 범위의 경로가 뒤에 오도록 해야 한다.
 
 
 
-antMatcher()에서 지정된 경로의 패턴 일치를 검사하며, 먼저 지정된 보안 규칙이 우선적으로 처리됩니다.
+antMatcher()에서 지정된 경로의 패턴 일치를 검사하며, 먼저 지정된 보안 규칙이 우선적으로 처리된다.
 
 따라서 만일 앞 코드에서 두 개의 antMatcher() 순서를 바꾸면,
 
-모든 요청의 사용자에게 permitAll() 이 적용되므로 /design 과 /oders 의 요청은 효력이 없어지게 됩니다.
+모든 요청의 사용자에게 permitAll() 이 적용되므로 /design 과 /oders 의 요청은 효력이 없어지게 된다.
 
 
 
-인가 관련 메소드는 아래와 같습니다.
-
-필요한 내용을 찾아보며 적용하세요!
-
+인가 관련 메소드는 아래와 같다.
 
 
 ✔️ authenticated() : 인증된 사용자의 접근을 허용
@@ -251,13 +241,7 @@ antMatcher()에서 지정된 경로의 패턴 일치를 검사하며, 먼저 지
 
 
 
-
-
-
-
-
-
-WebSecurity
+## WebSecurity
 특정 요청들을 무시하고 싶을때 사용
 
 
@@ -265,17 +249,17 @@ WebSecurity
 public void configure(WebSecurity web) throws Exception {}
 
 
-WebSecurity를 가지는 Configure 메소드는 특정 요청들을 무시하고 싶을때 사용합니다.
+WebSecurity를 가지는 Configure 메소드는 특정 요청들을 무시하고 싶을때 사용한다.
 
-js, css, image 파일 등 보안 필터를 적용할 필요가 없는 리소스를 설정할 수 있습니다.
+js, css, image 파일 등 보안 필터를 적용할 필요가 없는 리소스를 설정할 수 있다.
 
 
 
 HttpSecurity에서 주된 설정을 적용하는데,
 
-종종 이 WebSecurity와의 구분을 헷갈려하시는 분들이 있기 때문에 잘 구별해서 사용할 필요가 있습니다.
+종종 이 WebSecurity와의 구분을 헷갈려하시는 분들이 있기 때문에 잘 구별해서 사용할 필요가 있다.
 
-어떻게 사용하는지 예시를 통해 확인해보겠습니다.
+어떻게 사용하는지 예시를 통해 확인해보겠다.
 
 
 
@@ -287,27 +271,6 @@ public void configure(WebSecurity web) throws Exception {
 }
 
 
-위와 같이 보안에 적용될 필요가 없는 경로를 설정해서 불필요한 필터링을 없앨 수 있습니다.
+위와 같이 보안에 적용될 필요가 없는 경로를 설정해서 불필요한 필터링을 없앨 수 있다.
 
-
-
-
-
-
-
-
-
-오늘은 간단히 Spring security의 설정과 관련된 내용을 다뤘습니다.
-
-사실 전체적인 동작 구조를 파악하다가 이번주가 다 지나갔더라구요..
-
-일단 시리즈를 시작하기 위해 하나라도 적어보자는 취지에서 작성하게 되었습니다.
-
-다음에는 인증 동작 구조에 대한 내용을 계획 중입니다 🙌🏻
-
-
-
-오타나 잘못된 내용을 댓글로 남겨주세요!
-
-감사합니다 ☺️ 
 
