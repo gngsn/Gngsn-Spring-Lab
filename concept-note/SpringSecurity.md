@@ -8,6 +8,32 @@ Spring security에서는 기본적으로 세션 - 쿠키 방식을 사용
 
 <br>
 
+## 초기화
+
+1. SecurityConfig 설정 클래스 제작
+
+그 안에서 여러개의 API들을 정의. 각각 요청을 받아 처리하게 구성
+
+그 API와 구성대로 필터들을 생성한다. 실제로 필터들이 요청을 처리ㅣ하는 역할을 하기 때문에 필터를 생성
+
+필터를 생성하는 클래스가 바로 HttpSecurity.
+
+두 개의 설정 클래스를 만들면 초기화 과정 때 설정 구성대로 필터가 생성됨
+
+필터들은 다시 WebSecurity 클래스에게 전달이 됨
+
+필터 목록들을 전달받고, WebSecurity는 다시 FilterChainProxy전달하는데 생성자로 전달함
+
+FilterChainProxy는 각각의 설정 클래스 별(SecurityConfig1, SecurityConfig2)로 필터 목록들을 갖고 있는 것.
+
+그리고 DelegatingFilterProxy는 서블릿 필터인데, 초기화될 때 이미 FilterChainProxy가 
+
+springSecurityFilterChain이라는 이름을 가진 Bean을 찾게 되는데, 그 Bean이 바로 FilterChainProxy이다.
+
+그래서 DelegatingFilterProxy가 요청을 했을 때, 요청을 받아서 특정 빈에게 위임하게 되는데 
+
+그 빈이 바로 springSecurityFilterChain, 즉 FilterChainProxy이다.
+
 <img alt="overview" src="./img/overview.png" width="40%" />
 
 <br>
