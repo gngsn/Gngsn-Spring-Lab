@@ -3,7 +3,7 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.gngsn.demo.bulkInsert.UserDAO">
+<mapper namespace="bulkInsert.UserDAO">
     <insert id="insertUser" parameterType="com.gngsn.demo.bulkInsert.User">
             INSERT INTO test (name, email, PASSWORD)
             VALUES (#{name}, #{email}, #{password})

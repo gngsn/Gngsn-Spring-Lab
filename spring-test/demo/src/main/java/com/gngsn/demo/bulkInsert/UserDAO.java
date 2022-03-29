@@ -8,7 +8,7 @@ import java.util.List;
 
 @Repository
 public class UserDAO {
-    private static final String NAMESPACE = "com.gngsn.demo.bulkInsert.UserDAO.";
+    private static final String NAMESPACE = "bulkInsert.UserDAO.";
 
     @Autowired
     private SqlSession sqlSession;
