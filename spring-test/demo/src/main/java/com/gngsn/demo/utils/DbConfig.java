@@ -13,8 +13,6 @@ import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import javax.sql.DataSource;
 
 @Configuration
-//@RequiredArgsConstructor
-@MapperScan("com.gngsn.demo.bulkInsert.UserMapper")
 public class DbConfig {
     @Autowired
     JdbcProperties jdbcProperties;
