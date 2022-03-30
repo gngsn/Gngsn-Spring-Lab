@@ -1,14 +1,14 @@
 package com.gngsn.demo.bulkInsert;
 
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
-@AllArgsConstructor
-public class InsertService {
+@RequiredArgsConstructor
+public class CalcInsertTimeService {
 
     @Autowired
     private UserDAO userDAO;

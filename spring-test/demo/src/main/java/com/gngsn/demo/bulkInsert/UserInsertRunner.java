@@ -11,10 +11,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Log4j2
-@Component
+//@Component
 public class UserInsertRunner implements ApplicationRunner {
     @Autowired
-    private InsertService insertService;
+    private CalcInsertTimeService insertService;
 
     private final int INSERT_SIZE = 10_000;
 
