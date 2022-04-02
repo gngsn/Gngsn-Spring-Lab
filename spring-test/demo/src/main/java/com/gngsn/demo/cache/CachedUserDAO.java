@@ -15,12 +15,12 @@ public class CachedUserDAO {
     @Autowired
     private SqlSession sqlSession;
 
-    @Cacheable(cacheNames = "users", key = "#root.method")
+    @Cacheable(cacheNames = "users", key = "#root.methodName")
     public List<UserVO> selectUserList() {
         return sqlSession.selectList(NAMESPACE + "selectUserList");
     }
 
-    @Cacheable(cacheNames = "users", key = "#root.method + #p0")
+    @Cacheable(cacheNames = "users", key = "#root.methodName + '_' + #a0")
     public UserVO selectUserByName(String userName) {
         return sqlSession.selectOne(NAMESPACE + "selectUser", userName);
     }

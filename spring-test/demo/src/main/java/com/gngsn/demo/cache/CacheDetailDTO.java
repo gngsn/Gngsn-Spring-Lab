@@ -8,9 +8,13 @@ public class CacheDetailDTO {
     private String cacheName;
     private Object key;
     private Object value;
-    private long version;
+
     private long hitCount;
     private long missCount;
-    private String creationTime;
-    private String lastAccessTime;
+
+    private long loadSuccessCount;
+    private long loadFailureCount;
+    private long totalLoadTime;
+    private long evictionCount;
+    private long evictionWeight;
 }
