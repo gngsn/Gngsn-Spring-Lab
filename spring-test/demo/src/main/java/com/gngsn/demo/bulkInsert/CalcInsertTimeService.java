@@ -1,5 +1,7 @@
 package com.gngsn.demo.bulkInsert;
 
+import com.gngsn.demo.common.user.UserDAO;
+import com.gngsn.demo.common.user.UserVO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -13,7 +15,7 @@ public class CalcInsertTimeService {
     @Autowired
     private UserDAO userDAO;
 
-    public long basicInsert(List<User> users) {
+    public long basicInsert(List<UserVO> users) {
         long start = System.currentTimeMillis();
 
         users.forEach(user -> userDAO.insertUser(user));
@@ -21,7 +23,7 @@ public class CalcInsertTimeService {
         return System.currentTimeMillis() - start;
     }
 
-    public long bulkInsert(List<User> users) {
+    public long bulkInsert(List<UserVO> users) {
         long start = System.currentTimeMillis();
 
         userDAO.bulkInsertUserList(users);

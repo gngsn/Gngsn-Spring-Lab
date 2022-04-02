@@ -1,11 +1,11 @@
 package com.gngsn.demo.bulkInsert;
 
 import com.gngsn.demo.utils.RandomString;
+import com.gngsn.demo.common.user.UserVO;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
-import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,7 +18,7 @@ public class UserInsertRunner implements ApplicationRunner {
 
     private final int INSERT_SIZE = 10_000;
 
-    private List<User> users = new ArrayList<>();
+    private List<UserVO> users = new ArrayList<>();
 
     @Override
     public void run(ApplicationArguments args) throws Exception {
@@ -37,7 +37,7 @@ public class UserInsertRunner implements ApplicationRunner {
 
     private void genUser() {
         for (int i = 0; i < INSERT_SIZE; i++) {
-            users.add(new User(
+            users.add(new UserVO(
                     "gngsn" + i,
                     "gngsn" + i + "@email.com",
                     new RandomString().nextString())

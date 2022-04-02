@@ -1,8 +1,7 @@
 package com.gngsn.demo;
 
 import com.gngsn.demo.bulkInsert.CalcInsertTimeService;
-import com.gngsn.demo.bulkInsert.User;
-import com.gngsn.demo.utils.RandomString;
+import com.gngsn.demo.common.user.UserVO;
 import lombok.extern.log4j.Log4j2;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -21,7 +20,7 @@ class DemoApplicationTests {
 
     private final int INSERT_SIZE = 1_000;
 
-    private List<User> users = new ArrayList<>();
+    private List<UserVO> users = new ArrayList<>();
 
 
     @BeforeEach
@@ -29,7 +28,7 @@ class DemoApplicationTests {
         log.info("===================================\n");
 
         for (int i=0; i < INSERT_SIZE; i++) {
-            users.add(new User(
+            users.add(new UserVO(
                     "test" + i,
                     "test@email.com",
                     "vFnfSEsDj!@#$")
