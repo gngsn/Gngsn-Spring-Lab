@@ -3,6 +3,7 @@ package com.gngsn.demo.cache;
 import com.gngsn.demo.common.user.UserVO;
 import org.apache.ibatis.session.SqlSession;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Repository;
 
@@ -23,5 +24,10 @@ public class CachedUserDAO {
     @Cacheable(cacheNames = "users", key = "#root.methodName + '_' + #a0")
     public UserVO selectUserByName(String userName) {
         return sqlSession.selectOne(NAMESPACE + "selectUser", userName);
+    }
+
+    @CacheEvict(cacheNames = "users", allEntries = true)
+    public int insertUser(UserVO user) {
+        return sqlSession.insert(NAMESPACE + "insertUser", user);
     }
 }

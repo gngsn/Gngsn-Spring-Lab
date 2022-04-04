@@ -19,13 +19,18 @@ public class UserServiceImpl implements UserService {
     public ResJson selectUserList() {
         List<UserVO> userVOList = userDAO.selectUserList();
         return new ResJson(200,
-                "Success Get User List",
+                "Successfully get users",
                 userVOList);
     }
 
     public ResJson selectUserByName(String userName) {
         return new ResJson(200,
-                "Success Get User List",
+                "Successfully get user",
                 userDAO.selectUserByName(userName));
+    }
+
+    public ResJson insertUser(UserVO user) {
+        userDAO.insertUser(user);
+        return new ResJson(201, "User added successfully");
     }
 }

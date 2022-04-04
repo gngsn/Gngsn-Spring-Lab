@@ -1,11 +1,9 @@
 package com.gngsn.demo.cache;
 
 import com.gngsn.demo.common.ResJson;
+import com.gngsn.demo.common.user.UserVO;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/users")
@@ -20,7 +18,12 @@ public class UserController {
     }
 
     @GetMapping("/{name}")
-    public ResJson getList(@PathVariable("name") String userName) {
+    public ResJson getUser(@PathVariable("name") String userName) {
         return userService.selectUserByName(userName);
+    }
+
+    @PostMapping("/")
+    public ResJson addUser(@RequestBody UserVO user) {
+        return userService.insertUser(user);
     }
 }

@@ -1,4 +1,5 @@
-cache:
-    cache-names: users
-    caffeine:
-        spec: maximumSize=500, expireAfterAccess=60s
+spring:
+    cache:
+        cache-names: user
+        caffeine:
+            spec: maximumSize=500, expireAfterAccess=60s
