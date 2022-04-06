@@ -1,22 +1,24 @@
 package com.gngsn.demo.cache;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+
 
 @Getter
+@NoArgsConstructor
+@AllArgsConstructor
 public enum CacheType {
-    USERS( "users", // 캐시 이름: users
-            5 * 60, // 만료 시간: 5 분
-            10000 // 최대 갯수: 10000
-    );
+    USERS("users", 10, 10000),
+    BOOKS("views", 10, 1000);
 
-    private final String name;
-    private final int expire;
-    private final int maxSize;
-
-    CacheType(String name , int expire, int maxSize) {
-        this.name = name;
-        this.expire = expire;
-        this.maxSize = maxSize;
-    }
+    private String name;
+    private int expireAfterWrite = ConstantConfig.DEFAULT_TTL;
+    private int maximumSize = ConstantConfig.DEFAULT_MAX_SIZE;
 }
 
+
+class ConstantConfig {
+    static final int DEFAULT_TTL = 3000;
+    static final int DEFAULT_MAX_SIZE = 10000;
+}

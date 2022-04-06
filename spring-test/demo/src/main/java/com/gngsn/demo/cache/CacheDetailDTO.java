@@ -2,6 +2,8 @@ package com.gngsn.demo.cache;
 
 import lombok.Data;
 
+import java.time.LocalDateTime;
+
 @Data
 public class CacheDetailDTO {
 
@@ -12,9 +14,5 @@ public class CacheDetailDTO {
     private long hitCount;
     private long missCount;
 
-    private long loadSuccessCount;
-    private long loadFailureCount;
-    private long totalLoadTime;
-    private long evictionCount;
-    private long evictionWeight;
+    private LocalDateTime createTime;
 }

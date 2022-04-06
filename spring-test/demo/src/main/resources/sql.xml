@@ -25,7 +25,6 @@
     <select id="selectUserList" resultType="com.gngsn.demo.common.user.UserVO">
         SELECT `name`, email, password
         FROM test
-        LIMIT 50
     </select>
 
 </mapper>
