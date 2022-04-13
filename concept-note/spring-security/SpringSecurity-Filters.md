@@ -178,12 +178,6 @@ LogoutFilter, UsernamePasswordAuthenticationFilter 건너 뜀
 
 이 필터는 조건이 현재 세션에 SecurityContext이 없거나 세션이 null인 경우에 동작된다.
 
-**Register SessionInfo**
-
-**SessionFixation**
-
-**Concurrentsession**
-
 
 </br>
 
