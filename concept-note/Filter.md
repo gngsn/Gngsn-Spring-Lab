@@ -75,3 +75,37 @@ forceEncoding의 값이 true 이면 encoding의 값을 HttpServletRequest, Htt
 
 forceEncoding의 값이 false 이면 HttpServletRequest, HttpServletResponse 객체의 값이 null 인 경우에만 encoding의 값으로 세팅해 준다.
 
+<br/>
+
+
+```java
+public class CharacterEncodingFilter extends OncePerRequestFilter {
+
+	@Nullable
+	private String encoding;
+
+	private boolean forceRequestEncoding = false;
+
+	private boolean forceResponseEncoding = false;
+
+	// ...
+	
+	@Override
+		protected void doFilterInternal(
+				HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
+				throws ServletException, IOException {
+	
+			String encoding = getEncoding();
+			if (encoding != null) {
+				if (isForceRequestEncoding() || request.getCharacterEncoding() == null) {
+					request.setCharacterEncoding(encoding);
+				}
+				if (isForceResponseEncoding()) {
+					response.setCharacterEncoding(encoding);
+				}
+			}
+			filterChain.doFilter(request, response);
+		}
+}
+```
+
