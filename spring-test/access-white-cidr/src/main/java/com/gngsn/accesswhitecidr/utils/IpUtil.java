@@ -29,13 +29,13 @@ public class IpUtil {
         "REMOTE_ADDR"
     };
 
-    public static HttpServletRequest getCurrentRequest() {
-        return ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();
-    }
+//    public static HttpServletRequest getCurrentRequest() {
+//        return ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();
+//    }
 
-    public static String getClientIp() {
-        return getClientIp(getCurrentRequest());
-    }
+//    public static String getClientIp() {
+//        return getClientIp(getCurrentRequest());
+//    }
 
     public static String getClientIp(HttpServletRequest request) {
         String ip = getIpXFF(request);
@@ -74,7 +74,7 @@ public class IpUtil {
     }
 
 
-    public static boolean notValidIp(String ip) {
+    private static boolean notValidIp(String ip) {
         return ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip);
     }
 }

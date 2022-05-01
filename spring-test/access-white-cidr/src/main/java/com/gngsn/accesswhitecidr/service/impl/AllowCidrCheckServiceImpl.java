@@ -14,10 +14,6 @@ public class AllowCidrCheckServiceImpl implements AllowCidrCheckService {
 
     private final WhiteCidrDAO whiteCidrDAO;
 
-    public boolean isWhiteIp() {
-        return isWhiteIp(getClientIp());
-    }
-
     public boolean isWhiteIp(String clientIp) {
 
         return whiteCidrDAO.selectWhiteCidrList().stream()
