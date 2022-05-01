@@ -55,3 +55,57 @@ public IntegrationFlow evenNumberFilter(AtomicInteger integerSource) {
 
 여기서는 람다를 사용해서 필터를 구현했지만, 실제로는 filter() 메서드가 GenericSelector를 인자로 받는다.
 이것은 우리의 필요에 따라 GenericSelector를 구현하여 다양한 조건으로 필터링 할 수 있다는 것을 의미한다.
+
+
+<br/>
+
+# Filter
+
+### CharacterEncodingFilter
+
+**스프링 인코딩 처리**
+
+스프링은 웹 요청과 응답에 대한 인코딩 처리를 위해 **CharacterEncodingFilter**를 제공합니다.
+
+인코딩 필터의 경우 모든 프로젝트에서 사용가는 공통적인 기능이므로 스프링프레임워크 측에서 번거로움을 피하기 위해 제공하는것 같습니다.
+
+CharacterEncodingFilter 클래스는 Servlet 표준 스펙인 javax.servlet.Filter 인터페이스를 구현한 클래스이기 때문에 기존의 Servlet, JSP 에서 사용하던 필터와 똑같이 사용 가능합니다.
+
+forceEncoding의 값이 true 이면 encoding의 값을 HttpServletRequest, HttpServletResponse 객체에 강제로 세팅해 준다.
+
+forceEncoding의 값이 false 이면 HttpServletRequest, HttpServletResponse 객체의 값이 null 인 경우에만 encoding의 값으로 세팅해 준다.
+
+<br/>
+
+
+```java
+public class CharacterEncodingFilter extends OncePerRequestFilter {
+
+	@Nullable
+	private String encoding;
+
+	private boolean forceRequestEncoding = false;
+
+	private boolean forceResponseEncoding = false;
+
+	// ...
+	
+	@Override
+		protected void doFilterInternal(
+				HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
+				throws ServletException, IOException {
+	
+			String encoding = getEncoding();
+			if (encoding != null) {
+				if (isForceRequestEncoding() || request.getCharacterEncoding() == null) {
+					request.setCharacterEncoding(encoding);
+				}
+				if (isForceResponseEncoding()) {
+					response.setCharacterEncoding(encoding);
+				}
+			}
+			filterChain.doFilter(request, response);
+		}
+}
+```
+
