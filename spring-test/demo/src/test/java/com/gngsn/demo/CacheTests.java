@@ -4,6 +4,7 @@ import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.stats.CacheStats;
 import com.gngsn.demo.common.user.UserVO;
 import lombok.extern.log4j.Log4j2;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -14,6 +15,7 @@ import org.springframework.cache.caffeine.CaffeineCache;
 
 import javax.annotation.PostConstruct;
 
+@Slf4j
 @Log4j2
 @SpringBootTest
 public class CacheTests {

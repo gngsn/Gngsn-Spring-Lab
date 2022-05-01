@@ -11,11 +11,8 @@ public class WhiteCidrDAO {
 
     private static final String NAMESPACE = "test.whiteCidrDAO.";
 
+    @Autowired
     private SqlSession sqlSession;
-
-    WhiteCidrDAO (@Autowired SqlSession sqlSession) {
-        this.sqlSession = sqlSession;
-    }
 
     public List<String> selectWhiteCidrList() {
         return sqlSession.selectList(NAMESPACE + "selectWhiteCidrList");

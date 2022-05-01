@@ -9,6 +9,8 @@ import org.springframework.web.servlet.HandlerInterceptor;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import java.io.IOException;
+
 import static com.gngsn.accesswhitecidr.utils.IpUtil.getClientIp;
 
 @Slf4j
@@ -19,15 +21,16 @@ public class IpAccessControlInterceptor implements HandlerInterceptor {
     private final AllowCidrCheckService allowCidrCheckService;
 
     @Override
-    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
+    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws IOException {
         String requestIp = getClientIp(request);
 
         if (allowCidrCheckService.isWhiteIp(requestIp)) {
             String requestURI = request.getRequestURI();
 
             log.warn("Forbidden access. request uri={}, client ip={}", requestURI, requestIp);
-            // redirect NOT AUTH PAGE or FORBIDDEN status
 
+            response.sendError(403, "IP Forbidden");
+            // redirect NOT AUTH PAGE or FORBIDDEN status
             return false;
         }
 
