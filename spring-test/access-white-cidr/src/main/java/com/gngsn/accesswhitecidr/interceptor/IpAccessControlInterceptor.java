@@ -24,7 +24,7 @@ public class IpAccessControlInterceptor implements HandlerInterceptor {
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws IOException {
         String requestIp = getClientIp(request);
 
-        if (allowCidrCheckService.isWhiteIp(requestIp)) {
+        if (!allowCidrCheckService.isWhiteIp(requestIp)) {
             String requestURI = request.getRequestURI();
 
             log.warn("Forbidden access. request uri={}, client ip={}", requestURI, requestIp);

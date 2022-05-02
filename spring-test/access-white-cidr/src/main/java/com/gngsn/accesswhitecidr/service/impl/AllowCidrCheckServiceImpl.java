@@ -14,9 +14,17 @@ public class AllowCidrCheckServiceImpl implements AllowCidrCheckService {
 
     private final WhiteCidrDAO whiteCidrDAO;
 
+    /**
+     * client IP를 받아서
+     * 등록된 white CIDR 리스트에 포함되는지 체크
+     *
+     * @param clientIp
+     * @return boolean  - white IP (True), NOT white IP (False)
+     */
     public boolean isWhiteIp(String clientIp) {
 
-        return whiteCidrDAO.selectWhiteCidrList().stream()
+        return whiteCidrDAO.selectWhiteCidrList()
+            .stream()
             .anyMatch(cidr ->
                 (new IpAddressMatcher(cidr)).matches(clientIp)
             );
