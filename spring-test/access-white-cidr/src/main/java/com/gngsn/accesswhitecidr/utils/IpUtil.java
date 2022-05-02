@@ -1,8 +1,6 @@
 package com.gngsn.accesswhitecidr.utils;
 
-import org.springframework.util.StringUtils;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
+import org.apache.commons.lang3.StringUtils;
 import reactor.util.annotation.Nullable;
 
 import javax.servlet.http.HttpServletRequest;
@@ -12,7 +10,7 @@ public class IpUtil {
 
     /**
      * Proxy, Caching server, Load Balancer 등을 거쳐올 경우
-     * getRemoteAddr( ) 를 이용하여 IP 주소를 가지고 오지 못하기 때문에
+     * getRemoteAddr() 를 이용하여 IP 주소를 가지고 오지 못하기 때문에
      * Header에서 직접 가져와야 한다.
      */
     private static final String[] IP_HEADER_CANDIDATES = {
@@ -52,7 +50,7 @@ public class IpUtil {
     }
 
     private static boolean isMultipleIpXFF(String ip) {
-        return ip.contains(",");
+        return StringUtils.contains(ip, ",");
     }
 
     /**
@@ -62,7 +60,7 @@ public class IpUtil {
      * @return String  Single(Real) Client IP
      */
     private static String getClientIpWhenMultipleIpXFF(String ips) {
-        return ips.split(",")[0];
+        return StringUtils.split(ips, ",")[0];
     }
 
 
