@@ -15,15 +15,15 @@ import java.math.BigDecimal;
  */
 public class Transaction {
 
-    public void doTransaction(Account account, double cash, String operation) {
-        double tax;
+    public void doTransaction(Account account, long cash, String operation) {
+        long tax;
 
         if ("BUY".equalsIgnoreCase(operation)) {
-            tax = cash * 0.15 / 100;
+            tax = Math.round(cash * 0.15 / 100);
             cash = cash + tax;
             account.withdraw(cash);
         } else if ("SELL".equalsIgnoreCase(operation)) {
-            tax = cash * 0.1 / 100;
+            tax = Math.round(cash * 0.1 / 100);
             cash = cash + tax;
             account.deposit(cash);
         }
