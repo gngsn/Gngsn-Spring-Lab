@@ -17,10 +17,12 @@ public class Transaction {
 
     public void doTransaction(Account account, BigDecimal cash, String operation) {
 
-        if ("buy".equalsIgnoreCase(operation)) {
+        if ("BUY".equalsIgnoreCase(operation)) {
             BigDecimal tax = cash.multiply(BigDecimal.valueOf(0.15)).divide(new BigDecimal(100));
             cash = cash.add(tax);
             account.withdraw(cash);
+        } else if ("SELL".equalsIgnoreCase(operation)) {
+
         }
     }
 }
