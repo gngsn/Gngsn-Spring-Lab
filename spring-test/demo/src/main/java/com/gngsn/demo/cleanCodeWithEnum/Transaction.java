@@ -26,6 +26,14 @@ public class Transaction {
             tax = Math.round(cash * 0.1 / 100);
             cash = cash + tax;
             account.deposit(cash);
+        } else if ("DEPOSIT".equalsIgnoreCase(operation)) {
+            tax = Math.round(cash * 0.05 / 100);
+            cash = cash + tax;
+            account.deposit(cash);
+        } else if ("WITHDRAWAL".equalsIgnoreCase(operation)) {
+            tax = Math.round(cash * 0.20 / 100);
+            cash = cash + tax;
+            account.withdraw(cash);
         }
     }
 }

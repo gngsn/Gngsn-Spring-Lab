@@ -3,8 +3,6 @@ package com.gngsn.demo.cleanCodeWithEnum;
 import java.math.BigDecimal;
 
 public class Account {
-
-    private String user;
     private long balance;
 
     public void withdraw(long cash) {
