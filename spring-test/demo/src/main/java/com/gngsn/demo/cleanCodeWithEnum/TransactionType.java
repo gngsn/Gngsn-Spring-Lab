@@ -2,27 +2,9 @@ package com.gngsn.demo.cleanCodeWithEnum;
 
 public enum TransactionType {
 
-    BUY {
-        @Override
-        public void doTransaction(Account account, long cash) {
-            long tax = Math.round(cash * 0.15 / 100);
-            cash = cash + tax;
-            account.withdraw(cash);
-        }
-    },
-    SELL {
-        @Override
-        public void doTransaction(Account account, long cash) {
-            long tax = Math.round(cash * 0.1 / 100);
-            cash = cash + tax;
-            account.deposit(cash);
-        }
-    },
     DEPOSIT {
         @Override
         public void doTransaction(Account account, long cash) {
-            long tax = Math.round(cash * 0.05 / 100);
-            cash = cash + tax;
             account.deposit(cash);
         }
     },
@@ -33,9 +15,15 @@ public enum TransactionType {
             cash = cash + tax;
             account.withdraw(cash);
         }
+    },
+    TRANSFER {
+        @Override
+        public void doTransaction(Account account, long cash) {
+            long tax = Math.round(cash * 0.10 / 100);
+            cash = cash + tax;
+            account.deposit(cash);
+        }
     };
 
     public abstract void doTransaction(Account account, long cash);
-
-
 }
