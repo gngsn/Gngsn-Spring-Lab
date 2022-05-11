@@ -1,7 +1,10 @@
 package com.gngsn.demo.cleanCodeWithEnum;
 
-import java.math.BigDecimal;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 
+@Getter
+@AllArgsConstructor
 public class Account {
     private long balance;
 

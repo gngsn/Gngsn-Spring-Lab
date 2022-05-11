@@ -16,22 +16,20 @@ import java.math.BigDecimal;
 public class Transaction {
 
     public void doTransaction(Account account, long cash, String operation) {
-        long tax;
-
         if ("BUY".equalsIgnoreCase(operation)) {
-            tax = Math.round(cash * 0.15 / 100);
+            long tax = Math.round(cash * 0.15 / 100);
             cash = cash + tax;
             account.withdraw(cash);
         } else if ("SELL".equalsIgnoreCase(operation)) {
-            tax = Math.round(cash * 0.1 / 100);
+            long tax = Math.round(cash * 0.1 / 100);
             cash = cash + tax;
             account.deposit(cash);
         } else if ("DEPOSIT".equalsIgnoreCase(operation)) {
-            tax = Math.round(cash * 0.05 / 100);
+            long tax = Math.round(cash * 0.05 / 100);
             cash = cash + tax;
             account.deposit(cash);
         } else if ("WITHDRAWAL".equalsIgnoreCase(operation)) {
-            tax = Math.round(cash * 0.20 / 100);
+            long tax = Math.round(cash * 0.20 / 100);
             cash = cash + tax;
             account.withdraw(cash);
         }
