@@ -77,6 +77,7 @@ public class DateTimeTest {
         System.out.println(date.getTime());
     }
 
+    @Test
     void periodTest() {
         LocalDate birth = LocalDate.of(1998, Month.AUGUST, 12);
         LocalDate today = LocalDate.now();
