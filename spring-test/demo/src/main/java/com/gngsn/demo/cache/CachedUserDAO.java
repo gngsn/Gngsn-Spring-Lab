@@ -16,17 +16,17 @@ public class CachedUserDAO {
     @Autowired
     private SqlSession sqlSession;
 
-    @Cacheable(cacheNames = "users", key = "#root.methodName")
+    @Cacheable(cacheNames = CacheType.ConstName.USERS, key = "#root.methodName")
     public List<UserVO> selectUserList() {
         return sqlSession.selectList(NAMESPACE + "selectUserList");
     }
 
-    @Cacheable(cacheNames = "users", key = "#root.methodName + '_' + #a0")
+    @Cacheable(cacheNames = CacheType.ConstName.USERS, key = "#root.methodName + '_' + #a0")
     public UserVO selectUserByName(String userName) {
         return sqlSession.selectOne(NAMESPACE + "selectUser", userName);
     }
 
-    @CacheEvict(cacheNames = "users", allEntries = true)
+    @CacheEvict(cacheNames = CacheType.ConstName.USERS, allEntries = true)
     public int insertUser(UserVO user) {
         return sqlSession.insert(NAMESPACE + "insertUser", user);
     }

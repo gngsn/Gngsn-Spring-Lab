@@ -18,11 +18,11 @@ public enum CacheType {
 
     CacheType(String name) {
         this.name = name;
-        this.expireAfterWrite = ConstantConfig.DEFAULT_TTL;
-        this.maximumSize = ConstantConfig.DEFAULT_MAX_SIZE;
+        this.expireAfterWrite = ConstConfig.DEFAULT_TTL;
+        this.maximumSize = ConstConfig.DEFAULT_MAX_SIZE;
     }
 
-    static class ConstantConfig {
+    static class ConstConfig {
         static final int DEFAULT_TTL = 3000;
         static final int DEFAULT_MAX_SIZE = 10000;
     }
