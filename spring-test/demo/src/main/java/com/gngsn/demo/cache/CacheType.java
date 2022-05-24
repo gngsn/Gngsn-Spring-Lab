@@ -9,16 +9,27 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public enum CacheType {
-    USERS("users", 10, 10000),
-    BOOKS("views", 10, 1000);
+    USERS(CacheName.USERS),
+    BOOKS(CacheName.BOOKS);
 
     private String name;
-    private int expireAfterWrite = ConstantConfig.DEFAULT_TTL;
-    private int maximumSize = ConstantConfig.DEFAULT_MAX_SIZE;
+    private int expireAfterWrite;
+    private int maximumSize;
+
+    CacheType(String name) {
+        this.name = name;
+        this.expireAfterWrite = ConstantConfig.DEFAULT_TTL;
+        this.maximumSize = ConstantConfig.DEFAULT_MAX_SIZE;
+    }
+
+    static class ConstantConfig {
+        static final int DEFAULT_TTL = 3000;
+        static final int DEFAULT_MAX_SIZE = 10000;
+    }
+
+    public static class CacheName {
+        static final String USERS = "users";
+        static final String BOOKS = "views";
+    }
 }
 
-
-class ConstantConfig {
-    static final int DEFAULT_TTL = 3000;
-    static final int DEFAULT_MAX_SIZE = 10000;
-}

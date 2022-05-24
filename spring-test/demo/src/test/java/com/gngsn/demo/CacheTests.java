@@ -31,8 +31,8 @@ public class CacheTests {
     cacheManager.getCache("views").putIfAbsent("views_user1", 2);
     cacheManager.getCache("views").putIfAbsent("views_user2", 5);
     cacheManager.getCache("views").putIfAbsent("views_user4", 12);
-    cacheManager.getCache("views").putIfAbsent("views_user4", 12);
     cacheManager.getCache("views").putIfAbsent("views_user6", 11);
+    cacheManager.getCache("views").putIfAbsent("views_user4", 12);
     cacheManager.getCache("views").putIfAbsent("views_user6", 11);
     cacheManager.getCache("views").putIfAbsent("views_user6", 11);
     cacheManager.getCache("views").putIfAbsent("views_user6", 11);
