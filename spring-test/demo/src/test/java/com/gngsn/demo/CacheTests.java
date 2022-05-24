@@ -2,6 +2,7 @@ package com.gngsn.demo;
 
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.stats.CacheStats;
+import com.gngsn.demo.cache.CacheType;
 import com.gngsn.demo.common.user.UserVO;
 import lombok.extern.log4j.Log4j2;
 import lombok.extern.slf4j.Slf4j;
@@ -11,6 +12,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.cache.CacheManager;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.caffeine.CaffeineCache;
 
 import javax.annotation.PostConstruct;
@@ -31,8 +33,8 @@ public class CacheTests {
     cacheManager.getCache("views").putIfAbsent("views_user1", 2);
     cacheManager.getCache("views").putIfAbsent("views_user2", 5);
     cacheManager.getCache("views").putIfAbsent("views_user4", 12);
-    cacheManager.getCache("views").putIfAbsent("views_user6", 11);
     cacheManager.getCache("views").putIfAbsent("views_user4", 12);
+    cacheManager.getCache("views").putIfAbsent("views_user6", 11);
     cacheManager.getCache("views").putIfAbsent("views_user6", 11);
     cacheManager.getCache("views").putIfAbsent("views_user6", 11);
     cacheManager.getCache("views").putIfAbsent("views_user6", 11);
@@ -61,6 +63,7 @@ public class CacheTests {
 
         log.info("  key: {} - value: {}", key, value.toString());
       }
+      init();
     }
 
     /*   Functional
@@ -76,6 +79,7 @@ public class CacheTests {
 
   @Test
   public void getCachesStats() {
+//    @Cacheable(cacheNames = CacheType.USERS.)
     for (String cacheName : cacheManager.getCacheNames()) {
       Cache cache = ((CaffeineCache) cacheManager.getCache(cacheName)).getNativeCache();
       CacheStats stats = cache.stats();

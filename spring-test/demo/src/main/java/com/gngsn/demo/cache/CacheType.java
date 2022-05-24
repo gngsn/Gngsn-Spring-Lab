@@ -9,8 +9,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public enum CacheType {
-    USERS(CacheName.USERS),
-    BOOKS(CacheName.BOOKS);
+    USERS(ConstName.USERS),
+    VIEWS(ConstName.VIEWS, 2000, 1);
 
     private String name;
     private int expireAfterWrite;
@@ -27,9 +27,9 @@ public enum CacheType {
         static final int DEFAULT_MAX_SIZE = 10000;
     }
 
-    public static class CacheName {
+    public static class ConstName {
         static final String USERS = "users";
-        static final String BOOKS = "views";
+        static final String VIEWS = "views";
     }
 }
 
