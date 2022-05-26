@@ -1,6 +1,8 @@
 package com.gngsn.demo.cache;
 
 import com.github.benmanes.caffeine.cache.Caffeine;
+import com.github.benmanes.caffeine.cache.RemovalCause;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.cache.caffeine.CaffeineCache;
@@ -13,6 +15,7 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
+@Slf4j
 @EnableCaching
 @Configuration
 public class CacheConfig {
@@ -27,6 +30,12 @@ public class CacheConfig {
                     Caffeine.newBuilder()
                         .expireAfterWrite(cache.getExpireAfterWrite(), TimeUnit.SECONDS)
                         .maximumSize(cache.getMaximumSize())
+                        .evictionListener((Object key, Object value, RemovalCause cause) -> {
+                            log.info("Key {} was evicted ({}): {}", key, cause, value);
+                            }
+                        )
+                        .removalListener((Object key, Object value, RemovalCause cause) ->
+                            log.info("Key {} was removed ({}}): {}", key, cause, value))
                         .recordStats()
                         .build()
                 )
@@ -37,3 +46,10 @@ public class CacheConfig {
         return cacheManager;
     }
 }
+
+/**
+ *
+ Key views_user2 was evicted (SIZE): 5
+ Key views_user1 was evicted (SIZE): 2
+ Key views_user4 was evicted (SIZE): 12
+ */
