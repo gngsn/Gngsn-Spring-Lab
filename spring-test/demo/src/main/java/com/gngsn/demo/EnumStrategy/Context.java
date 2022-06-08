@@ -1,4 +1,4 @@
-package com.gngsn.demo.EnumStrategy;
+package com.gngsn.demo.enumStrategy;
 
 
 import lombok.Getter;

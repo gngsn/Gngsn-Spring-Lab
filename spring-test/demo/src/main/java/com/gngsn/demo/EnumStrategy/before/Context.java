@@ -1,7 +1,6 @@
-package com.gngsn.demo.EnumStrategy.before;
+package com.gngsn.demo.enumStrategy.before;
 
 
-import lombok.Getter;
 import lombok.Setter;
 
 @Setter

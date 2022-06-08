@@ -1,4 +1,4 @@
-package com.gngsn.demo.EnumStrategy.before;
+package com.gngsn.demo.enumStrategy.before;
 
 class StrategyB implements Strategy {
     @Override

@@ -1,4 +1,4 @@
-package com.gngsn.demo.EnumStrategy.before;
+package com.gngsn.demo.enumStrategy.before;
 
 public interface Strategy {
     public void execute();
