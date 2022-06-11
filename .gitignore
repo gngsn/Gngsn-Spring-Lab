@@ -54,3 +54,5 @@ gradle-app.setting
 
 spring-test/emo/src/main/resources/jdbc.properties
 jdbc.properties
+*.csv
+*.txt
