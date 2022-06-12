@@ -53,7 +53,7 @@
         <dependency>
             <groupId>org.mybatis</groupId>
             <artifactId>mybatis</artifactId>
-            <version>3.5.9</version>
+            <version>3.5.10</version>
         </dependency>
         <dependency>
             <groupId>org.mybatis</groupId>
@@ -62,6 +62,11 @@
         </dependency>
 
         <!-- xml -->
+
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-oxm</artifactId>
+        </dependency>
         <dependency>
             <groupId>com.thoughtworks.xstream</groupId>
             <artifactId>xstream</artifactId>

@@ -9,10 +9,12 @@ public class BigDecimalConverter extends AbstractSingleValueConverter {
     public BigDecimalConverter() {
     }
 
+    @Override
     public boolean canConvert(Class type) {
         return type == BigDecimal.class;
     }
 
+    @Override
     public Object fromString(String str) {
         if (StringUtils.hasText(str)) {
             return new BigDecimal(str);

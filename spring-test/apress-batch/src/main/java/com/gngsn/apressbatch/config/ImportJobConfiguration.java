@@ -5,6 +5,7 @@ import com.gngsn.apressbatch.batch.CustomerUpdateItemReader;
 import com.gngsn.apressbatch.batch.CustomerUpdateItemWriter;
 import com.gngsn.apressbatch.domain.CustomerUpdate;
 import com.gngsn.apressbatch.domain.Transaction;
+import com.gngsn.apressbatch.utils.ConstantsJobSteps;
 import com.gngsn.apressbatch.valid.CustomerItemValidator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.batch.core.Job;
@@ -32,6 +33,8 @@ import java.math.BigDecimal;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+
+import static com.gngsn.apressbatch.utils.ConstantsJobSteps.IMPORT_TRANSACTIONS_STEP;
 
 
 @Configuration // 기본적으로 구성클래스로 간주하기 때문에 Configauration을 명시할 필요가 없음
@@ -66,9 +69,9 @@ public class ImportJobConfiguration {
      * @return
      * @throws Exception
      */
-    @Bean
+    @Bean(ConstantsJobSteps.IMPORT_CUSTOMER_UPDATE_STEP)
     public Step importCustomerUpdates() throws Exception {
-        return this.stepBuilderFactory.get("importCustomerUpdates")
+        return this.stepBuilderFactory.get(ConstantsJobSteps.IMPORT_CUSTOMER_UPDATE_STEP)
             .<CustomerUpdate, CustomerUpdate> chunk(100)
             .reader(this.getCustomerUpdateItemReader(null))
             .processor(this.getCustomerValidatingItemProcessor(null))
@@ -82,9 +85,9 @@ public class ImportJobConfiguration {
      * @return
      * @throws Exception
      */
-    @Bean
+    @Bean(IMPORT_TRANSACTIONS_STEP)
     public Step importTransactions() throws Exception {
-        return this.stepBuilderFactory.get("importTransactions")
+        return this.stepBuilderFactory.get(IMPORT_TRANSACTIONS_STEP)
             .<Transaction, Transaction> chunk(100)
             .reader(transactionItemReader(null))
             .writer(transactionItemWriter(null))
@@ -114,22 +117,7 @@ public class ImportJobConfiguration {
 
     @Bean
     public XStreamMarshaller unmarshaller() {
-        Map<String, Class<?>> aliases = new HashMap<>();
-        aliases.put("transaction", Transaction.class);
-
-        aliases.put("transactionId", Long.class);
-        aliases.put("accountId", Long.class);
-        aliases.put("description", String.class);
-        aliases.put("credit", BigDecimal.class);
-        aliases.put("debit", BigDecimal.class);
-        aliases.put("timestamp", Date.class);
-
-        XStreamMarshaller marshaller = new XStreamMarshaller();
-
-
-        marshaller.setAliases(aliases);
-
-        return marshaller;
+        return new XStreamMarshaller();
     }
 
     /*
