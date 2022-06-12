@@ -44,7 +44,7 @@ public class CustomerUpdateItemReader {
 
         DelimitedLineTokenizer recordType3 = new DelimitedLineTokenizer();
 
-        recordType3.setNames("recordId", "customerId", "email", "homePhone", "phone", "workPhone", "notificationPreference");
+        recordType3.setNames("recordId", "customerId", "email", "homePhone", "cellPhone", "workPhone", "notificationPreference");
         recordType3.afterPropertiesSet();
 
         Map<String, LineTokenizer> tokenizers = new HashMap<>(3);
@@ -91,7 +91,8 @@ public class CustomerUpdateItemReader {
                     return new CustomerUpdate.Contact(
                         fieldSet.readLong("customerId"),
                         fieldSet.readString("email"),
-                        fieldSet.readString("phone"),
+                        fieldSet.readString("homePhone"),
+                        fieldSet.readString("cellPhone"),
                         fieldSet.readString("workPhone"),
                         notificationPreference
                     );

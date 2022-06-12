@@ -49,7 +49,7 @@ public class CustomerUpdateItemWriter {
     ) {
         return new JdbcBatchItemWriterBuilder<CustomerUpdate>()
             .beanMapped()
-            .sql("UPDATE customer SET email = COALESCE(:email, email), phone = COALESCE(:phone, phone), work_phone = COALESCE(:workPhone, work_phone), notification_preference = COALESCE(:notificationPreference, notification_preference) WHERE customer_id = :customerId")
+            .sql("UPDATE customer SET email_address = COALESCE(:emailAddress, email_address), home_phone = COALESCE(:homePhone, home_phone), cell_phone = COALESCE(:cellPhone, cell_phone), work_phone = COALESCE(:workPhone, work_phone), notification_pref = COALESCE(:notificationPreference, notification_pref) WHERE customer_id = :customerId")
             .dataSource(dataSource)
             .build();
     }

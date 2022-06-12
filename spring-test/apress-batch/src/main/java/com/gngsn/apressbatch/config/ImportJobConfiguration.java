@@ -4,27 +4,37 @@ import com.gngsn.apressbatch.batch.CustomerUpdateClassifier;
 import com.gngsn.apressbatch.batch.CustomerUpdateItemReader;
 import com.gngsn.apressbatch.batch.CustomerUpdateItemWriter;
 import com.gngsn.apressbatch.domain.CustomerUpdate;
+import com.gngsn.apressbatch.domain.Transaction;
 import com.gngsn.apressbatch.valid.CustomerItemValidator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
-import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
 import org.springframework.batch.core.configuration.annotation.StepScope;
+import org.springframework.batch.item.database.JdbcBatchItemWriter;
+import org.springframework.batch.item.database.builder.JdbcBatchItemWriterBuilder;
 import org.springframework.batch.item.file.FlatFileItemReader;
 import org.springframework.batch.item.file.builder.FlatFileItemReaderBuilder;
 import org.springframework.batch.item.support.ClassifierCompositeItemWriter;
 import org.springframework.batch.item.validator.ValidatingItemProcessor;
+import org.springframework.batch.item.xml.StaxEventItemReader;
+import org.springframework.batch.item.xml.builder.StaxEventItemReaderBuilder;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import org.springframework.core.io.Resource;
+import org.springframework.oxm.xstream.XStreamMarshaller;
+
+import javax.sql.DataSource;
+import java.math.BigDecimal;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 
-@Configuration
-@EnableBatchProcessing
+@Configuration // 기본적으로 구성클래스로 간주하기 때문에 Configauration을 명시할 필요가 없음
 @RequiredArgsConstructor
 public class ImportJobConfiguration {
 
@@ -38,8 +48,10 @@ public class ImportJobConfiguration {
     // Job은 JobBuilderFactory에 의해 정의되는데, importCustomerUpdates 스텝을 실행하도록 지정한 후 build 메서드를 호출
     @Bean
     public Job job() throws Exception {
-        return this.jobBuilderFactory.get("importJob")
+        return this.jobBuilderFactory
+            .get("importJob")
             .start(importCustomerUpdates())
+            .next(importTransactions())
             .build();
     }
 
@@ -58,9 +70,81 @@ public class ImportJobConfiguration {
     public Step importCustomerUpdates() throws Exception {
         return this.stepBuilderFactory.get("importCustomerUpdates")
             .<CustomerUpdate, CustomerUpdate> chunk(100)
-            .reader(getCustomerUpdateItemReader(null))
-            .processor(getCustomerValidatingItemProcessor(null))
-            .writer(getCustomerUpdateItemWriter())
+            .reader(this.getCustomerUpdateItemReader(null))
+            .processor(this.getCustomerValidatingItemProcessor(null))
+            .writer(this.getCustomerUpdateItemWriter())
+            .build();
+    }
+
+    /**
+     * importTransactions() Step
+     *
+     * @return
+     * @throws Exception
+     */
+    @Bean
+    public Step importTransactions() throws Exception {
+        return this.stepBuilderFactory.get("importTransactions")
+            .<Transaction, Transaction> chunk(100)
+            .reader(transactionItemReader(null))
+            .writer(transactionItemWriter(null))
+            .build();
+    }
+
+    /*
+        @StepScope 애너테이션을 적용한 transactionItemReader는 입력 파일의 위치를
+        transactionItemReader메서드 내에서 새 Jaxb2Marshaller를 생성 후 Transaction 객체에 바인딩
+
+        StaxEventItemReaderBuilder를 사용해 ItemReader 구성.
+        해당 빌더에 Reader 이름(재시작이 가능하도록 하기 위함), 잡 파라미터에 주입되는 리소스, 각 파싱하기 위해 사용할 Jaxb2Marshaller도 전달
+        build를 호출하면 StaxEventItemReader 제공.
+     */
+    @Bean
+    @StepScope
+    public StaxEventItemReader<Transaction> transactionItemReader(
+        @Value("#{jobParameters['transactionFile']}") Resource transactionFile
+    ) {
+        return new StaxEventItemReaderBuilder<Transaction>()
+            .name("fooReader")
+            .resource(transactionFile)
+            .addFragmentRootElements("transaction")
+            .unmarshaller(unmarshaller())
+            .build();
+    }
+
+    @Bean
+    public XStreamMarshaller unmarshaller() {
+        Map<String, Class<?>> aliases = new HashMap<>();
+        aliases.put("transaction", Transaction.class);
+
+        aliases.put("transactionId", Long.class);
+        aliases.put("accountId", Long.class);
+        aliases.put("description", String.class);
+        aliases.put("credit", BigDecimal.class);
+        aliases.put("debit", BigDecimal.class);
+        aliases.put("timestamp", Date.class);
+
+        XStreamMarshaller marshaller = new XStreamMarshaller();
+
+
+        marshaller.setAliases(aliases);
+
+        return marshaller;
+    }
+
+    /*
+        JdbcBatchItemWriter는 DataSource와 SQL문을 전달받으며,
+        ItemWriter가 아이텀의 프로퍼티 이름을 키로 사용해 SQL문의 값을 설정할 수 있게 하는 등의
+        JdbcBatchItemWriter에 필요한 구성을 하는 데 사용된다.
+     */
+    @Bean
+    public JdbcBatchItemWriter<Transaction> transactionItemWriter(
+        DataSource dataSource
+    ) {
+        return new JdbcBatchItemWriterBuilder<Transaction>()
+            .dataSource(dataSource)
+            .sql("INSERT INTO transaction (transaction_id, account_id, credit, debit, timestamp) VALUES (:transactionId, :accountId, :credit, :debit, :timestamp)")
+            .beanMapped()
             .build();
     }
 

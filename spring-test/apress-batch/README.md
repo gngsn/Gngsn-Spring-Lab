@@ -17,7 +17,7 @@ Apress 거래명세서
 3. 거래 정보 반영하기
    1. 발생한 거래 정보는 XML 문서 형태로 제공되며 이를 읽어들여 데이터베이스의 새 레코드로 기록
    2. 모든 레코드가 데이터베이스에 적재되면, 모든 입금(credits)내역을 더하고 모든 출금(debits) 내역을 빼 현재 잔액에 적용해야 한다
-4. 거래명세서 생성하기7
+4. 거래명세서 생성하기
    1. 고객 별 거래 명세서 파일이 하나씩 생성
    2. 각 파일의 헤더에는 고객의 주소가 포함됨
    3. 파일 데이터: 고객이 보유한 하나 이상의 계좌에 대해 계좌별로 계좌 헤더, 모든 거래 내역, 총 입금, 총 출금, 잔액 정보가 모두 출력
@@ -98,3 +98,21 @@ COMMENT = '고객/계좌 매핑테이블';
 
 
 
+## Job LifeCycle
+
+잡의 실행은 잡 러너job runner에서 시작된다. 잡 러너는 잡 이름과 여러 파라미터를 받아들여 잡을 실행시키는 역할을 한다. 
+스프링 배치는 두 가지 잡 러너를 제공한다.
+
+#### CommandLineJobRunner
+: 스크립트를 이용하거나 명령행에서 직접 잡을 실행할 때 사용한다. 스프링을 부트스트랩하고, 전달받은 파라미터를 사용해 요청된 잡을 실행한다.
+
+> org.springframework.batch.core.launch.support.CommandLineJobRunner
+
+#### JobRegistryBackgroundJobRunner
+: 스프링을 부트스트랩해서 기동한 자바 프로세스 내에서 쿼츠Quartz나 JMX 후크와 같은 스케줄러를 사용해 잡을 실행한다면, 스프링이 부트스트랩될 때 실행가능한 잡을 가지고 있는 JobRegistry를 생성한다. JobRegistryBackgroundJobRunner는 JobRegistry를 생성하는데 사용한다.
+
+> org.springframework.batch.core.launch.support.JobRegistryBackgroundJobRunner
+
+별개로 JobLauncherCommandLineJobRunner를 사용해 잡을 시작하는 또 다른 방법을 제공한다. 이 CommandLineRunner 구현체는 별도의 구성이 없다면 기본적으로 ApplicationContext에 정의된 Job 타입의 모든 빈을 기동 시에 실행한다. 
+
+사용자가 스프링 배치를 실행할 때 잡 러너를 사용하긴 하지만, 잡 러너는 프레임워크가 제공하는 표준 모듈이 아니다.

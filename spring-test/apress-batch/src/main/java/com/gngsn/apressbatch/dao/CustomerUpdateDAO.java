@@ -16,7 +16,7 @@ public class CustomerUpdateDAO {
     private final SqlSession sqlSession;
 
     public int selectCnt(Long id) {
-        return sqlSession.selectOne(NAMESPACE + "selectCnt");
+        return sqlSession.selectOne(NAMESPACE + "selectCnt", id);
     }
 
 }

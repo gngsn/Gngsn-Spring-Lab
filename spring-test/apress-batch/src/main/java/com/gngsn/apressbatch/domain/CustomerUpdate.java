@@ -43,19 +43,18 @@ public class CustomerUpdate {
 
     @Getter @Setter
     public static class Contact extends CustomerUpdate {
-        private final String email;
-
-        private String homePhone;
-        private final String phone;
+        private final String emailAddress;
+        private final String homePhone;
+        private final String cellPhone;
         private final String workPhone;
         private final Integer notificationPreference;
 
-        public Contact(long customerId, String email, String phone,
-                       String workPhone, Integer notificationPreference) {
+        public Contact(long customerId, String emailAddress, String homePhone,
+                       String cellPhone, String workPhone, Integer notificationPreference) {
             super(customerId);
-            this.email = StringUtils.hasText(email) ? email : null;
+            this.emailAddress = StringUtils.hasText(emailAddress) ? emailAddress : null;
             this.homePhone = StringUtils.hasText(homePhone) ? homePhone : null;
-            this.phone = StringUtils.hasText(phone) ? phone : null;
+            this.cellPhone = StringUtils.hasText(cellPhone) ? cellPhone : null;
             this.workPhone = StringUtils.hasText(workPhone) ? workPhone : null;
             this.notificationPreference = notificationPreference;
         }
