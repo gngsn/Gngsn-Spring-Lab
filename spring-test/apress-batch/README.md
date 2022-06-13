@@ -97,6 +97,29 @@ COMMENT = '고객/계좌 매핑테이블';
 이 처럼 모든 스텝을 논리적인 순서대로 실행할 수 있도록 잡을 구성한다.
 
 
+## Job 구성하기
+
+잡의 기본 구성
+
+``` java
+@Bean
+public Job job() {
+   return this.jobBuilderFactory.get("basicJob")
+            .start(step1())
+            .build();
+}
+
+@Bean
+public Step step1() {
+   return this.stepBuilderFactory.get("step1")
+               .tasklet((contribution, chunkContext) -> {
+                  System.out.println("Hello, world!");
+                  return RepeatStatus.FINISHED;
+               }).build();
+}
+```
+
+
 
 ## Job LifeCycle
 
