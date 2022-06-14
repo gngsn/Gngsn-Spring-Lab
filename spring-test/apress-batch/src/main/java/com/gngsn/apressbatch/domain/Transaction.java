@@ -1,11 +1,13 @@
 package com.gngsn.apressbatch.domain;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import java.math.BigDecimal;
 import java.util.Date;
 
 @Data
+@AllArgsConstructor
 @XStreamAlias("transaction")
 public class Transaction {
 

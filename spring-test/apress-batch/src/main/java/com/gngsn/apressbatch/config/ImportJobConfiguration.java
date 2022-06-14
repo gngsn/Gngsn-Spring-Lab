@@ -14,7 +14,9 @@ import org.springframework.batch.core.configuration.annotation.JobBuilderFactory
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
 import org.springframework.batch.core.configuration.annotation.StepScope;
 import org.springframework.batch.item.database.JdbcBatchItemWriter;
+import org.springframework.batch.item.database.JdbcCursorItemReader;
 import org.springframework.batch.item.database.builder.JdbcBatchItemWriterBuilder;
+import org.springframework.batch.item.database.builder.JdbcCursorItemReaderBuilder;
 import org.springframework.batch.item.file.FlatFileItemReader;
 import org.springframework.batch.item.file.builder.FlatFileItemReaderBuilder;
 import org.springframework.batch.item.support.ClassifierCompositeItemWriter;
@@ -34,6 +36,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+import static com.gngsn.apressbatch.utils.ConstantsJobSteps.APPLY_TRANSACTIONS_STEP;
 import static com.gngsn.apressbatch.utils.ConstantsJobSteps.IMPORT_TRANSACTIONS_STEP;
 
 
@@ -55,6 +58,7 @@ public class ImportJobConfiguration {
             .get("importJob")
             .start(importCustomerUpdates())
             .next(importTransactions())
+            .next(applyTransaction())
             .build();
     }
 
@@ -91,6 +95,14 @@ public class ImportJobConfiguration {
             .<Transaction, Transaction> chunk(100)
             .reader(transactionItemReader(null))
             .writer(transactionItemWriter(null))
+            .build();
+    }
+
+    @Bean(APPLY_TRANSACTIONS_STEP)
+    public Step applyTransaction() {
+        return this.stepBuilderFactory.get(APPLY_TRANSACTIONS_STEP)
+            .<Transaction, Transaction>chunk(100)
+            .reader(applyTransactionReader(null))
             .build();
     }
 
@@ -180,6 +192,24 @@ public class ImportJobConfiguration {
 
         compositeItemWriter.setClassifier(classifier);
         return compositeItemWriter;
+    }
+
+    @Bean
+    public JdbcCursorItemReader<Transaction> applyTransactionReader(DataSource dataSource) {
+        return new JdbcCursorItemReaderBuilder<Transaction>()
+            .name("")
+            .dataSource(dataSource)
+            .sql("SELECT transaction_id, account_id, description, credit, debit, timestamp from transaction order by timestamp")
+            .rowMapper((resultSet, i) ->
+                new Transaction(
+                    resultSet.getLong("transaction_id"),
+                    resultSet.getLong("account_id"),
+                    resultSet.getString("description"),
+                    resultSet.getBigDecimal("credit"),
+                    resultSet.getBigDecimal("debit"),
+                    resultSet.getTimestamp("timestamp")
+                ))
+            .build();
     }
 
 }
