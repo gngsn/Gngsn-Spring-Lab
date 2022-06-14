@@ -103,6 +103,7 @@ public class ImportJobConfiguration {
         return this.stepBuilderFactory.get(APPLY_TRANSACTIONS_STEP)
             .<Transaction, Transaction>chunk(100)
             .reader(applyTransactionReader(null))
+            .writer(applyTransactionWriter(null))
             .build();
     }
 
@@ -209,6 +210,17 @@ public class ImportJobConfiguration {
                     resultSet.getBigDecimal("debit"),
                     resultSet.getTimestamp("timestamp")
                 ))
+            .build();
+    }
+
+
+    @Bean
+    public JdbcBatchItemWriter<Transaction> applyTransactionWriter(DataSource dataSource) {
+        return new JdbcBatchItemWriterBuilder<Transaction>()
+            .dataSource(dataSource)
+            .sql("UPDATE account SET balance= balance + :transactionAmount WHERE account_id = :accountId")
+            .beanMapped()
+            .assertUpdates(false)
             .build();
     }
 
