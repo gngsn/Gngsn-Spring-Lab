@@ -1,8 +1,6 @@
 package com.gngsn.apressbatch.config;
 
-import com.gngsn.apressbatch.batch.CustomerUpdateClassifier;
-import com.gngsn.apressbatch.batch.CustomerUpdateItemReader;
-import com.gngsn.apressbatch.batch.CustomerUpdateItemWriter;
+import com.gngsn.apressbatch.batch.*;
 import com.gngsn.apressbatch.domain.Customer;
 import com.gngsn.apressbatch.domain.CustomerUpdate;
 import com.gngsn.apressbatch.domain.Statement;
@@ -119,7 +117,7 @@ public class ImportJobConfiguration {
             .<Statement, Statement>chunk(1)
             .reader(statementItemReader(null))
             .processor(itemProcessor)
-            .writer(statementItemWrtier(null))
+            .writer(statementItemWriter(null))
             .build();
     }
 
