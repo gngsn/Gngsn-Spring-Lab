@@ -6,4 +6,6 @@ public class ConstantsJobSteps {
     public static final String IMPORT_TRANSACTIONS_STEP = "IMPORT_TRANSACTIONS_STEP";
 
     public static final String APPLY_TRANSACTIONS_STEP = "APPLY_TRANSACTIONS_STEP";
+
+    public static final String GENERATE_STATEMENTS_STEP = "GENERATE_STATEMENTS_STEP";
 }

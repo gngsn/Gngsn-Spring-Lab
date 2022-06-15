@@ -12,4 +12,8 @@ public class Statement {
 
     private final Customer customer;
     private List<Account> accounts = new ArrayList<>();
+
+    public Statement(Customer customer) {
+        this.customer = customer;
+    }
 }

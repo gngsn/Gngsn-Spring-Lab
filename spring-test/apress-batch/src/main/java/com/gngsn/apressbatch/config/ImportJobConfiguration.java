@@ -3,7 +3,9 @@ package com.gngsn.apressbatch.config;
 import com.gngsn.apressbatch.batch.CustomerUpdateClassifier;
 import com.gngsn.apressbatch.batch.CustomerUpdateItemReader;
 import com.gngsn.apressbatch.batch.CustomerUpdateItemWriter;
+import com.gngsn.apressbatch.domain.Customer;
 import com.gngsn.apressbatch.domain.CustomerUpdate;
+import com.gngsn.apressbatch.domain.Statement;
 import com.gngsn.apressbatch.domain.Transaction;
 import com.gngsn.apressbatch.utils.ConstantsJobSteps;
 import com.gngsn.apressbatch.valid.CustomerItemValidator;
@@ -13,12 +15,16 @@ import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
 import org.springframework.batch.core.configuration.annotation.StepScope;
+import org.springframework.batch.item.ItemProcessor;
 import org.springframework.batch.item.database.JdbcBatchItemWriter;
 import org.springframework.batch.item.database.JdbcCursorItemReader;
 import org.springframework.batch.item.database.builder.JdbcBatchItemWriterBuilder;
 import org.springframework.batch.item.database.builder.JdbcCursorItemReaderBuilder;
 import org.springframework.batch.item.file.FlatFileItemReader;
+import org.springframework.batch.item.file.FlatFileItemWriter;
+import org.springframework.batch.item.file.MultiResourceItemWriter;
 import org.springframework.batch.item.file.builder.FlatFileItemReaderBuilder;
+import org.springframework.batch.item.file.builder.MultiResourceItemWriterBuilder;
 import org.springframework.batch.item.support.ClassifierCompositeItemWriter;
 import org.springframework.batch.item.validator.ValidatingItemProcessor;
 import org.springframework.batch.item.xml.StaxEventItemReader;
@@ -36,8 +42,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.gngsn.apressbatch.utils.ConstantsJobSteps.APPLY_TRANSACTIONS_STEP;
-import static com.gngsn.apressbatch.utils.ConstantsJobSteps.IMPORT_TRANSACTIONS_STEP;
+import static com.gngsn.apressbatch.utils.ConstantsJobSteps.*;
 
 
 @Configuration // 기본적으로 구성클래스로 간주하기 때문에 Configauration을 명시할 필요가 없음
@@ -59,6 +64,7 @@ public class ImportJobConfiguration {
             .start(importCustomerUpdates())
             .next(importTransactions())
             .next(applyTransaction())
+            .next(generateStatements(null))
             .build();
     }
 
@@ -104,6 +110,16 @@ public class ImportJobConfiguration {
             .<Transaction, Transaction>chunk(100)
             .reader(applyTransactionReader(null))
             .writer(applyTransactionWriter(null))
+            .build();
+    }
+
+    @Bean(GENERATE_STATEMENTS_STEP)
+    public Step generateStatements(ItemProcessor itemProcessor) {
+        return this.stepBuilderFactory.get(GENERATE_STATEMENTS_STEP)
+            .<Statement, Statement>chunk(1)
+            .reader(statementItemReader(null))
+            .processor(itemProcessor)
+            .writer(statementItemWrtier(null))
             .build();
     }
 
@@ -222,6 +238,56 @@ public class ImportJobConfiguration {
             .beanMapped()
             .assertUpdates(false)
             .build();
+    }
+
+
+    @Bean
+    public JdbcCursorItemReader<Statement> statementItemReader(DataSource dataSource) {
+        return new JdbcCursorItemReaderBuilder<Statement>()
+            .name("statementItemReader")
+            .dataSource(dataSource)
+            .sql("SELECT * FROM CUSTOMER")
+            .rowMapper((resultSet, i) -> {
+                Customer customer = new Customer(resultSet.getLong("customer_id"),
+                    resultSet.getString("first_name"),
+                    resultSet.getString("middle_name"),
+                    resultSet.getString("last_name"),
+                    resultSet.getString("address1"),
+                    resultSet.getString("address2"),
+                    resultSet.getString("city"),
+                    resultSet.getString("state"),
+                    resultSet.getString("postal_code"),
+                    resultSet.getString("ssn"),
+                    resultSet.getString("email_address"),
+                    resultSet.getString("home_phone"),
+                    resultSet.getString("cell_phone"),
+                    resultSet.getString("work_phone"),
+                    resultSet.getInt("notification_pref"));
+
+                return new Statement(customer);
+            }).build();
+    }
+
+    @Bean
+    @StepScope
+    public MultiResourceItemWriter<Statement> statementItemWriter(@Value("#{jobParameters['outputDirectory']}") Resource outputDir) {
+        return new MultiResourceItemWriterBuilder<Statement>()
+            .name("statementItemWriter")
+            .resource(outputDir)
+            .itemCountLimitPerResource(1)
+            .delegate(individualStatementItemWriter())
+            .build();
+    }
+
+    @Bean
+    public FlatFileItemWriter<Statement> individualStatementItemWriter() {
+        FlatFileItemWriter<Statement> itemWriter = new FlatFileItemWriter<>();
+
+        itemWriter.setName("individualStatementItemWriter");
+        itemWriter.setHeaderCallback(new StatementHeaderCallback());
+        itemWriter.setLineAggregator(new StatementLineAggregator());
+
+        return itemWriter;
     }
 
 }
