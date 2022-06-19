@@ -13,6 +13,7 @@ import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
 import org.springframework.batch.core.configuration.annotation.StepScope;
+import org.springframework.batch.core.launch.support.RunIdIncrementer;
 import org.springframework.batch.item.ItemProcessor;
 import org.springframework.batch.item.database.JdbcBatchItemWriter;
 import org.springframework.batch.item.database.JdbcCursorItemReader;
@@ -59,6 +60,7 @@ public class ImportJobConfiguration {
     public Job job() throws Exception {
         return this.jobBuilderFactory
             .get("importJob")
+            .incrementer(new RunIdIncrementer())
             .start(importCustomerUpdates())
             .next(importTransactions())
             .next(applyTransaction())
@@ -209,10 +211,10 @@ public class ImportJobConfiguration {
         return compositeItemWriter;
     }
 
-    @Bean
+    @Bean("applyTransactionReader")
     public JdbcCursorItemReader<Transaction> applyTransactionReader(DataSource dataSource) {
         return new JdbcCursorItemReaderBuilder<Transaction>()
-            .name("")
+            .name("applyTransactionReader")
             .dataSource(dataSource)
             .sql("SELECT transaction_id, account_id, description, credit, debit, timestamp from transaction order by timestamp")
             .rowMapper((resultSet, i) ->
