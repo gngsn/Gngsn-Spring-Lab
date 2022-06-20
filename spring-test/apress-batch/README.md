@@ -123,7 +123,7 @@ public Step step1() {
 
 ## Job LifeCycle
 
-잡의 실행은 잡 러너job runner에서 시작된다. 잡 러너는 잡 이름과 여러 파라미터를 받아들여 잡을 실행시키는 역할을 한다. 
+잡의 실행은 잡 러너 job runner에서 시작된다. 잡 러너는 잡 이름과 여러 파라미터를 받아들여 잡을 실행시키는 역할을 한다. 
 스프링 배치는 두 가지 잡 러너를 제공한다.
 
 #### CommandLineJobRunner

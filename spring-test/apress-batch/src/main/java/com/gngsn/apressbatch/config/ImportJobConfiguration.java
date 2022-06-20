@@ -62,9 +62,9 @@ public class ImportJobConfiguration {
             .get("importJob")
             .incrementer(new RunIdIncrementer())
             .start(importCustomerUpdates())
-            .next(importTransactions())
-            .next(applyTransaction())
-            .next(generateStatements(null))
+//            .next(importTransactions())
+//            .next(applyTransaction())
+//            .next(generateStatements(null))
             .build();
     }
 
@@ -114,7 +114,7 @@ public class ImportJobConfiguration {
     }
 
     @Bean(GENERATE_STATEMENTS_STEP)
-    public Step generateStatements(ItemProcessor itemProcessor) {
+    public Step generateStatements(AccountItemProcessor itemProcessor) {
         return this.stepBuilderFactory.get(GENERATE_STATEMENTS_STEP)
             .<Statement, Statement>chunk(1)
             .reader(statementItemReader(null))
@@ -190,10 +190,10 @@ public class ImportJobConfiguration {
     public ValidatingItemProcessor<CustomerUpdate> getCustomerValidatingItemProcessor(
         CustomerItemValidator validator
     ) {
-        ValidatingItemProcessor<CustomerUpdate> customerValidatingItemProcessor =
-            new ValidatingItemProcessor<>(validator);
+        ValidatingItemProcessor<CustomerUpdate> customerValidatingItemProcessor = new ValidatingItemProcessor<>(validator);
 
         customerValidatingItemProcessor.setFilter(true);
+
         return customerValidatingItemProcessor;
     }
 

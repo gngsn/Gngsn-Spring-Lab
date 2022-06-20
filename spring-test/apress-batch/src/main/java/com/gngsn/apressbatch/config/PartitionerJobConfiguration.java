@@ -31,8 +31,8 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import java.io.IOException;
 import java.net.MalformedURLException;
 
-@Configuration
-@EnableBatchProcessing
+//@Configuration
+//@EnableBatchProcessing
 @RequiredArgsConstructor
 public class PartitionerJobConfiguration {
 
@@ -41,7 +41,7 @@ public class PartitionerJobConfiguration {
 
     private final ResourcePatternResolver resoursePatternResolver;
 
-    @Bean(name = "partitionerJob")
+//    @Bean(name = "partitionerJob")
     public Job partitionerJob()
         throws UnexpectedInputException, MalformedURLException, ParseException {
         return jobBuilderFactory.get("partitioningJob")

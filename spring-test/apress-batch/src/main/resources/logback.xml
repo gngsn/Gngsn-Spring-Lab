@@ -1,0 +1,44 @@
+<!--<?xml version="1.0" encoding="UTF-8" ?>-->
+<!--&lt;!&ndash; <configuration debug="true"> &ndash;&gt;-->
+<configuration>
+
+    <!--	&lt;!&ndash; LOCAL &ndash;&gt;-->
+
+    <!--	&lt;!&ndash; 외부 설정파일을 사용 &ndash;&gt;-->
+    <property resource="logback.properties"/>
+
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>${log.pattern}</pattern>
+        </encoder>
+    </appender>
+
+    <logger name="org" additivity="false">
+        <level value="INFO"/>
+        <appender-ref ref="CONSOLE"/>
+    </logger>
+
+    <logger name="com.gngsn" additivity="false">
+        <level value="DEBUG"/>
+        <appender-ref ref="CONSOLE"/>
+    </logger>
+
+    <logger name="jdbc" level="OFF"/>
+    <logger name="jdbc.audit" level="OFF"/>
+    <logger name="jdbc.connection" level="OFF"/>
+
+    <!-- SQL문과 해당 SQL을 실행시키는데 수행된 시간 정보(milliseconds)를 포함한다. -->
+    <logger name="jdbc.sqltiming" level="OFF"/>
+
+    <!-- SQL 결과 조회된 데이터의 table을 로그로 남긴다 -->
+    <logger name="jdbc.resultsettable" level="OFF"/>
+    <logger name="jdbc.resultsettable" additivity="false">
+        <level value="DEBUG"/>
+        <appender-ref ref="CONSOLE"/>
+    </logger>
+
+    <root>
+        <level value="INFO"/>
+        <appender-ref ref="CONSOLE"/>
+    </root>
+</configuration>
