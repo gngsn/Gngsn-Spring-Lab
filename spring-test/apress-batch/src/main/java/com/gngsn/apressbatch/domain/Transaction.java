@@ -3,11 +3,14 @@ package com.gngsn.apressbatch.domain;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+
 import java.math.BigDecimal;
 import java.util.Date;
 
 @Data
 @AllArgsConstructor
+@NoArgsConstructor
 @XStreamAlias("transaction")
 public class Transaction {
 
@@ -28,6 +31,7 @@ public class Transaction {
 
     @XStreamAlias("timestamp")
     private Date timestamp;
+
 //
 //    @XmlJavaTypeAdapter(JaxbDateSerializer.class)
 //    public void setTimestamp(Date timestamp) {

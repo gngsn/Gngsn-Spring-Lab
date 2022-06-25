@@ -16,7 +16,8 @@ public class ApressBatchApplication {
 
         String[] realArgs = {
             "customerUpdateFile=file:///Users/gyeongseon/Git/Gngsn-Spring-Lab/spring-test/apress-batch/src/main/resources/data/customer_update.csv",
-            "transactionFile=file:///Users/gyeongseon/Git/Gngsn-Spring-Lab/spring-test/apress-batch/src/main/resources/data/transactions.xml"
+            "transactionFile=file:///Users/gyeongseon/Git/Gngsn-Spring-Lab/spring-test/apress-batch/src/main/resources/data/transactions.xml",
+            "outputDirectory=file:///Users/gyeongseon/Git/Gngsn-Spring-Lab/spring-test/apress-batch/"
         };
 
         SpringApplication.run(ApressBatchApplication.class, realArgs);
