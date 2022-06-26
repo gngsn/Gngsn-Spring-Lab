@@ -1,7 +1,6 @@
 package com.gngsn.batchtest;
 
 
-import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.junit.jupiter.api.Test;
 import org.mybatis.spring.SqlSessionFactoryBean;
@@ -9,19 +8,14 @@ import org.mybatis.spring.batch.MyBatisBatchItemWriter;
 import org.mybatis.spring.batch.builder.MyBatisBatchItemWriterBuilder;
 import org.springframework.batch.item.database.JdbcBatchItemWriter;
 import org.springframework.batch.item.database.builder.JdbcBatchItemWriterBuilder;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 
 import javax.sql.DataSource;
-import java.io.IOException;
-import java.nio.charset.Charset;
 import java.util.*;
 
-//@SpringBootTest
 class BatchTestApplicationTests {
-	int INSERT_SIZE = 1000;
+	int INSERT_SIZE = 1_000;
 
 	// 1sec 36ms
 	@Test
