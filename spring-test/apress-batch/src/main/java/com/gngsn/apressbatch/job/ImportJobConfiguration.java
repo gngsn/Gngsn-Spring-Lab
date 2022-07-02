@@ -1,4 +1,4 @@
-package com.gngsn.apressbatch.config;
+package com.gngsn.apressbatch.job;
 
 import com.gngsn.apressbatch.batch.*;
 import com.gngsn.apressbatch.domain.Customer;
@@ -31,6 +31,7 @@ import org.springframework.batch.item.xml.builder.StaxEventItemReaderBuilder;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 import org.springframework.oxm.xstream.XStreamMarshaller;
 
@@ -78,7 +79,7 @@ public class ImportJobConfiguration {
     public Step importCustomerUpdates() throws Exception {
         return this.stepBuilderFactory.get(ConstantsJobSteps.IMPORT_CUSTOMER_UPDATE_STEP)
             .<CustomerUpdate, CustomerUpdate> chunk(100)
-            .reader(this.getCustomerUpdateItemReader(null))
+            .reader(this.getCustomerUpdateItemReader())
             .processor(this.getCustomerValidatingItemProcessor(null))
             .writer(this.getCustomerUpdateItemWriter())
             .build();
@@ -133,7 +134,7 @@ public class ImportJobConfiguration {
     ) {
         return new StaxEventItemReaderBuilder<Transaction>()
             .name("fooReader")
-            .resource(transactionFile)
+            .resource(new FileSystemResource("src/main/resources/data/transactions.xml"))
             .addFragmentRootElements("transaction")
             .unmarshaller(unmarshaller())
             .build();
@@ -165,17 +166,17 @@ public class ImportJobConfiguration {
      * customUpdateItemReader
      * Step Scope Bean - Job Parameter를 사용해서 읽을 파일의 위치를 지정
      *
-     * @param inputFile
+//     * @param inputFile
      * @return FlatFileItemReaderBuilder
      */
     @Bean
     @StepScope
     public FlatFileItemReader<CustomerUpdate> getCustomerUpdateItemReader(
-        @Value("#{jobParameters['customerUpdateFile']}") Resource inputFile
+//        @Value("#{jobParameters['customerUpdateFile']}") Resource inputFile
     ) throws Exception {
         return new FlatFileItemReaderBuilder<CustomerUpdate>()
             .name("customerUpdateItemReader")
-            .resource(inputFile)
+            .resource(new FileSystemResource("src/main/resources/data/customer_update.csv"))
             .lineTokenizer(customerUpdateItemReader.customerUpdatesLineTokenizer())
             .fieldSetMapper(customerUpdateItemReader.customerUpdateFieldSetMapper())
             .build();
@@ -268,7 +269,7 @@ public class ImportJobConfiguration {
     public MultiResourceItemWriter<Statement> statementItemWriter(@Value("#{jobParameters['outputDirectory']}") Resource outputDir) {
         return new MultiResourceItemWriterBuilder<Statement>()
             .name("statementItemWriter")
-            .resource(outputDir)
+            .resource(new FileSystemResource(""))
             .itemCountLimitPerResource(1)
             .delegate(individualStatementItemWriter())
             .build();

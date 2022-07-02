@@ -70,7 +70,7 @@ public class PartitionerJobConfiguration {
             .get("slaveStep")
             .<Transaction, Transaction>chunk(1)
             .reader(flatFileItemReader(null))
-            .writer(staxEventItemWriterBuilder(marshaller(), null, null))
+            .writer(staxEventItemWriterBuilder(marshaller()))
             .build();
     }
 
@@ -134,16 +134,14 @@ public class PartitionerJobConfiguration {
     @Bean(destroyMethod="")
     @StepScope
     public StaxEventItemWriter<Transaction> staxEventItemWriterBuilder(
-        Marshaller marshaller,
-        @Value("#{jobParameters[opFileName]}") String filename,
-        @Value("#{jobParameters['run.id']}") Long id
+        Marshaller marshaller
         ) {
 
         return new StaxEventItemWriterBuilder<Transaction>()
             .name("staxEventItemWriterBuilder")
             .marshaller(marshaller)
             .rootTagName("transactionRecord")
-            .resource(new FileSystemResource("src/main/resources/output/" + Math.random() + filename))
+            .resource(new FileSystemResource("src/main/resources/output/" + (int)(Math.random() * 100) + ".xml"))
             .build();
     }
 }

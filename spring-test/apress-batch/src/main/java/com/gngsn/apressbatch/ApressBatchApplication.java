@@ -14,11 +14,11 @@ public class ApressBatchApplication {
 
     public static void main(String[] args) {
 
-//        String[] realArgs = {
-//            "customerUpdateFile=file:///Users/gyeongseon/Git/Gngsn-Spring-Lab/spring-test/apress-batch/src/main/resources/data/customer_update.csv",
-//            "transactionFile=file:///Users/gyeongseon/Git/Gngsn-Spring-Lab/spring-test/apress-batch/src/main/resources/data/transactions.xml",
-//            "outputDirectory=file:///Users/gyeongseon/Git/Gngsn-Spring-Lab/spring-test/apress-batch/"
-//        };
+        String[] realArgs = {
+            "customerUpdateFile=file:///Users/gyeongseon/Git/Gngsn-Spring-Lab/spring-test/apress-batch/src/main/resources/data/customer_update.csv",
+            "transactionFile=file:///Users/gyeongseon/Git/Gngsn-Spring-Lab/spring-test/apress-batch/src/main/resources/data/transactions.xml",
+            "outputDirectory=file:///Users/gyeongseon/Git/Gngsn-Spring-Lab/spring-test/apress-batch/"
+        };
 
         SpringApplication.run(ApressBatchApplication.class, args);
     }
