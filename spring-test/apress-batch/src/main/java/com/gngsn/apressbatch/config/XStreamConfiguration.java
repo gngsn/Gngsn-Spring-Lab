@@ -1,14 +1,13 @@
-package com.gngsn.apressbatch.job;
+package com.gngsn.apressbatch.config;
 
 import com.gngsn.apressbatch.domain.Transaction;
 import com.thoughtworks.xstream.XStream;
+import com.thoughtworks.xstream.converters.basic.BigDecimalConverter;
 import com.thoughtworks.xstream.converters.basic.DateConverter;
-import com.thoughtworks.xstream.converters.basic.NullConverter;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.oxm.xstream.XStreamMarshaller;
 
 import static com.thoughtworks.xstream.XStream.PRIORITY_NORMAL;
-import static com.thoughtworks.xstream.XStream.PRIORITY_VERY_HIGH;
 
 @Configuration
 public class XStreamConfiguration {

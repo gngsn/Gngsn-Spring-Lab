@@ -1,4 +1,4 @@
-package com.gngsn.apressbatch;
+package com.gngsn.apressbatch.utils;
 
 import com.gngsn.apressbatch.domain.Account;
 import com.gngsn.apressbatch.domain.Transaction;

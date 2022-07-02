@@ -6,6 +6,7 @@ import com.gngsn.apressbatch.domain.CustomerUpdate;
 import com.gngsn.apressbatch.domain.Statement;
 import com.gngsn.apressbatch.domain.Transaction;
 import com.gngsn.apressbatch.utils.ConstantsJobSteps;
+import com.gngsn.apressbatch.utils.StatementLineAggregator;
 import com.gngsn.apressbatch.valid.CustomerItemValidator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.batch.core.Job;

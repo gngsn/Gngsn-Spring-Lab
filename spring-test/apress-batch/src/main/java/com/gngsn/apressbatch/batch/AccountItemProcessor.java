@@ -1,8 +1,7 @@
 package com.gngsn.apressbatch.batch;
 
-import com.gngsn.apressbatch.AccountResultSetExtractor;
+import com.gngsn.apressbatch.utils.AccountResultSetExtractor;
 import com.gngsn.apressbatch.domain.Statement;
-import lombok.RequiredArgsConstructor;
 import org.springframework.batch.item.ItemProcessor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;

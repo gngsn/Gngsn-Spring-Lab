@@ -1,4 +1,4 @@
-package com.gngsn.apressbatch.config;
+package com.gngsn.apressbatch.job;
 
 import com.gngsn.apressbatch.batch.CustomMultiResourcePartitioner;
 import com.gngsn.apressbatch.partition.domain.Transaction;
@@ -13,6 +13,7 @@ import org.springframework.batch.core.launch.support.RunIdIncrementer;
 import org.springframework.batch.item.ParseException;
 import org.springframework.batch.item.UnexpectedInputException;
 import org.springframework.batch.item.file.FlatFileItemReader;
+import org.springframework.batch.item.file.builder.FlatFileItemReaderBuilder;
 import org.springframework.batch.item.file.mapping.DefaultLineMapper;
 import org.springframework.batch.item.file.transform.DelimitedLineTokenizer;
 import org.springframework.batch.item.xml.StaxEventItemWriter;
@@ -53,12 +54,12 @@ public class PartitionerJobConfiguration {
 
     @Bean
     public Step partitionStep()
-        throws UnexpectedInputException, MalformedURLException, ParseException {
+        throws UnexpectedInputException, ParseException {
         return stepBuilderFactory
             .get("partitionStep")
             .partitioner("slaveStep", partitioner())
             .step(slaveStep())
-            .taskExecutor(taskExecutor())
+//            .taskExecutor(taskExecutor())
             .build();
     }
 
@@ -69,10 +70,9 @@ public class PartitionerJobConfiguration {
             .get("slaveStep")
             .<Transaction, Transaction>chunk(1)
             .reader(flatFileItemReader(null))
-            .writer(staxEventItemWriterBuilder(marshaller(), null))
+            .writer(staxEventItemWriterBuilder(marshaller(), null, null))
             .build();
     }
-
 
     @Bean
     public Jaxb2Marshaller marshaller() {
@@ -87,6 +87,8 @@ public class PartitionerJobConfiguration {
         taskExecutor.setMaxPoolSize(5);
         taskExecutor.setCorePoolSize(5);
         taskExecutor.setQueueCapacity(5);
+        taskExecutor.setAllowCoreThreadTimeOut(true);
+
         taskExecutor.afterPropertiesSet();
         return taskExecutor;
     }
@@ -100,8 +102,7 @@ public class PartitionerJobConfiguration {
             resources = resourcePatternResolver
                 .getResources("file:src/main/resources/input/*.csv");
         } catch (IOException e) {
-            throw new RuntimeException("I/O problems when resolving"
-                + " the input file pattern.", e);
+            throw new RuntimeException("I/O problems when resolving the input file pattern.", e);
         }
 
         partitioner.setResources(resources);
@@ -114,28 +115,29 @@ public class PartitionerJobConfiguration {
         @Value("#{jobParameters[fileName]}") String filename)
             throws UnexpectedInputException, ParseException {
 
-        FlatFileItemReader<Transaction> reader = new FlatFileItemReader<>();
-        DelimitedLineTokenizer tokenizer = new DelimitedLineTokenizer();
-
-        String[] tokens = {"username", "userid", "transactiondate", "amount"};
-
-        tokenizer.setNames(tokens);
-        reader.setResource(new ClassPathResource("input/" + filename));
-
         DefaultLineMapper<Transaction> lineMapper = new DefaultLineMapper<>();
+        DelimitedLineTokenizer tokenizer = new DelimitedLineTokenizer();
+        String[] tokens = {"username", "userid", "transactiondate", "amount"};
+        tokenizer.setNames(tokens);
+
         lineMapper.setLineTokenizer(tokenizer);
         lineMapper.setFieldSetMapper(new RecordFieldSetMapper());
 
-        reader.setLinesToSkip(1);
-        reader.setLineMapper(lineMapper);
-        return reader;
+        return new FlatFileItemReaderBuilder<Transaction>()
+            .name("flatFileItemReader")
+            .resource(new ClassPathResource("input/" + filename))
+            .linesToSkip(1)
+            .lineMapper(lineMapper)
+            .build();
     }
 
-    @Bean(destroyMethod = "")
+    @Bean(destroyMethod="")
     @StepScope
     public StaxEventItemWriter<Transaction> staxEventItemWriterBuilder(
         Marshaller marshaller,
-        @Value("#{jobParameters['opFileName']}") String filename) {
+        @Value("#{jobParameters[opFileName]}") String filename,
+        @Value("#{jobParameters['run.id']}") Long id
+        ) {
 
         return new StaxEventItemWriterBuilder<Transaction>()
             .name("staxEventItemWriterBuilder")
