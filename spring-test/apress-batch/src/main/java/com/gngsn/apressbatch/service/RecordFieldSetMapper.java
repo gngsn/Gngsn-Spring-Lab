@@ -1,11 +1,9 @@
 package com.gngsn.apressbatch.service;
 
-import com.gngsn.apressbatch.batch.paritioner.Transaction;
+import com.gngsn.apressbatch.partition.domain.Transaction;
 import org.springframework.batch.item.file.mapping.FieldSetMapper;
 import org.springframework.batch.item.file.transform.FieldSet;
 
-import java.net.BindException;
-import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
 public class RecordFieldSetMapper  implements FieldSetMapper<Transaction> {

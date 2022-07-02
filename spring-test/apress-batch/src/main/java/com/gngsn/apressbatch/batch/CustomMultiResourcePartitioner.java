@@ -1,4 +1,4 @@
-package com.gngsn.apressbatch.batch.paritioner;
+package com.gngsn.apressbatch.batch;
 
 import lombok.Data;
 import org.springframework.batch.core.partition.support.Partitioner;

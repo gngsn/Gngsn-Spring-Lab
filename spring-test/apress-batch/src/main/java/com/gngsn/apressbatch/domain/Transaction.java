@@ -1,6 +1,5 @@
 package com.gngsn.apressbatch.domain;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -11,25 +10,25 @@ import java.util.Date;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@XStreamAlias("transaction")
+//@XStreamAlias("transaction")
 public class Transaction {
 
-    @XStreamAlias("transactionId")
+//    @XStreamAlias("transactionId")
     private long transactionId;
 
-    @XStreamAlias("accountId")
+//    @XStreamAlias("accountId")
     private long accountId;
 
-    @XStreamAlias("description")
+//    @XStreamAlias("description")
     private String description;
 
-    @XStreamAlias("credit")
+//    @XStreamAlias("credit")
     private BigDecimal credit;
 
-    @XStreamAlias("debit")
+//    @XStreamAlias("debit")
     private BigDecimal debit;
 
-    @XStreamAlias("timestamp")
+//    @XStreamAlias("timestamp")
     private Date timestamp;
 
 //

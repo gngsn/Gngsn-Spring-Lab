@@ -1,26 +1,27 @@
 package com.gngsn.apressbatch.config;
 
-import com.gngsn.apressbatch.batch.paritioner.CustomMultiResourcePartitioner;
-import com.gngsn.apressbatch.batch.paritioner.Transaction;
+import com.gngsn.apressbatch.batch.CustomMultiResourcePartitioner;
+import com.gngsn.apressbatch.partition.domain.Transaction;
 import com.gngsn.apressbatch.service.RecordFieldSetMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
-import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
 import org.springframework.batch.core.configuration.annotation.StepScope;
-import org.springframework.batch.item.ItemWriter;
+import org.springframework.batch.core.launch.support.RunIdIncrementer;
 import org.springframework.batch.item.ParseException;
 import org.springframework.batch.item.UnexpectedInputException;
 import org.springframework.batch.item.file.FlatFileItemReader;
 import org.springframework.batch.item.file.mapping.DefaultLineMapper;
 import org.springframework.batch.item.file.transform.DelimitedLineTokenizer;
 import org.springframework.batch.item.xml.StaxEventItemWriter;
+import org.springframework.batch.item.xml.builder.StaxEventItemWriterBuilder;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.ResourcePatternResolver;
 import org.springframework.core.task.TaskExecutor;
@@ -31,20 +32,21 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import java.io.IOException;
 import java.net.MalformedURLException;
 
-//@Configuration
-//@EnableBatchProcessing
+@Configuration
 @RequiredArgsConstructor
 public class PartitionerJobConfiguration {
 
     private final JobBuilderFactory jobBuilderFactory;
     private final StepBuilderFactory stepBuilderFactory;
 
-    private final ResourcePatternResolver resoursePatternResolver;
+    private final ResourcePatternResolver resourcePatternResolver;
 
-//    @Bean(name = "partitionerJob")
+    @Bean
     public Job partitionerJob()
         throws UnexpectedInputException, MalformedURLException, ParseException {
-        return jobBuilderFactory.get("partitioningJob")
+        return jobBuilderFactory
+            .get("partitionerJob")
+            .incrementer(new RunIdIncrementer())
             .start(partitionStep())
             .build();
     }
@@ -52,7 +54,8 @@ public class PartitionerJobConfiguration {
     @Bean
     public Step partitionStep()
         throws UnexpectedInputException, MalformedURLException, ParseException {
-        return stepBuilderFactory.get("partitionStep")
+        return stepBuilderFactory
+            .get("partitionStep")
             .partitioner("slaveStep", partitioner())
             .step(slaveStep())
             .taskExecutor(taskExecutor())
@@ -61,17 +64,18 @@ public class PartitionerJobConfiguration {
 
     @Bean
     public Step slaveStep()
-        throws UnexpectedInputException, MalformedURLException, ParseException {
-        return stepBuilderFactory.get("slaveStep")
+        throws UnexpectedInputException, ParseException {
+        return stepBuilderFactory
+            .get("slaveStep")
             .<Transaction, Transaction>chunk(1)
-            .reader(itemReader(null))
-            .writer(itemWriter(marshaller(), null))
+            .reader(flatFileItemReader(null))
+            .writer(staxEventItemWriterBuilder(marshaller(), null))
             .build();
     }
 
 
     @Bean
-    public Marshaller marshaller() {
+    public Jaxb2Marshaller marshaller() {
         Jaxb2Marshaller marshaller = new Jaxb2Marshaller();
         marshaller.setClassesToBeBound(Transaction.class);
         return marshaller;
@@ -93,7 +97,7 @@ public class PartitionerJobConfiguration {
         Resource[] resources;
 
         try {
-            resources = resoursePatternResolver
+            resources = resourcePatternResolver
                 .getResources("file:src/main/resources/input/*.csv");
         } catch (IOException e) {
             throw new RuntimeException("I/O problems when resolving"
@@ -104,10 +108,10 @@ public class PartitionerJobConfiguration {
         return partitioner;
     }
 
-    @StepScope
     @Bean
-    public FlatFileItemReader<Transaction> itemReader(
-        @Value("#{stepExecutionContext[fileName]}") String filename)
+    @StepScope
+    public FlatFileItemReader<Transaction> flatFileItemReader(
+        @Value("#{jobParameters[fileName]}") String filename)
             throws UnexpectedInputException, ParseException {
 
         FlatFileItemReader<Transaction> reader = new FlatFileItemReader<>();
@@ -127,16 +131,17 @@ public class PartitionerJobConfiguration {
         return reader;
     }
 
-    @Bean
+    @Bean(destroyMethod = "")
     @StepScope
-    public ItemWriter<Transaction> itemWriter(Marshaller marshaller,
-                                              @Value("#{stepExecutionContext[opFileName]}") String filename)
-        throws MalformedURLException {
-        StaxEventItemWriter<Transaction> itemWriter
-            = new StaxEventItemWriter<Transaction>();
-        itemWriter.setMarshaller(marshaller);
-        itemWriter.setRootTagName("transactionRecord");
-        itemWriter.setResource(new ClassPathResource("xml/" + filename));
-        return itemWriter;
+    public StaxEventItemWriter<Transaction> staxEventItemWriterBuilder(
+        Marshaller marshaller,
+        @Value("#{jobParameters['opFileName']}") String filename) {
+
+        return new StaxEventItemWriterBuilder<Transaction>()
+            .name("staxEventItemWriterBuilder")
+            .marshaller(marshaller)
+            .rootTagName("transactionRecord")
+            .resource(new FileSystemResource("src/main/resources/output/" + Math.random() + filename))
+            .build();
     }
 }
