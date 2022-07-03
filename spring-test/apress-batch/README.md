@@ -139,3 +139,11 @@ public Step step1() {
 별개로 JobLauncherCommandLineJobRunner를 사용해 잡을 시작하는 또 다른 방법을 제공한다. 이 CommandLineRunner 구현체는 별도의 구성이 없다면 기본적으로 ApplicationContext에 정의된 Job 타입의 모든 빈을 기동 시에 실행한다. 
 
 사용자가 스프링 배치를 실행할 때 잡 러너를 사용하긴 하지만, 잡 러너는 프레임워크가 제공하는 표준 모듈이 아니다.
+
+
+
+<br/><br/>
+
+## Partition Job 구성 
+
+[참고 링크](https://www.baeldung.com/spring-batch-partitioner)
