@@ -4,6 +4,8 @@
         "http://mybatis.org/dtd/mybatis-3-config.dtd">
 <configuration>
     <mappers>
+        <mapper resource="./bulk-upsert-sql.xml"/>
+        <mapper resource="./bulk-update-temp-table.xml"/>
         <mapper resource="./sql.xml"/>
     </mappers>
 </configuration>
