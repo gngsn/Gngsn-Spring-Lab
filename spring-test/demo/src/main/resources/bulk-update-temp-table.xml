@@ -8,11 +8,24 @@
         CREATE TEMPORARY TABLE user_temp LIKE `user`
     </sql>
 
-    <sql id="bulkInsertTempTable">
+    <sql id="insertTempTable">
         INSERT INTO user_temp (name, type) VALUES
         <foreach collection="list" item="item" separator=",">
             (#{item.name}, #{item.type})
         </foreach>
+    </sql>
+
+    <sql id="insertMainTable">
+        INSERT INTO user (name, type)
+        VALUES
+            <foreach collection="list" item="item" separator=",">
+                (#{item.name}, #{item.type})
+            </foreach>
+        WHERE name NOT IN (
+            SELECT name
+            FROM user u
+            INNER JOIN user_temp t ON u.name = t.name
+        )
     </sql>
 
     <sql id="updateTempTable">
@@ -28,8 +41,9 @@
     <insert id="bulkUpsertUsingTempTable2" parameterType="com.gngsn.demo.bulkUpsert.UserVO">
         <include refid="createTempTable"/>;
 
-        <include refid="bulkInsertTempTable"/>;
+        <include refid="insertTempTable"/>;
         <include refid="updateTempTable"/>;
+        <include refid="insertMainTable"/>;
 
         <include refid="dropTempTable"/>;
     </insert>
