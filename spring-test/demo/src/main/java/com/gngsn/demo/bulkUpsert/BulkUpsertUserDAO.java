@@ -2,8 +2,6 @@ package com.gngsn.demo.bulkUpsert;
 
 import org.apache.ibatis.session.SqlSession;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -28,8 +26,8 @@ public class BulkUpsertUserDAO {
         return sqlSession.update(NAMESPACE + "bulkUpsertUsingTempTable", users);
     }
 
-    public int bulkUpsertUsingTempTable2(List<UserVO> users) {
-        return sqlSession.update(NAMESPACE + "bulkUpsertUsingTempTable2", users);
+    public int bulkUpdate(List<UserVO> users) {
+        return sqlSession.update(NAMESPACE + "bulkUpdate", users);
     }
 
     public int truncate() {

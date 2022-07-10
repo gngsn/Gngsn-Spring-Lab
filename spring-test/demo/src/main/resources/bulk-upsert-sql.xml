@@ -39,4 +39,3 @@
         TRUNCATE user;
     </delete>
 </mapper>
-
