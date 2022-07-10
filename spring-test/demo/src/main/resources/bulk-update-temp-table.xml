@@ -15,7 +15,7 @@
         </foreach>
     </sql>
 
-    <sql id="updateTempTable">
+    <sql id="updateMainTable">
         UPDATE user u
         INNER JOIN user_temp t ON u.name = t.name
         SET u.type = t.type
@@ -25,13 +25,27 @@
         DROP TABLE user_temp
     </sql>
 
-    <update id="bulkUpdate" parameterType="com.gngsn.demo.bulkUpsert.UserVO">
+    <update id="bulkUpdateWithTempTable" parameterType="com.gngsn.demo.bulkUpsert.UserVO">
         <include refid="createTempTable"/>;
 
         <include refid="insertTempTable"/>;
-        <include refid="updateTempTable"/>;
+        <include refid="updateMainTable"/>;
 
         <include refid="dropTempTable"/>;
     </update>
+
+    <update id="bulkUpdateMultiLine" parameterType="com.gngsn.demo.bulkUpsert.UserVO">
+        <foreach collection="list" item="item" separator=";">
+            UPDATE user
+            SET type = #{item.type}
+            WHERE name = #{item.name}
+        </foreach>
+    </update>
+
+    <select id="selectUpdateUserCnt" resultType="Integer">
+        SELECT count(*)
+        FROM user
+        WHERE type = 'Update';
+    </select>
 </mapper>
 

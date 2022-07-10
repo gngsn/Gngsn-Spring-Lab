@@ -60,7 +60,7 @@ public class BulkUpsertTests {
     public void given_insert80update20_when_tempTable2() {
         initData();
         List<UserVO> testSet = createTestData(20);
-        int cnt = userDAO.bulkUpdate(testSet);
+        int cnt = userDAO.bulkUpdateWithTempTable(testSet);
         Assertions.assertEquals(testSet.size(), TEST_SIZE);
         log.info(String.valueOf(cnt));
     }

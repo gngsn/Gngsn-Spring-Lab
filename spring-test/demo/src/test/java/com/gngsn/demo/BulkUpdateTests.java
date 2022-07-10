@@ -19,10 +19,10 @@ public class BulkUpdateTests {
     @Autowired
     public BulkUpsertUserDAO userDAO;
 
-    public int TEST_SIZE = 100;
+    public int TEST_SIZE = 5000;
 
     @BeforeEach
-    void initData() {
+    void setUp() {
         userDAO.truncate();
         List<UserVO> insertList = new ArrayList<>(TEST_SIZE);
 
@@ -35,16 +35,51 @@ public class BulkUpdateTests {
     }
 
     @Test
-    public void given_userNumEven__when_update__then_50() {
+    public void given_updateHalfOfTestSet__when_update__then_equalsUserUpdatedCount() {
+        double beforeTime = System.currentTimeMillis();
+
+        // Given : create updateList with half the size of test set.
         int UPDATE_SIZE = TEST_SIZE / 2;
         List<UserVO> updateList = new ArrayList<>(UPDATE_SIZE);
 
-        for (int i = 1; i <= UPDATE_SIZE; i += 2) {
+        for (int i = 1; i <= TEST_SIZE; i += 2) {
             updateList.add(new UserVO(String.format("UserVO%03d", i), "Update"));
         }
 
-        int cnt = userDAO.bulkUpdate(updateList);
+        // When : update bulk data using temporary table.
+        userDAO.bulkUpdateWithTempTable(updateList);
 
-        Assertions.assertEquals(cnt, UPDATE_SIZE);
+        double afterTime = System.currentTimeMillis();
+
+
+        // Then : the number of updated data should be equal to half of the test set.
+        int updateUserCnt = userDAO.selectUpdateUserCnt();
+        Assertions.assertEquals(updateUserCnt, UPDATE_SIZE);
+
+        log.info("### run time : {}s", (afterTime-beforeTime) / 1000); // TEST SET: 500 - 0.108s, 5000 - 0.204s
+    }
+
+    @Test
+    public void given_updateHalfOfTestSet__when_updateMultiLine__then_equalsUserUpdatedCount() {
+        double beforeTime = System.currentTimeMillis();
+
+        // Given : create updateList with half the size of test set.
+        int UPDATE_SIZE = TEST_SIZE / 2;
+        List<UserVO> updateList = new ArrayList<>(UPDATE_SIZE);
+
+        for (int i = 1; i <= TEST_SIZE; i += 2) {
+            updateList.add(new UserVO(String.format("UserVO%03d", i), "Update"));
+        }
+
+        // When : update bulk data using temporary table.
+        userDAO.bulkUpdateMultiLine(updateList);
+
+        double afterTime = System.currentTimeMillis();
+
+        // Then : the number of updated data should be equal to half of the test set.
+        int updateUserCnt = userDAO.selectUpdateUserCnt();
+        Assertions.assertEquals(updateUserCnt, UPDATE_SIZE);
+
+        log.info("### run time : {}s", (afterTime-beforeTime) / 1000); // TEST SET: 500 - 0.705s, 5000 - 1.491s
     }
 }

@@ -26,8 +26,17 @@ public class BulkUpsertUserDAO {
         return sqlSession.update(NAMESPACE + "bulkUpsertUsingTempTable", users);
     }
 
-    public int bulkUpdate(List<UserVO> users) {
-        return sqlSession.update(NAMESPACE + "bulkUpdate", users);
+    public int bulkUpdateWithTempTable(List<UserVO> users) {
+        return sqlSession.update(NAMESPACE + "bulkUpdateWithTempTable", users);
+    }
+
+
+    public int bulkUpdateMultiLine(List<UserVO> users) {
+        return sqlSession.update(NAMESPACE + "bulkUpdateMultiLine", users);
+    }
+
+    public int selectUpdateUserCnt() {
+        return sqlSession.selectOne(NAMESPACE + "selectUpdateUserCnt");
     }
 
     public int truncate() {
