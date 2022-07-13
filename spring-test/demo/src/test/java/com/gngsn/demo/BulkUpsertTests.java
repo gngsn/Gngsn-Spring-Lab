@@ -5,6 +5,8 @@ import com.gngsn.demo.bulkUpsert.UserVO;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mybatis.spring.SqlSessionFactoryBean;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,132 +24,107 @@ public class BulkUpsertTests {
 
     @Autowired
     public BulkUpsertUserDAO userDAO;
-    int TEST_SIZE = 100;
 
-//    @BeforeEach
-//    public void setUp() throws Exception {
-//        userDAO = new BulkUpsertUserDAO(this.sqlSession());
-//    }
+    int TEST_SIZE = 100_000;
 
-    void initData() {  // 000 ~ 100
+
+    @BeforeEach
+    public void initData() {  // 000 ~ 100
         userDAO.truncate();
         List<UserVO> insertList = new ArrayList<>(TEST_SIZE);
 
         for (int i = 1; i <= TEST_SIZE; i++) {
-            insertList.add(new UserVO(String.format("UserVO%03d", i), "Init"));
+            insertList.add(new UserVO(String.format("UserVO%05d", i), "Init"));
         }
 
         int cnt = userDAO.insertInit(insertList);
         Assertions.assertEquals(cnt, TEST_SIZE);
     }
 
-    List<UserVO> createTestData(int updateSize) {  // 000 ~ 020
-        List<UserVO> testSet = new ArrayList<>(TEST_SIZE);
-
-        for (int i = 1; i <= updateSize; i++) {
-            testSet.add(new UserVO(String.format("UserVO%03d", i), "Update"));
-        }
-
-        for (int i = 1; i <= (TEST_SIZE - updateSize); i++) {
-            testSet.add(new UserVO(String.format("UserVO%03d", (600 + i)), "Insert"));
-        }
-
-        return testSet;
-    }
-
-
-    @Test
-    public void given_insert80update20_when_tempTable2() {
-        initData();
-        List<UserVO> testSet = createTestData(20);
-        int cnt = userDAO.bulkUpdateWithTempTable(testSet);
-        Assertions.assertEquals(testSet.size(), TEST_SIZE);
-        log.info(String.valueOf(cnt));
-    }
-
     @Test
     public void given_insert100() {
-        initData();
-        List<UserVO> testSet = createTestData(0);
+
+        // given
+        List<UserVO> testSet = createTestData(TEST_SIZE);
+
+        // when
+        double beforeTime = System.currentTimeMillis();
+
         int cnt = userDAO.bulkUpsertUserList(testSet);
-        Assertions.assertEquals(testSet.size(), TEST_SIZE);
-        Assertions.assertEquals(cnt, 100);
+
+        double afterTime = System.currentTimeMillis();
+
+
+        // then
+        Assertions.assertEquals(cnt, TEST_SIZE);
+        log.info("### run time : {}s", (afterTime-beforeTime) / 1000);
+    }
+
+
+    @Test
+    public void given_insert80update20() {
+
+        // given
+        int insertSize = (int) (TEST_SIZE * 0.8);
+        List<UserVO> testSet = createTestData(insertSize);
+
+        // when
+        double beforeTime = System.currentTimeMillis();
+        int cnt = userDAO.bulkUpsertUserList(testSet);
+        double afterTime = System.currentTimeMillis();
+
+        // then
+        Assertions.assertEquals(cnt, TEST_SIZE + (TEST_SIZE - insertSize));
+        log.info("### run time : {}s", (afterTime-beforeTime) / 1000);
+    }
+
+    @Test
+    public void given_insert20update80() {
+
+        // given
+        int insertSize = (int) (TEST_SIZE * 0.2);
+        List<UserVO> testSet = createTestData(insertSize);
+
+        // when
+        double beforeTime = System.currentTimeMillis();
+        int cnt = userDAO.bulkUpsertUserList(testSet);
+        double afterTime = System.currentTimeMillis();
+
+        // then
+        Assertions.assertEquals(cnt, TEST_SIZE + (TEST_SIZE-insertSize));
+        log.info("### run time : {}s", (afterTime-beforeTime) / 1000);
     }
 
 
     @Test
     public void given_update100() {
-        initData();
-        List<UserVO> testSet = createTestData(100);
+
+        // given
+        List<UserVO> testSet = createTestData(0);
+
+        // when
+        double beforeTime = System.currentTimeMillis();
         int cnt = userDAO.bulkUpsertUserList(testSet);
-        Assertions.assertEquals(testSet.size(), TEST_SIZE);
-        Assertions.assertEquals(cnt, 200);
-    }
+        double afterTime = System.currentTimeMillis();
 
-    @Test
-    public void given_insert80update20() {
-        initData();
-        List<UserVO> testSet = createTestData(20);
-        int cnt = userDAO.bulkUpsertUserList(testSet);
-        Assertions.assertEquals(testSet.size(), TEST_SIZE);
-        Assertions.assertEquals(cnt, 120);
+        // then
+        Assertions.assertEquals(cnt, TEST_SIZE + TEST_SIZE);
+        log.info("### run time : {}s", (afterTime-beforeTime) / 1000);
     }
 
 
-    @Test
-    public void given_insert20update80() {
-        initData();
-        List<UserVO> testSet = createTestData(80);
-        int cnt = userDAO.bulkUpsertUserList(testSet);
-        Assertions.assertEquals(testSet.size(), TEST_SIZE);
-        Assertions.assertEquals(cnt, 180);
-    }
+    List<UserVO> createTestData(int insertSize) {  // 000 ~ 020
+        List<UserVO> testSet = new ArrayList<>(TEST_SIZE);
+        int outOfTestSizeNum = TEST_SIZE * 2;
 
-    @Test
-    public void given_insert80update20_when_tempTable() {
-        initData();
-        List<UserVO> testSet = createTestData(20);
-        int cnt = userDAO.bulkUpsertUsingTempTable(testSet);
-        Assertions.assertEquals(testSet.size(), TEST_SIZE);
-        log.info(String.valueOf(cnt));
-//        Assertions.assertEquals(cnt, 120);
-    }
-
-    public class TemporaryTableTest {
-
-    }
-
-    void createInsertData(int num) { // 300 ~ 400
-        List<UserVO> insertList = new ArrayList<>(num);
-
-        for (int i = 0; i < num; i++) {
-            insertList.add(new UserVO(String.format("UserVO%03d", i), "Insert"));
+        for (int i = 1; i <= insertSize; i++) {
+            testSet.add(new UserVO(String.format("UserVO%05d", (outOfTestSizeNum + i)), "Insert"));
         }
-    }
 
-    void createUpdateData(int num) {  // 000 ~ 020
-        List<UserVO> insertList = new ArrayList<>(num);
-
-        for (int i = 0; i < num; i++) {
-            insertList.add(new UserVO(String.format("UserVO%03d", i), "Update"));
+        for (int i = 1; i <= (TEST_SIZE - insertSize); i++) {
+            testSet.add(new UserVO(String.format("UserVO%05d", i), "Update"));
         }
-    }
 
-
-    private SqlSessionFactory sqlSession() throws Exception {
-        SqlSessionFactoryBean sessionFactoryBean = new SqlSessionFactoryBean();
-        sessionFactoryBean.setMapperLocations(new PathMatchingResourcePatternResolver().getResource("classpath:/bulk-upsert-sql.xml"));
-        sessionFactoryBean.setDataSource(dataSource());
-        return sessionFactoryBean.getObject();
-    }
-
-    private DataSource dataSource() {
-        DriverManagerDataSource dataSource = new DriverManagerDataSource();
-        dataSource.setDriverClassName("com.mysql.cj.jdbc.Driver");
-        dataSource.setUrl("jdbc:mysql://localhost:3306/bulk-update-test");
-        dataSource.setUsername("gngsn");
-        dataSource.setPassword("Test1234!");
-
-        return dataSource;
+        return testSet;
     }
 }

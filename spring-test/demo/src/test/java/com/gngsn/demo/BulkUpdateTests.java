@@ -12,6 +12,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import java.util.ArrayList;
 import java.util.List;
 
+
 @Slf4j
 @SpringBootTest
 public class BulkUpdateTests {
@@ -19,7 +20,7 @@ public class BulkUpdateTests {
     @Autowired
     public BulkUpsertUserDAO userDAO;
 
-    public int TEST_SIZE = 5000;
+    public int TEST_SIZE = 20000;
 
     @BeforeEach
     void setUp() {
@@ -35,8 +36,7 @@ public class BulkUpdateTests {
     }
 
     @Test
-    public void given_updateHalfOfTestSet__when_update__then_equalsUserUpdatedCount() {
-        double beforeTime = System.currentTimeMillis();
+    public void when_UpdateFromTempTable__then_EqualsUpdatedCount() {
 
         // Given : create updateList with half the size of test set.
         int UPDATE_SIZE = TEST_SIZE / 2;
@@ -46,8 +46,10 @@ public class BulkUpdateTests {
             updateList.add(new UserVO(String.format("UserVO%03d", i), "Update"));
         }
 
+        double beforeTime = System.currentTimeMillis();
+
         // When : update bulk data using temporary table.
-        userDAO.bulkUpdateWithTempTable(updateList);
+        userDAO.bulkUpdateFromTempTable(updateList);
 
         double afterTime = System.currentTimeMillis();
 
@@ -60,8 +62,34 @@ public class BulkUpdateTests {
     }
 
     @Test
-    public void given_updateHalfOfTestSet__when_updateMultiLine__then_equalsUserUpdatedCount() {
+    public void when_UpdateFromTempTableCallEach__then_EqualsUpdatedCount() {
+        // Given : create updateList with half the size of test set.
+        int UPDATE_SIZE = TEST_SIZE / 2;
+        List<UserVO> updateList = new ArrayList<>(UPDATE_SIZE);
+
+        for (int i = 1; i <= TEST_SIZE; i += 2) {
+            updateList.add(new UserVO(String.format("UserVO%03d", i), "Update"));
+        }
+
         double beforeTime = System.currentTimeMillis();
+        // When : update bulk data using temporary table.
+        userDAO.createTempTable();
+        userDAO.insertTempTable(updateList);
+        userDAO.updateMainTable();
+        userDAO.dropTempTable();
+
+        double afterTime = System.currentTimeMillis();
+
+
+        // Then : the number of updated data should be equal to half of the test set.
+        int updateUserCnt = userDAO.selectUpdateUserCnt();
+        Assertions.assertEquals(updateUserCnt, UPDATE_SIZE);
+
+        log.info("### run time : {}s", (afterTime-beforeTime) / 1000); // TEST SET: 500 - 0.108s, 5000 - 0.204s
+    }
+
+    @Test
+    public void when_updateMultiLine__then_equalsUserUpdatedCount() {
 
         // Given : create updateList with half the size of test set.
         int UPDATE_SIZE = TEST_SIZE / 2;
@@ -70,6 +98,8 @@ public class BulkUpdateTests {
         for (int i = 1; i <= TEST_SIZE; i += 2) {
             updateList.add(new UserVO(String.format("UserVO%03d", i), "Update"));
         }
+
+        double beforeTime = System.currentTimeMillis();
 
         // When : update bulk data using temporary table.
         userDAO.bulkUpdateMultiLine(updateList);
@@ -82,4 +112,40 @@ public class BulkUpdateTests {
 
         log.info("### run time : {}s", (afterTime-beforeTime) / 1000); // TEST SET: 500 - 0.705s, 5000 - 1.491s
     }
+
+    /**
+     *
+     * 500   :  0.056s
+     * 2500  :  0.24s
+     * 5000  :  0.427s
+     * 10000 :  0.772s
+     *
+     */
+    @Test
+    public void when_Upsert__then_EqualsUpdatedCount() {
+
+        // Given : create updateList with half the size of test set.
+        int UPDATE_SIZE = TEST_SIZE / 2;
+        List<UserVO> updateList = new ArrayList<>(UPDATE_SIZE);
+
+        for (int i = 1; i <= TEST_SIZE; i += 2) {
+            updateList.add(new UserVO(String.format("UserVO%03d", i), "Update"));
+        }
+
+
+        // When : update bulk data using temporary table.
+        double beforeTime = System.currentTimeMillis();
+
+        userDAO.bulkUpsertUserList(updateList);
+
+        double afterTime = System.currentTimeMillis();
+
+
+        // Then : the number of updated data should be equal to half of the test set.
+        int updateUserCnt = userDAO.selectUpdateUserCnt();
+        Assertions.assertEquals(updateUserCnt, UPDATE_SIZE);
+
+        log.info("### run time : {}s", (afterTime-beforeTime) / 1000);
+    }
+
 }

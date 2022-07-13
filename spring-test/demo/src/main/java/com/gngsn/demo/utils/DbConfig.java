@@ -1,10 +1,13 @@
 package com.gngsn.demo.utils;
 
+import com.zaxxer.hikari.HikariConfig;
+import com.zaxxer.hikari.HikariDataSource;
 import lombok.RequiredArgsConstructor;
 import org.mybatis.spring.SqlSessionFactoryBean;
 import org.mybatis.spring.SqlSessionTemplate;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.ClassPathResource;
@@ -19,12 +22,25 @@ public class DbConfig {
 
     @Bean
     public DataSource ds() {
+//        HikariConfig hikariConfig = new HikariConfig();
+//        hikariConfig.setDriverClassName(jdbcProperties.getDriverClass());
+//        hikariConfig.setJdbcUrl(jdbcProperties.getUrl());
+//        hikariConfig.setUsername(jdbcProperties.getUsername());
+//        hikariConfig.setPassword(jdbcProperties.getPassword());
+//
+//        HikariDataSource dataSource = new HikariDataSource(hikariConfig);
         DriverManagerDataSource dataSource = new DriverManagerDataSource();
         dataSource.setDriverClassName(jdbcProperties.getDriverClass());
         dataSource.setUrl(jdbcProperties.getUrl());
         dataSource.setUsername(jdbcProperties.getUsername());
         dataSource.setPassword(jdbcProperties.getPassword());
         return dataSource;
+    }
+
+    @Bean
+    @ConfigurationProperties(prefix = "spring.datasource.hikari")
+    public HikariConfig hikariConfig() {
+        return new HikariConfig();
     }
 
     @Bean
