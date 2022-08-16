@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="demo.deadlock">
+
+    <!-- 리스트 N건의 데이터를 저장함 -->
+    <insert id="insertTestList" parameterType="com.gngsn.demo.deadlock.ReqDTO">
+        /* demo.deadlock.insertTestList */
+        INSERT INTO request (
+            req_id,
+            svc_cd,
+            user_id,
+            user_name,
+            reg_ymdt,
+            mod_ymdt
+        )
+        VALUES
+        <foreach collection="detailList" item="item" index="index" separator=",">
+            (
+                #{reqId},
+                #{svcCd},
+                #{item.userId},
+                #{item.userName},
+                #{regYmdt},
+                #{modYmdt}
+            )
+        </foreach>
+    </insert>
+
+    <!-- 이미 등록된 데이터를 삭제 -->
+    <delete id="deleteAlreadyExistTestList" parameterType="com.gngsn.demo.deadlock.ReqDTO">
+        /* demo.deadlock.deleteAlreadyExistTestList */
+        DELETE
+            FROM request
+        WHERE (user_id, svc_cd) IN (
+        <foreach item="item" index="index" collection="detailList" separator=",">
+            (#{item.userId}, #{svcCd})
+        </foreach>
+        )
+    </delete>
+
+</mapper>
+
