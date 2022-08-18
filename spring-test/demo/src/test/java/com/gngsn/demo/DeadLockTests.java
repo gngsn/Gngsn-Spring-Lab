@@ -18,8 +18,8 @@ import java.util.concurrent.TimeUnit;
 
 @Slf4j
 public class DeadLockTests {
-    int REQ_CNT = 50000;
-    int REQ_LIST_CNT = 50;
+    int REQ_CNT = 2;
+    int REQ_LIST_CNT = 500;
 
     static final String API_URI = "http://localhost:8080/test/save";
     public static final ObjectMapper OM = new ObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
