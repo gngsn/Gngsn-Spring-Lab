@@ -59,27 +59,28 @@ public class DeadLockTests {
         log.debug("========= START: API로 데이터 전송 ========= \n\n\t- 요청 데이터 paramJson:{}", paramJson);
 
         try {
-            CLIENT.newCall(request).enqueue(new Callback() {
-
-                @Override
-                public void onFailure(Call call, IOException e) {
-                    log.debug("저장 요청 중 서버 연결에 실패하여 실행이 중지되었습니다. API 연결을 확인하세요. | error: {}", e.getMessage());
-                    throw new RuntimeException("Connect Server Error. " + e);
-                }
-
-                @Override
-                public void onResponse(Call call, Response response) throws IOException {
-                    log.info("response: {}, message: {}", response.toString(), response.message());
-
-                    if (!response.isSuccessful()) {
-                        String msg = String.format("\n\n****** Request Fail ********\nAPI 저장 요청에 실패했습니다. 데이터 확인 후 수정이 필요합니다.\nResponse:%s\nResponse Body:%s\n\n", response.toString(), response.body().string());
-//                        response.close();
-                        throw new RuntimeException(msg);
-                    }
-                    log.debug("\n\n\n****** Request Success ********\nResponseÏ:{}\nResponse Body:{}\n\n", response.toString(), response.body().string());
-//                    response.close();
-                }
-            });
+            CLIENT.newCall(request).execute();
+//            new Callback() {
+//
+//                @Override
+//                public void onFailure(Call call, IOException e) {
+//                    log.debug("저장 요청 중 서버 연결에 실패하여 실행이 중지되었습니다. API 연결을 확인하세요. | error: {}", e.getMessage());
+//                    throw new RuntimeException("Connect Server Error. " + e);
+//                }
+//
+//                @Override
+//                public void onResponse(Call call, Response response) throws IOException {
+//                    log.info("response: {}, message: {}", response.toString(), response.message());
+//
+//                    if (!response.isSuccessful()) {
+//                        String msg = String.format("\n\n****** Request Fail ********\nAPI 저장 요청에 실패했습니다. 데이터 확인 후 수정이 필요합니다.\nResponse:%s\nResponse Body:%s\n\n", response.toString(), response.body().string());
+////                        response.close();
+//                        throw new RuntimeException(msg);
+//                    }
+//                    log.debug("\n\n\n****** Request Success ********\nResponseÏ:{}\nResponse Body:{}\n\n", response.toString(), response.body().string());
+////                    response.close();
+//                }
+//            });
         } catch (Exception e) {
             throw new RuntimeException(String.format("API 전송 중 서버 통신 오류 | errMsg: %s, err: %s" + e.getMessage(), e));
         }
