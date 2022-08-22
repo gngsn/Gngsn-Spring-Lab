@@ -24,6 +24,8 @@ public class ReqTestController {
 	public ResponseEntity<Object> saveTestDataBulk(@Valid @RequestBody ReqDTO param) {
 
 		try {
+			log.info("[TEST API] Request param: {}", param);
+
 			testService.asyncSaveTestDataSaveBulk(param); //데이터 저장
 			return new ResponseEntity<>("Request success(async)", HttpStatus.OK);
 

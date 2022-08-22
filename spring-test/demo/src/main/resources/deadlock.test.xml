@@ -29,14 +29,14 @@
         </foreach>
     </insert>
 
-    <!-- 이미 등록된 데이터를 삭제 -->
+    <!-- 이미 등록된 데이터를 삭제: 복합 인덱스 순서 반대로해서 인덱스 타지 않게 유도 -->
     <delete id="deleteAlreadyExistTestList" parameterType="com.gngsn.demo.deadlock.ReqDTO">
         /* demo.deadlock.deleteAlreadyExistTestList */
         DELETE
             FROM request
-        WHERE (user_id, svc_cd) IN (
+        WHERE (svc_cd, user_id) IN (
         <foreach item="item" index="index" collection="detailList" separator=",">
-            (#{item.userId}, #{svcCd})
+            (#{svcCd}, #{item.userId})
         </foreach>
         )
     </delete>

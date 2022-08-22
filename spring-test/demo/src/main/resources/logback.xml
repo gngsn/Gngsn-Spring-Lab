@@ -1,10 +1,10 @@
-<!--<?xml version="1.0" encoding="UTF-8" ?>-->
-<!--&lt;!&ndash; <configuration debug="true"> &ndash;&gt;-->
-<configuration>
+<?xml version="1.0" encoding="UTF-8" ?>
+ <configuration info="true">
+<!--<configuration>-->
 
-    <!--	&lt;!&ndash; LOCAL &ndash;&gt;-->
+<!--    	 LOCAL -->
 
-    <!--	&lt;!&ndash; 외부 설정파일을 사용 &ndash;&gt;-->
+<!--    	 외부 설정파일을 사용 -->
     <property resource="logback.properties"/>
 
     <appender name="console" class="ch.qos.logback.core.ConsoleAppender">
@@ -13,30 +13,30 @@
         </encoder>
     </appender>
 
-<!--    <logger name="org" additivity="false">-->
-<!--        <level value="INFO"/>-->
-<!--        <appender-ref ref="console"/>-->
-<!--    </logger>-->
-
-    <logger name="com.gngsn" additivity="false">
+    <logger name="org" additivity="false">
         <level value="INFO"/>
         <appender-ref ref="console"/>
     </logger>
 
-<!--    <logger name="jdbc.sqltiming" additivity="false">-->
-<!--        <level value="warn"/>-->
+    <logger name="com.gngsn" additivity="false">
+        <level value="debug"/>
+        <appender-ref ref="console"/>
+    </logger>
+
+    <logger name="jdbc.sqltiming" additivity="false">
+        <level value="warn"/>
+        <appender-ref ref="console"/>
+    </logger>
+
+<!--    <logger name="jdbc.sqlonly" additivity="false">-->
+<!--        <level value="debug"/>-->
 <!--        <appender-ref ref="console"/>-->
 <!--    </logger>-->
 
-    <logger name="jdbc.sqlonly" additivity="false">
-        <level value="debug"/>
-        <appender-ref ref="console"/>
-    </logger>
-
-    <logger name="jdbc.audit" additivity="false">
-        <level value="debug"/>
-        <appender-ref ref="console"/>
-    </logger>
+<!--    <logger name="jdbc.audit" additivity="false">-->
+<!--        <level value="debug"/>-->
+<!--        <appender-ref ref="console"/>-->
+<!--    </logger>-->
 
     <logger name="jdbc.resultset" additivity="false">
         <level value="debug"/>
@@ -49,7 +49,7 @@
     </logger>
 
     <root>
-        <level value="debug"/>
+        <level value="info"/>
         <appender-ref ref="console"/>
     </root>
 </configuration>
