@@ -1,6 +1,8 @@
 package com.gngsn.webClientTest.config;
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import io.netty.channel.ChannelOption;
 import io.netty.handler.timeout.ReadTimeoutHandler;
 import io.netty.handler.timeout.WriteTimeoutHandler;
@@ -32,7 +34,8 @@ import java.time.Duration;
 @Configuration
 @RequiredArgsConstructor
 public class WebClientConfiguration {
-    private final ObjectMapper OM;
+
+    public final ObjectMapper OM = new ObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false).registerModule(new JavaTimeModule());
 
     public static final String COMMON_WEB_CLIENT = "commonWebClient";
     public static final String WEB_CLIENT_HTTP_CLIENT = "defaultHttpClient";

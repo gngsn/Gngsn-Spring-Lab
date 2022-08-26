@@ -5,29 +5,32 @@ import lombok.Data;
 import org.springframework.http.HttpStatus;
 
 @Data
- @JsonPropertyOrder({"success", "errorCd", "msg", "data"})
+@JsonPropertyOrder({"success", "errorCd", "msg", "data"})
 // @JsonInclude(Include.NON_NULL)
-public class ResVO {
+public class ResDTO {
 
 	private boolean success;
 	private HttpStatus status;
 	private String msg;
 	private Object data;
 
-	public ResVO(boolean success, String msg) {
+	public ResDTO() {
+	}
+
+	public ResDTO(boolean success, String msg) {
 		super();
 		this.success = success;
 		this.msg = msg;
 	}
 
-	public ResVO(boolean success, HttpStatus status, String msg) {
+	public ResDTO(boolean success, HttpStatus status, String msg) {
 		super();
 		this.success = success;
 		this.status = status;
 		this.msg = msg;
 	}
 
-	public ResVO(boolean success, String msg, Object data) {
+	public ResDTO(boolean success, String msg, Object data) {
 		super();
 		this.success = success;
 		this.msg = msg;
