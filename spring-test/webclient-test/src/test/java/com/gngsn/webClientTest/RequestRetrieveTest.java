@@ -56,7 +56,6 @@ public class RequestRetrieveTest {
         Assertions.assertTrue(resDTO.getStatusCode().is2xxSuccessful());
     }
 
-
     @Test
     public void reqApiTest400() {
         String URI = "http://127.0.0.1:8080/test/400";
@@ -122,24 +121,6 @@ public class RequestRetrieveTest {
         }
     }
 
-    private ResDTO parseResponseData(String uri, MultiValueMap<String, String> body) {
-        ResponseEntity<ResDTO> response = null;
-        try {
-            response = this.retrievePostForMono(uri, body).block();
-            log.info(response.toString());
-
-        } catch (BadWebClientRequestException bwre) {
-            log.error("WebClientResponseException | msg: {}", bwre.getMessage());
-        } catch (WebClientResponseException wre) {
-            log.error("WebClientResponseException | msg: {}", wre.getMessage());
-        } catch (WebClientException we) {
-            log.error("WebClientException | msg: {}", we.getMessage());
-        } catch (Exception e) {
-            log.error("Exception | msg: {}", e.getMessage());
-        }
-
-        return response.getBody();
-    }
 
     private Mono<ResponseEntity<ResDTO>> retrievePostForMono(String uri, MultiValueMap<String, String> body) throws WebClientResponseException {
         // @formatter:off
