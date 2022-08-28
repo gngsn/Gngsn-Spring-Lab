@@ -102,7 +102,7 @@ public class CacheController {
     }
 
     private static LocalDateTime ageOfEntryUsingAfterWritePolicy(Cache cache, Object key) {
-        Optional<Policy.Expiration> expirationPolicy = cache.policy().expireAfterWrite();
+        Optional<Policy.FixedExpiration> expirationPolicy = cache.policy().expireAfterWrite();
 
         if (!expirationPolicy.isPresent()) {
             return null;

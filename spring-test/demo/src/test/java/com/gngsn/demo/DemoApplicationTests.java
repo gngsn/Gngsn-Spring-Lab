@@ -18,7 +18,7 @@ class DemoApplicationTests {
     @Autowired
     private CalcInsertTimeService insertService;
 
-    private final int INSERT_SIZE = 1_000;
+    private final int INSERT_SIZE = 1_00;
 
     private List<UserVO> users = new ArrayList<>();
 
