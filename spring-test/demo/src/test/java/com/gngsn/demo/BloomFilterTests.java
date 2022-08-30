@@ -30,7 +30,7 @@ public class BloomFilterTests {
     @Test
     public void stringTest() {
         BloomFilter<String> blackListedIps = BloomFilter.create(
-            Funnels.stringFunnel(Charset.forName("UTF-8")), 500, 0.01);
+            Funnels.stringFunnel(Charset.forName("UTF-8")), 10000);
 
         blackListedIps.put("192.170.0.1");
         blackListedIps.put("75.245.10.1");
