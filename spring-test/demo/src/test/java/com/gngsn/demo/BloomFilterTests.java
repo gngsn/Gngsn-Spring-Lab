@@ -38,6 +38,4 @@ public class BloomFilterTests {
 
         Assertions.assertTrue(blackListedIps.mightContain("75.245.10.1"));
     }
-
-
 }
