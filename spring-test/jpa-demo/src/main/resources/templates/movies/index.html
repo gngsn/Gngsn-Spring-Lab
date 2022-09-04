@@ -5,13 +5,12 @@
       layout:decorate="~{layouts/default}">
 
 <th:block layout:fragment="content">
-    <div layout:replace="movies/banner"></div>
+    <div layout:replace="~{movies/banner}"></div>
     <section class="section-sm">
         <div class="container">
             <div class="row justify-content-center">
                 <div class="col-12 mb-5 mb-lg-0">
                     <h2 class="h5 section-title">Movies</h2>
-
                     <div th:if="movieList != null"
                          th:each="row : ${#numbers.sequence(0, #lists.size(movieList), 3)}"
                          class="row">
