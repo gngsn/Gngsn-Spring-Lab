@@ -1,4 +1,4 @@
-package com.gngsn.jpademo.vo;
+package com.gngsn.jpademo.entity;
 
 import lombok.Data;
 
@@ -12,7 +12,7 @@ import java.time.LocalDate;
 @Data
 @Entity
 @Table(name = "movie")
-public class MovieVO implements Serializable {
+public class Movie implements Serializable {
 
     @Id
     @Column(name = "movie_id")

@@ -1,7 +1,11 @@
 <!DOCTYPE html>
-<html lang="ko-kr">
+<html lang="ko-kr"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/default}">
+
 <!-- start of banner -->
-<div class="banner text-center">
+<div layout:fragment="banner" class="banner text-center">
     <div class="container">
         <div class="row">
             <div class="col-lg-9 mx-auto">
@@ -60,7 +64,6 @@
         </defs>
     </svg>
 
-
     <svg class="banner-shape-3" width="39" height="40" viewBox="0 0 39 40" fill="none"
          xmlns="http://www.w3.org/2000/svg">
         <path d="M0.965848 20.6397L0.943848 38.3906L18.6947 38.4126L18.7167 20.6617L0.965848 20.6397Z" stroke="#040306"
@@ -79,7 +82,8 @@
 </div>
 <!-- end of banner -->
 
-<section class="section-sm">
+<section layout:fragment="content" class="section-sm">
+    <div layout:fragment="banner"></div>
     <div class="container">
         <div class="row justify-content-center">
             <div class="col-12 mb-5 mb-lg-0">
@@ -154,4 +158,5 @@
         </div>
     </div>
 </section>
+</body>
 </html>

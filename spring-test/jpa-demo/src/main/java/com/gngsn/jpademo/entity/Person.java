@@ -1,6 +1,6 @@
-package com.gngsn.jpademo.vo;
+package com.gngsn.jpademo.entity;
 
-public class PersonVO {
+public class Person {
 
     private String personId;
     private String personName;
