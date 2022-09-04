@@ -11,6 +11,6 @@ public class TestController {
     @RequestMapping("/")
     public String thymeleaf() {
         log.info("thymeleaf index test");
-        return "index";
+        return "forward:/movies";
     }
 }

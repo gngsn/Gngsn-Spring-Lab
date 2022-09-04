@@ -1,8 +1,8 @@
 package com.gngsn.jpademo.controller;
 
 import com.gngsn.jpademo.dto.PagingDTO;
-import com.gngsn.jpademo.service.MovieService;
 import com.gngsn.jpademo.entity.Movie;
+import com.gngsn.jpademo.service.MovieService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -34,6 +34,6 @@ public class MovieController {
         log.info("pagingDTO: {}", pagingDTO);
         model.addAttribute("paging", pagingDTO);
 
-        return "movies";
+        return "movies/index";
     }
 }

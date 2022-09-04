@@ -1,15 +1,16 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:th="http://www.thymeleaf.org">
 
 <head th:fragment="head">
     <meta charset="utf-8">
-    <title>Reader | Hugo Personal Blog Template</title>
+    <title>Movies | Spring JPA & Thymeleaf Demo</title>
 
     <!-- mobile responsive meta -->
     <meta content="width=device-width, initial-scale=1, maximum-scale=1" name="viewport">
-    <meta content="This is meta description" name="description">
-    <meta content="Themefisher" name="author">
-    <meta content="Hugo 0.74.3" name="generator"/>
+    <meta content="This demo is JPA & Thymeleaf Demo project" name="description">
+    <meta content="kyeongsun" name="author">
+    <meta content="gngsn" name="generator"/>
 
     <!-- plugins -->
 
@@ -24,10 +25,12 @@
     <link href="images/favicon.png" rel="shortcut icon" type="image/x-icon">
     <link href="images/favicon.png" rel="icon" type="image/x-icon">
 
-    <meta content="Reader | Hugo Personal Blog Template" property="og:title"/>
-    <meta content="This is meta description" property="og:description"/>
+    <meta content="Movies | Spring JPA & Thymeleaf Demo" property="og:title"/>
+    <meta content="This demo is JPA & Thymeleaf Demo project" property="og:description"/>
     <meta content="website" property="og:type"/>
     <meta content="" property="og:url"/>
-    <meta content="2020-03-15T15:40:24+06:00" property="og:updated_time"/>
+    <meta content="2022-09-04T15:40:24+06:00" property="og:updated_time"/>
+
+    <th:block layout:replace="fragments/script"></th:block>
 </head>
 </html>
