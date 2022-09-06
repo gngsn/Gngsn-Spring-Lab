@@ -10,6 +10,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(value = {Exception.class, RuntimeException.class})
     public String handleLineException(final Exception exception) {
+        exception.printStackTrace();
         log.error(exception.getMessage());
         return "error/404";
     }

@@ -22,7 +22,7 @@ public class MovieController {
     private final MovieService movieService;
 
     @RequestMapping("/movies")
-    public String thymeleaf(PagingDTO pagingDTO, Model model) {
+    public String movieListPage(PagingDTO pagingDTO, Model model) {
 
         if (pagingDTO.getSize() < 1) {
             pagingDTO.setSize(20);

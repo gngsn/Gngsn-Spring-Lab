@@ -6,13 +6,12 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 public interface MovieRepository extends PagingAndSortingRepository<Movie, Long> {
-
-    @Override
     Page<Movie> findAll(Pageable pageable);
 
-    //    List<MovieVO> findByName(String name);
-
-//    List<MovieVO> findByNameLike(String keyword);
+    List<MovieId> findMovieIdTop20();
 }
+

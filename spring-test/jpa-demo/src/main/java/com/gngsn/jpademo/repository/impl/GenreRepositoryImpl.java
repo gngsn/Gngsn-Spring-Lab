@@ -19,5 +19,4 @@ public class GenreRepositoryImpl implements GenreRepository {
         return entityManager.createQuery("SELECT g FROM Genre g ORDER BY g.genreId",
             Genre.class).setMaxResults(limit).getResultList();
     }
-
 }
