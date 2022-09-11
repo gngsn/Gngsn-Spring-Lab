@@ -1,10 +1,10 @@
-package com.gngsn.kotlindemo;
+package com.gngsn.kotlindemo.ch2;
 
 
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 import kotlin.random.Random
-import com.gngsn.kotlindemo.Basic.Color.*
+import com.gngsn.kotlindemo.ch2.Basic.Color.*
 
 class Basic {
 

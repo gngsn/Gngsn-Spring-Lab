@@ -1,9 +1,9 @@
-package com.gngsn.kotlindemo;
+package com.gngsn.kotlindemo.ch2;
 
 import org.junit.jupiter.api.Test
 import java.util.*
 
-class Basic_for {
+class BasicFor {
     // 순차적으로 수를 세면서 3으로 나눠떨어지는 수에 대해서는 Fizz, 5로 나눠떨어지는 수에 대해 서는 Buzz 라고 말해야 한다.
     // 어떤 수가 3과 5로 모두 나눠떨어지면 'FizzBuzz'라고 말해야 한다.
     fun fizzBuzz(i: Int) = when {

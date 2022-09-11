@@ -1,4 +1,4 @@
-package com.gngsn.kotlindemo;
+package com.gngsn.kotlindemo.ch2;
 
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test;
@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test;
 import java.io.BufferedReader;
 import java.io.StringReader
 
-class Basic_exception {
+class BasicException {
 
     private fun readNumber(reader:BufferedReader): Int? {  // throws로 던질 수 있는 예외 명시 X
         try {

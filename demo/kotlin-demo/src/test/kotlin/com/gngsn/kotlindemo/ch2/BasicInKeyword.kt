@@ -1,10 +1,9 @@
-package com.gngsn.kotlindemo;
+package com.gngsn.kotlindemo.ch2;
 
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
-import java.util.*
 
-class Basic_inKeyword {
+class BasicInKeyword {
 
     fun isLetter(c: Char) = c in 'a'..'z' || c in 'A'..'Z'
     fun isNotDigit(c: Char) = c !in '0'..'9'  // '0'<= c && x<= '9' 로 변환된다

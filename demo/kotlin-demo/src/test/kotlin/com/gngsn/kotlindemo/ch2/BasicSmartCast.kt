@@ -1,4 +1,4 @@
-package com.gngsn.kotlindemo;
+package com.gngsn.kotlindemo.ch2;
 
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
