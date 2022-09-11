@@ -9,14 +9,16 @@ import com.gngsn.kotlindemo.Basic.Color.*
 class Basic {
 
     // ========== function ============
-    class ex_fun {
-        fun max(a: Int, b: Int): Int {
-            return if (a > b) a else b
-        }
-
-        fun max2(a: Int, b: Int): Int = if (a > b) a else b
-        fun max3(a: Int, b: Int) = if (a > b) a else b
+    fun ex1_max(a: Int, b: Int) : Int {
+        return if (a > b) a else b
     }
+
+    // 바로 Return 가능 (fyi. kotlin의 if 절은 식(expression)이기 때문에 값 return)
+    fun ex2_max(a: Int, b: Int): Int = if (a > b) a else b
+
+    // Return Type 생략 가능
+    fun ex3_max(a: Int, b: Int) = if (a > b) a else b
+
 
     // ========== variable ============
 
@@ -27,7 +29,6 @@ class Basic {
 
         val answer = 12
         Assertions.assertEquals(Int.javaClass, answer.javaClass)
-
         val yearsToCompute = 7.5e6 // 타입 추론: Double
         Assertions.assertEquals(Double.javaClass, yearsToCompute.javaClass)
 
@@ -44,6 +45,20 @@ class Basic {
     class SimplePerson(val name: String)
 
     class Person(val name: String, var isMarried: Boolean)
+
+    class Person2(var name: String) {
+        constructor() : this(name = "default")
+    }
+
+
+    @Test
+    fun test() {
+        val p = Person2()
+        println(p.name)
+
+        val p2 = Person2("const")
+        println(p2.name)
+    }
 
     class Rectangle(val height: Int, val width: Int) {
         val isSquare: Boolean

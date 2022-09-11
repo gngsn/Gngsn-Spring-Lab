@@ -31,6 +31,11 @@ class Basic_for {
     }
 
     @Test
+    fun ex_iter_fizzbuzz() {
+        for (i in 1..100) print(fizzBuzz(i))
+    }
+
+    @Test
     fun ex_iter_main() {
         ex_iter()
     }
@@ -42,8 +47,8 @@ class Basic_for {
 
         // for..in 구문에 map을 쓰면 (key, value) 값 반환
        for ((letter, binary) in binaryReps) {
-            println("$letter = $binary")
-        }
+            print("$letter = $binary | ")
+       }
     }
 
     @Test
@@ -52,7 +57,7 @@ class Basic_for {
 
         // withIndex: 인덱스와 함께 컬렉션을 이터레이션
         for ((index, element) in list.withIndex()) {
-            println("$index: $element")
+            print("[$index] $element, ")
         }
     }
 }

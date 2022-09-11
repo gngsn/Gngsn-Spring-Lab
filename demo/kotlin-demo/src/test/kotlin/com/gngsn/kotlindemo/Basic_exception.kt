@@ -37,6 +37,7 @@ class Basic_exception {
 
         val errorReader = BufferedReader(StringReader("239-"))
         Assertions.assertEquals(null, readNumber(errorReader))
+//        Assertions.assertThrows<NumberFormatException>(KClass<NumberFormatException>, (fun() = { val d = readNumber(reader) }) as () -> Unit)
 //        Assertions.assertThrows(Class<NumberFormatException>, fun() = readNumber(reader))
     }
 
