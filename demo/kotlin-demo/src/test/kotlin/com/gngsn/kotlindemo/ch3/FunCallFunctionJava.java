@@ -11,9 +11,15 @@ public class FunCallFunctionJava {
         List<Integer> list = List.of(1, 2, 3);
         FunCallFunction kotlinFun = new FunCallFunction();
 
+
         System.out.println(kotlinFun.joinToString_usingDefault(list));
         System.out.println(kotlinFun.joinToString_usingDefault(list, ", "));
         System.out.println(kotlinFun.joinToString_usingDefault(list, ", ", ";"));
         System.out.println(kotlinFun.joinToString_usingDefault(list, ", ", "; ", "#"));
+
+
+//        FunCallFunctionKt kotlinFunKt = new FunCallFunctionKt();
+        FunCallFunctionKt.getOpCount();
+        FunCallFunctionKt.getUNIX_LINE_SEPARATOR();
     }
 }

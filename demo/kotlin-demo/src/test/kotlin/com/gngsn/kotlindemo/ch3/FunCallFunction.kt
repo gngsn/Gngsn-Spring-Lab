@@ -73,5 +73,6 @@ class FunCallFunction {
 
 // ==== 최상위 프로퍼티 ====
 var opCount = 0
-const val UNIX_LINE_SEPARATOR = "\n"
+val UNIX_LINE_SEPARATOR = "\n"
+const val CONST_UNIX_LINE_SEPARATOR = "\n"
 // public static final String UNIX_LINE_SEPARATOR = "\n";
