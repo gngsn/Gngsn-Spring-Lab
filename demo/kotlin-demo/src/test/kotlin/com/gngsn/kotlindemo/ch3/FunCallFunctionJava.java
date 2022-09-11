@@ -21,5 +21,7 @@ public class FunCallFunctionJava {
 //        FunCallFunctionKt kotlinFunKt = new FunCallFunctionKt();
         FunCallFunctionKt.getOpCount();
         FunCallFunctionKt.getUNIX_LINE_SEPARATOR();
+        String constVal =
+            FunCallFunctionKt.CONST_UNIX_LINE_SEPARATOR;
     }
 }
