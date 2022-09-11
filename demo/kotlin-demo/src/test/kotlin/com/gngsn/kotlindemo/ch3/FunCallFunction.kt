@@ -66,12 +66,10 @@ class FunCallFunction {
         // ...
     }
 
-    fun reportOperationCount () {
+    fun reportOperationCount() {
         println("Operation performed $opCount times")
     }
 }
-
-
 
 // ==== 최상위 프로퍼티 ====
 var opCount = 0
