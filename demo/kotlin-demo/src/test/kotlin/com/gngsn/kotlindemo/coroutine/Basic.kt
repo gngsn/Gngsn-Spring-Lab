@@ -9,6 +9,8 @@ import java.time.ZonedDateTime
 import java.time.temporal.ChronoUnit
 import kotlin.math.sqrt
 
+fun now() = ZonedDateTime.now().toLocalTime().truncatedTo(ChronoUnit.MILLIS)
+
 
 class Basic {
     fun now() = ZonedDateTime.now().toLocalTime().truncatedTo(ChronoUnit.MILLIS)
@@ -171,6 +173,7 @@ class Basic {
     private suspend fun waitOne(): Int {
         delay(100L)
         return 100 // 100 ms delay 후 100을 리턴
+
     }
 
     private suspend fun waitTwo(): Int {

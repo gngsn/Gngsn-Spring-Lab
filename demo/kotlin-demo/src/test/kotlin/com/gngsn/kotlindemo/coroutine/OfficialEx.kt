@@ -1,8 +1,6 @@
 package com.gngsn.kotlindemo.coroutine
 
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.*
 import org.junit.jupiter.api.Test
 
 class OfficialEx {
@@ -16,15 +14,56 @@ class OfficialEx {
         println("Hello") // main coroutine continues while a previous one is delayed
     }
 
+    // ====== refactoring 1: suspend function ======
+
     @Test
-    fun refacCoroutineEx() = runBlocking { // this: CoroutineScope
+    fun suspendEx() = runBlocking { // this: CoroutineScope
         launch { doWorld() }
         println("Hello")
     }
 
-    // this is your first suspending function
     suspend fun doWorld() {
         delay(1000L)
         println("World!")
     }
+
+    // ====== refactoring 2: coroutineScope suspend function ======
+
+    @Test
+    fun coroutineScopeEx() = runBlocking {
+        suspendDoWorld()
+    }
+
+    suspend fun suspendDoWorld() = coroutineScope {  // this: CoroutineScope
+        launch {
+            delay(1000L)
+            println("World!")
+        }
+        println("Hello")
+    }
+
+    // ====== refactoring 3: coroutineScope suspend function ======
+
+    @Test // Sequentially executes doWorld followed by "Done"
+    fun explicitJobEx() = runBlocking {
+        explicitJobDoWorld()
+        println("Done")
+    }
+
+    // Concurrently executes both sections
+    suspend fun explicitJobDoWorld() = coroutineScope { // this: CoroutineScope
+        launch {
+            delay(2000L)
+            println("World 2")
+        }
+        launch {
+            delay(1000L)
+            println("World 1")
+        }
+        println("Hello")
+    }
+
+    // === coroutine memory managing
+
+
 }
