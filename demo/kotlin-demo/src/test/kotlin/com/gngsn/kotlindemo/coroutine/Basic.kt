@@ -1,11 +1,13 @@
 package com.gngsn.kotlindemo.coroutine
 
 import kotlinx.coroutines.*
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.ReceiveChannel
 import kotlinx.coroutines.channels.produce
 import org.junit.jupiter.api.Test
 import java.time.ZonedDateTime
 import java.time.temporal.ChronoUnit
+import kotlin.math.sqrt
 
 
 class Basic {
@@ -19,21 +21,59 @@ class Basic {
         }
     }
 
+    fun launchInRunBlocking() = runBlocking {
+        launch { log("GlobalScope.launch started.") }
+    }
+
     @Test
-    fun test_main() {
+    fun launchTest() {
         log("main () started.")
         launchInGlobalScope()
         log("launchlnGlobalScope() executed")
         Thread.sleep(5000L)
         log("main() terminated")
     }
-
     /*
         14:41:29.079:Thread[main,5,main]:main () started.
         14:41:29.267:Thread[main,5,main]:launchlnGlobalScope() executed
         14:41:29.276:Thread[DefaultDispatcher-worker-2,5,main]:coroutine started.
         14:41:34.272:Thread[main,5,main]:main() terminated
     */
+
+    @Test
+    fun runBlockingLaunchTest() {
+        log("main () started.")
+        launchInRunBlocking()
+        log("launchlnGlobalScope() executed")
+        Thread.sleep(5000L)
+        log("main() terminated")
+    }
+    /*
+        16:30:42.602:Thread[main,5,main]:main () started.
+        16:30:42.724:Thread[main @coroutine#2,5,main]:GlobalScope.launch started.
+        16:30:42.726:Thread[main,5,main]:launchlnGlobalScope() executed
+        16:30:47.726:Thread[main,5,main]:main() terminated
+    */
+
+    @Test
+    fun yieldExample() = runBlocking {
+        launch {
+            log("1")
+            yield()
+            log("3")
+            yield()
+            log("5")
+        }
+        log("after first launch")
+        launch {
+            log("2")
+            delay(1000L)
+            log("4")
+            delay(1000L)
+            log("6")
+        }
+        log("after second launch")
+    }
 
     // ================ CoroutineScope Example: Scope 종료를 delay 대기하는 경우 ================
     private suspend fun MutableList<Int>.sum(): Int {
@@ -78,10 +118,73 @@ class Basic {
 
 
     // ================ GlobalScope example ================
-    fun ReceiveChannel<Int>.sqrt(): ReceiveChannel<Double> =
+    fun CoroutineScope.produceNumbers() = produce<Int> {
+        var x = 1
+        while (true) send(x++) // infinite stream of integers starting from 1
+    }
+
+    fun ReceiveChannel<Int>.sqrt(): ReceiveChannel<Double> =  // 이거 어떻게 실행시키지?
         GlobalScope.produce(Dispatchers.Unconfined) {
             for (number in this@sqrt) {
                 send(Math.sqrt(number.toDouble()))
             }
         }
+
+    @Test
+    fun channelTest() = runBlocking {
+        val channel = Channel<Int>()
+        launch {
+            // this might be heavy CPU-consuming computation or async logic, we'll just send five squares
+            for (x in 1..5) channel.send(x + x)
+        }  // here we print five received integers:
+        repeat(5) { print("${channel.receive()} ") }
+        println("Done!")
+    } // 2 4 6 8 10 Done!
+
+    // =============== Dispatcher ===============
+    @Test
+    fun dispatcherTestClient() {
+        val job = dispatcherTest()
+    }
+
+    fun dispatcherTest() = runBlocking {
+        launch { // context of the parent, main runBlocking coroutine
+            println("main runBlocking : I'm working in thread '${Thread.currentThread().name}'")
+        } //지정하지 않았기에 외부 currentThread에 따른다.
+
+        launch(Dispatchers.Default) { // will get dispatched to DefaultDispatcher
+            println("Default : I'm working in thread '${Thread.currentThread().name}'")
+        }    // Work thread에서 동작
+
+        launch(newSingleThreadContext("MyOwnThread")) { // will get its own new thread
+            println("newSingleThreadContext: I'm working in thread '${Thread.currentThread().name}'")
+        }
+    }
+    /*
+        Default : I'm working in thread 'DefaultDispatcher-worker-1 @coroutine#3'
+        newSingleThreadContext: I'm working in thread 'MyOwnThread @coroutine#4'
+        main runBlocking : I'm working in thread 'main @coroutine#2'
+    */
+
+    // ========= suspend =========
+
+    private suspend fun waitOne(): Int {
+        delay(100L)
+        return 100 // 100 ms delay 후 100을 리턴
+    }
+
+    private suspend fun waitTwo(): Int {
+        delay(200L)
+        return 200
+    } // 200 ms delay 후 200을 리턴
+
+    @Test // 위 2개의 결과를 async/await을 이용하여 결과를 출력
+    fun testTwo() = runBlocking {
+        val one = CoroutineScope(Dispatchers.Default).async { waitOne() }
+        val two = CoroutineScope(Dispatchers.Default).async { waitTwo() }
+
+        println("wait ${one.await()} ${two.await()}")
+    } // [335ms] wait 100 200
+
+
 }
