@@ -249,7 +249,7 @@ fun String.lastChar(): Char = this.get(this.length - 1)
 // String : receiver type
 // this : receiver object
 
-println ("Kotlin".lastChar())
+println("Kotlin".lastChar())    // this 생략 가능 
 // "Kotlin" : receiver object
 ```
 
@@ -297,4 +297,205 @@ char c = StringUtilKt.lastChar("Java");
 ```
 
 
+```kotlin
+fun <T> Collection<T>.joinToString(  //<----- Collection〈T〉 에 대한 확장 함수를 선언한다.
+    separator: String = ", ",  //         파라미터의 디폴트 값을 지정한다.
+    prefix: String = "",
+    postfix: String = ""
+): String {
+    val result = StringBuilder(prefix)
+    for ((index, element) in this.withIndex()) {
+        if (index > 0) result.append(separator)
+        result.append(element)
+    }
+    result.append(postfix)
+    return result.toString()
+}
+
+// joinToString을 클래스의 멤버인 것처럼 호출할 수 있다.
+val list = listOf<Number>(1, 2, 3)
+
+list.joinToString() // "1, 2, 3"
+list.joinToString(", ", postfix = ";", prefix = "# ") // "# 1, 2, 3;"
+```
+
+**타입 지정**
+확장 함수는 단지 정적 메소드 호출에 대한 문법적인 편의syntatic sugar일 뿐이다. 
+더 구체적인 타입을 수신 객체 타입으로 지정할 수도 있다. 
+문자 열의 컬렉션에 대해서만 호출할 수 있는 join 함수를 정의하고 싶다면 다음과 같이 하면 된다.
+
+
+```kotlin
+fun Collection<String>.join(
+    separator: String = ", ", 
+    prefix: String = "",
+    postfix: String = ""
+) = joinToString(separator, prefix, postfix)
+
+listOf("one", "two", "eight").join(" ")
+// one two eight
+```
+
+
+```kotlin
+listOf (1, 2, 8).join() // Error: Type mismatch: inferred type is List<Int> but Collection<String>
+```
+
+### 확장 함수는 override 대상이 아님
+
+확장 함수는 클래스의 일부가 아니다. 확장 함수는 클래스 밖에 선언된다.
+
+파라미터가 완전히 같은 확장 함수를 상위 클래스와 하위 클래스에 동시에 정의해도, 
+**정적 타입**에 의해 어떤 확장 함수가 호출될지 결정된다.
+즉, 멤버 메소드처럼 객체의 **동적인 타입에 의해 확장 함수가 결정되지 않는다**.
+
+```kotlin
+open class View {
+    open fun click () = println ("View clicked")
+}
+
+class Button: View() {  //Button은 View를 확장한다.
+    override fun click() = println("Button clicked")
+}
+
+fun View.showOff() = println ("I’m a view! ")
+fun Button.showOff() = println ("I ’m a button! ")
+
+val view: View = Button()
+view.click()        // Button clicked. \ override function 호출하기 때문에 Button method 호출
+view.showOff()      // I’m a view!     \ 확장 함수는 override 되지 않기 때문에 View method 호출
+```
+
+
+**확장 프로퍼티**
+
+확장 프로퍼티를 사용하면 기존 클래스 객체에 대한 프로퍼티 형식의 구문으로 사용할
+
+수 있는 API를 추가할 수 있다. 프로퍼티라는 이름으로 불리기는 하지만 상태를 저장할 적절한 방법이 없기 때문에(기존 클래스의 인스턴스 객체에 필드를 추가할 방법은 없다)실제로 확장 프로퍼티는 아무 상태도 가질 수 없다. 하지만 프로퍼티 문법으로 더 짧게 코드를 작성할 수 있어서 편한 경우가 있다.
+
+```kotlin
+val String.lastChar:Char get() = get(length - 1)
+var StringBuilder.lastChar: Char
+    get() = get(length - 1)
+    set(value: Char) = this.setCharAt(length - 1, value)
+
+println("Kotlin".lastChar)  // n
+
+val sb = StringBuilder("Kotlin?")
+sb.lastChar = '!'
+println(sb.lastChar)        // !
+```
+
+자바에서 확장 프로퍼티를 사용하고 싶다면 항상 StringUtilKt.getLastChar("Java") 처럼 게터나 세터를 명시적으로 호출해야 한다.
+
+
+## Working with collections
+*: varargs, infix calls, and library support*
+
+- vararg 키워드를 사용하면 호출 시 인자 개수가 달라질 수 있는 함수를 정의할 수 있다.
+- 중위infix 함수 호출 구문을 사용하면 인자가 하나뿐인 메소드를 간편하게 호출할 수 있다.
+- 구조 분해 선언destructuring declaration을 사용하면 복합적인 값을 분해해서 여러 변 수에 나눠 담을 수 있다.
+
+### 자바 컬렉션 API 확장
+
+코틀린 컬렉션은 자바와 같은 클래스를 사용하지만 더 확장된 API 를 제공한다. 
+
+```kotlin
+val strings:List<String> = listOf("first", "second", "fourteenth")
+strings.last() // fourteenth
+
+val numbers:Collection<Int> = setOf(1, 14, 2)
+numbers.max()  // 14
+```
+
+last와 max는 모두 확장 함수
+
+```kotlin
+fun <T> List<T>.last() : T { /* 마지막 원소를 반환함 */ } 
+fun Collection<Int>.max():Int { /* 컬렉션의 최댓값을 찾음 */ }
+```
+
+### 가변 인자 함수: 인자의 개수가 달라질 수 있는 함수 정의
+
+리스트를 생성하는 함수를 호출할 때 원하는 만큼 많이 원소를 전달할 수 있다.
+
+`val list = listOf (2, 5, 7, 11)`
+
+라이브러리에서 이 함수의 정의를 보면 다음과 같다
+
+`fun listOf<T> (vararg values:T):List<T> { ... }`
+
+가변 길이 인자: 메소드를 호출할 때 원하는 개수만큼 값을 인자로 넘기면 자바 컴파일러가 배열에 그 값들을 넣어주는 기능
+코틀린의 가변 길이 인자는 자바의 가변 길이 인자varargs와 비슷하다. 
+다만 문법이 조금 다른데, 타입 뒤에 `...`를 붙이는 대신 코틀린에서는 파라미터 앞에 `vararg` 변경자를 붙인다.
+
+
+이미 배열에 들어있는 원소를 가변 길이 인자로 넘길 때도 코틀린과 자바 구문이 다르다. 
+자바에서는 배열을 그냥 넘기면 되지만 코틀린에서는 배열을 명시적으로 풀어 서 배열의 각 원소가 인자로 전달되게 해야 한다. 
+기술적으로는 스프레드연산자가 그런 작업을 해준다. 하지만 실제로는 전달하려는 배열 앞에 `*`를 붙이기만 하면 된다
+
+```kotlin
+fun main(args: Array<String>) {
+    val list = listOf("args: ", *args)  // 스프레드 연산자가 배열의 내용을 펼쳐준다.
+    println(list) 
+}
+```
+
+### 값의 쌍 다루기: 중위 호출과 구조 분해 선언
+
+맵을 만들려면 mapOf 함수를 사용한다.
+
+`val map = mapOf (1 to "one", 7 to "seven", 53 to ’’fifty-three")`
+
+to라는 단어는 코틀린 키워드가 아니고, 중위 호출infix call 이라는 특별한 방식으로 to라는 일반 메소드를 호출한 것
+**중위 호출** 시에는 수신 객체와 유일한 메소드 인자 사이에 메소드 이름을 넣는다.
+(이때 객체, 메소드 이름, 유일한 인자 사이에는 공백이 들어가야 한다). 
+다음 두 호출은 동일하다.
+
+```kotlin
+1. to ("one")       // "to" 메소드를 일반적인 방식으로 호출함
+1 to "one"          // "to" 메소드를 중위 호출 방식으로 호출함
+```
+
+인자가 하나뿐인 일반 메소드나 인자가 하나뿐인 확장 함수에 중위 호출을 사용할 수 있다. 
+함수(메소드)를 중위 호출에 사용하게 허용하고 싶으면 infix 변경자를 함수(메소드) 선언 앞에 추가해야 한다. 
+다음은 to 함수의 정의를 간략하게 줄인 코드다.
+
+`infix fun kny.to (other: Any) = Pair (this, other)`
+
+이 to 함수는 Pair의 인스턴스를 반환한다. 
+Pair는 코틀린 표준 라이브러리 클래스로, 그 이름대로 두 원소로 이뤄진 순서쌍을 표현한다. 
+실제로 to는 제네릭 함수지만 여기서는 설명을 위해 그런 세부 사항을 생략했다.
+
+Pair의 내용으로 두 변수를 즉시 초기화할 수 있다.
+
+`val (number, name) = 1 to "one"`
+
+이런 기능을 구조 분해 선언destructuring declaration이라고 부른다. 
+
+Pair에 대해 구조 분해가 어떻게 작동하는지 보여준다.
+
+
+<img src="../img/kotlin_infix_call.png" width="40%" />
+
+
+
+key와 루프에서도 구조 분해 선언을 활용할 수 있다. 
+joinToString에서 본 withIndex를 구조 분해 선언과 조합하면 컬렉션 원소의 인덱스와 값을 따로 변수에 담을 수 있다.
+
+```kotlin
+for ((index, element) in collection.withIndex()) {
+    println("$index: $element")
+}
+```
+
+
+to 함수는 확장 함수다. to를 사용하면 타입과 관계없이 임의의 순서쌍을 만들 수 있다. 이는 to의 수신 객체가 제네릭하다는 뜻이다. `1 to "one", "one" to 1, list to list.size()` 등의 호출이 모두 잘 작동한다. mapOf 함수의 선언을 살펴보자.
+
+```kotlin
+fun <K, V> mapOf(vararg values: Pair<K, V>) : Map<K, V>
+```
+
+listOf와 마찬가지로 mapOf에도 원하는 개수만큼 인자를 전달할 수 mapOf의 경우에는 각 인자가 키와 값으로 이뤄진 순서쌍이어야 한다.
+코틀린을 잘 모르는 사람이 보면 새로운 맵을 만드는 구문은 코틀린이 맵에 대해 제공하는 특별한 문법인 것처럼 느껴진다. 하지만 실제로는 일반적인 함수를 더 간결한 구문으로 호출하는 것뿐이다. 이제는 확장을 통해 문자열과 정규식을 더 편리하게 다루 는 방법을 살펴본다.
 
