@@ -78,6 +78,25 @@ public class DateTimeTest {
     }
 
     @Test
+    public void dateTimeFormatterTest() {
+        LocalDate now = LocalDate.now();
+        LocalDate localDate = LocalDate.now();
+
+        System.out.println(now);
+        DateTimeFormatter MMddyyyy = DateTimeFormatter.ofPattern("MM/dd/yyyy");
+        System.out.println(now.format(MMddyyyy));
+
+        LocalDateTime nowTime = LocalDateTime.now();
+        System.out.println(nowTime);
+        DateTimeFormatter MMddyyyyHHmmss = DateTimeFormatter.ofPattern("MM/dd/yyyy HH:mm:ss");
+        System.out.println(nowTime.format(MMddyyyyHHmmss));
+
+        LocalDateTime parse = LocalDateTime.parse("08/12/1998 10:43:22", MMddyyyyHHmmss);
+        System.out.println(parse);
+        LocalDate local = parse.toLocalDate();
+    }
+
+    @Test
     void periodTest() {
         LocalDate birth = LocalDate.of(1998, Month.AUGUST, 12);
         LocalDate today = LocalDate.now();
