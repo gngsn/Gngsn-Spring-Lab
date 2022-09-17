@@ -6,19 +6,23 @@
 
 <th:block layout:fragment="content">
     <section class="section">
-        <p th:text="${articles}"></p>
-        <section>
-            <header class="article-header">
-                <h2 class="article-title"><a href="/article/{{slug}}" th:text="${title}"></a></h2>
-                <div class="article-meta">
-                    By <strong th:text="${author.firstname}"></strong>,
-                    on <strong th:text="${addedAt}"></strong>
-                </div>
-            </header>
-            <div class="article-description">
-                <p th:text="${headline}"></p>
+        <article class="card mb-4">
+            <div class="card-body">
+                <h3 class="h4 mb-3" th:text="${article.title}"></h3>
+                <ul class="card-meta list-inline">
+                    <li class="list-inline-item">
+                        <a href="author-single.html" class="card-meta-author">
+                            <strong th:text="${article.author.firstname}"></strong>
+                        </a>
+                    </li>
+                    <li class="list-inline-item">
+                        <i class="ti-calendar"></i>
+                        <strong th:text="${article.addedAt}"></strong>
+                    </li>
+                </ul>
+                <p th:text="${article.content}" style="height: 30vh"></p>
             </div>
-        </section>
+        </article>
     </section>
 </th:block>
 </html>
