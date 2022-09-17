@@ -20,23 +20,30 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
     implementation("org.springframework.boot:spring-boot-starter-thymeleaf")
     implementation("org.springframework.boot:spring-boot-starter-web")
+
+    /*
+        serialization/deserialization of Kotlin classes and data classes
+        (single constructor classes can be used automatically,
+        and those with secondary constructors or static factories are also supported)
+     */
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
 
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4")
-    implementation("junit:junit:4.13.2")
     runtimeOnly("com.h2database:h2")
-//    implementation("org.junit.vintage:junit-vintage-engine:5.9.0")
-    compileOnly("org.projectlombok:lombok")
     runtimeOnly("mysql:mysql-connector-java")
+
+    compileOnly("org.projectlombok:lombok")
     annotationProcessor("org.projectlombok:lombok")
+
+    testImplementation("junit:junit:4.13.2")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
 }
 
 tasks.withType<KotlinCompile> {
     kotlinOptions {
-        freeCompilerArgs = listOf("-Xjsr305=strict")
+        freeCompilerArgs = listOf("-Xjsr305=strict") // -Xjsr305 compiler flag with the strict options; dealing with null related issues at compile time.
         jvmTarget = "11"
     }
 }
