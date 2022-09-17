@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="ko-kr"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/default}">
+
+<th:block layout:fragment="content">
+    <section class="section">
+        <p th:text="${articles}"></p>
+        <section>
+            <header class="article-header">
+                <h2 class="article-title"><a href="/article/{{slug}}" th:text="${title}"></a></h2>
+                <div class="article-meta">
+                    By <strong th:text="${author.firstname}"></strong>,
+                    on <strong th:text="${addedAt}"></strong>
+                </div>
+            </header>
+            <div class="article-description">
+                <p th:text="${headline}"></p>
+            </div>
+        </section>
+    </section>
+</th:block>
+</html>
