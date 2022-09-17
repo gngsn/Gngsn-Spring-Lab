@@ -11,6 +11,7 @@ import org.springframework.context.annotation.PropertySources
 class KotlinDemoApplication
 
 fun main(args: Array<String>) {
-    println("Kotlin Application is RUNNING!")
-    runApplication<KotlinDemoApplication>(*args)
+    runApplication<KotlinDemoApplication>(*args) {
+        println("Kotlin Application is RUNNING!")
+    }
 }
