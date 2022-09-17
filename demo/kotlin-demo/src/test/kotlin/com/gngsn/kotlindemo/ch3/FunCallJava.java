@@ -4,7 +4,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-public class FunCallFunctionJava {
+public class FunCallJava {
 
     @Test
     public void ex_fun_default() {
@@ -19,9 +19,10 @@ public class FunCallFunctionJava {
 
 
 //        FunCallFunctionKt kotlinFunKt = new FunCallFunctionKt();
-        FunCallFunctionKt.getOpCount();
-        FunCallFunctionKt.getUNIX_LINE_SEPARATOR();
+        FunCallKt.getOpCount();
+        FunCallKt.getUNIX_LINE_SEPARATOR();
         String constVal =
-            FunCallFunctionKt.CONST_UNIX_LINE_SEPARATOR;
+            FunCallKt.CONST_UNIX_LINE_SEPARATOR;
     }
+
 }

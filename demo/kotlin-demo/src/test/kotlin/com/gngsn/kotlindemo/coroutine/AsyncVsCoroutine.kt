@@ -5,7 +5,7 @@ import org.junit.jupiter.api.Test
 import java.time.ZonedDateTime
 import java.time.temporal.ChronoUnit
 
-class versusAsync {
+class AsyncVsCoroutine {
     fun now() = ZonedDateTime.now().toLocalTime().truncatedTo(ChronoUnit.MILLIS)
     fun log(msg: String) = println("${now()}:${Thread.currentThread()}:${msg}")
 
