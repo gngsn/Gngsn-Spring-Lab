@@ -1,9 +1,9 @@
 package com.gngsn.kotlindemo
 
-import com.gngsn.kotlindemo.movie.Article
-import com.gngsn.kotlindemo.movie.ArticleRepository
-import com.gngsn.kotlindemo.movie.User
-import com.gngsn.kotlindemo.movie.UserRepository
+import com.gngsn.kotlindemo.blog.Article
+import com.gngsn.kotlindemo.blog.ArticleRepository
+import com.gngsn.kotlindemo.blog.User
+import com.gngsn.kotlindemo.blog.UserRepository
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired

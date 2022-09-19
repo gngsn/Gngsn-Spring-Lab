@@ -1,4 +1,4 @@
-package com.gngsn.kotlindemo.movie
+package com.gngsn.kotlindemo.blog
 
 import org.springframework.data.repository.CrudRepository
 

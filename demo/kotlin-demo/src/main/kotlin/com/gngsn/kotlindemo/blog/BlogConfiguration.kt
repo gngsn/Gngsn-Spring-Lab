@@ -1,9 +1,5 @@
 package com.gngsn.kotlindemo.blog
 
-import com.gngsn.kotlindemo.movie.Article
-import com.gngsn.kotlindemo.movie.ArticleRepository
-import com.gngsn.kotlindemo.movie.User
-import com.gngsn.kotlindemo.movie.UserRepository
 import org.springframework.boot.ApplicationRunner
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration

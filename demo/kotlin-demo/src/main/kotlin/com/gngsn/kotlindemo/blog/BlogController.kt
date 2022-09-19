@@ -1,9 +1,6 @@
 package com.gngsn.kotlindemo.blog
 
 import com.gngsn.kotlindemo.demo.format
-import com.gngsn.kotlindemo.movie.Article
-import com.gngsn.kotlindemo.movie.ArticleRepository
-import com.gngsn.kotlindemo.movie.User
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Controller
 import org.springframework.ui.Model

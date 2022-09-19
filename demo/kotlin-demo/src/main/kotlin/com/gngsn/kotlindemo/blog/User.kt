@@ -1,4 +1,4 @@
-package com.gngsn.kotlindemo.movie
+package com.gngsn.kotlindemo.blog
 
 import javax.persistence.Entity
 import javax.persistence.GeneratedValue
