@@ -2,7 +2,7 @@ package com.gngsn.kotlindemo.ch4
 
 // 추상 클래스
 abstract class Animated {           // 인스턴스 생성 X
-    val ds: String = ""
+    val duration: Long = 0
     abstract fun animate()          // 추상 함수. 구현 X. 오버라이드 필수
     open fun stopAnimating() {}     // override O
     fun animateTwice() {}           // 기본적으로 final -> override X
@@ -25,10 +25,10 @@ private: 같은 클래스 내에서만 볼 수 있다. (최상위 선언 시, �
 */
 internal open class TalkativeButton : Focusable {
     private fun yell() = println("Hey!")
-    protected fun whisper() = println("Let1 s talk! ")
+    protected fun whisper() = println("Let's talk! ")
 }
 
-//fun TalkativeButton.giveSpeech() {  // 오류: "public" 멤버가 자신의 "internal" 수신 타입인 TalkativeButton 을 노출함
-//    yell()                          // 오류: "yell"에 접근할 수 없음: "yell"은 "TalkativeButton"의 "private" 멤버임
+internal fun TalkativeButton.giveSpeech() {  // 'public' member exposes its 'internal' receiver type TalkativeButton 오류: "public" 멤버가 자신의 "internal" 수신 타입인 TalkativeButton 을 노출함
+//    private fun yell()                          // 오류: "yell"에 접근할 수 없음: "yell"은 "TalkativeButton"의 "private" 멤버임
 //    whisper()                       // 오류： "whisper"에 접근할 수 없음: "whisper"는 "TalkativeButton"의 "protected" 멤버임
-//}
+}
