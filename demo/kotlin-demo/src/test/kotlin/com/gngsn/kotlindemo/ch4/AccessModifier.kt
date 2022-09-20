@@ -28,7 +28,7 @@ internal open class TalkativeButton : Focusable {
     protected fun whisper() = println("Let's talk! ")
 }
 
-internal fun TalkativeButton.giveSpeech() {  // 'public' member exposes its 'internal' receiver type TalkativeButton 오류: "public" 멤버가 자신의 "internal" 수신 타입인 TalkativeButton 을 노출함
+//fun TalkativeButton.giveSpeech() {  // 'public' member exposes its 'internal' receiver type TalkativeButton 오류: "public" 멤버가 자신의 "internal" 수신 타입인 TalkativeButton 을 노출함
 //    private fun yell()                          // 오류: "yell"에 접근할 수 없음: "yell"은 "TalkativeButton"의 "private" 멤버임
 //    whisper()                       // 오류： "whisper"에 접근할 수 없음: "whisper"는 "TalkativeButton"의 "protected" 멤버임
-}
+//}
