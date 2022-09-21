@@ -18,7 +18,9 @@ class Button2 : View {
     }
 
     // 이 클래스는 자바의 정적 중첩 클래스와 대응한다.
-    class ButtonState : State { /*...*/ }
+    class ButtonState : State {
+        /*...*/
+    }
 }
 
 class Outer {
@@ -26,7 +28,7 @@ class Outer {
     inner class Inner {
         fun getOuterReference(): Outer = this@Outer
     }
-    
+
     class Nested {
         fun getOuterReference(): Outer = Outer()
     }

@@ -18,10 +18,10 @@ open class RichButton : Clickable {  // extends O
 }
 
 /*
-public: 모든 곳에서 볼 수 있다.
-internal: 같은 모듈 내에서만 볼 수 있다.
-protected: 하위 클래스 내에서만 볼 수 있다. (최상위 선언 불가)
-private: 같은 클래스 내에서만 볼 수 있다. (최상위 선언 시, 같은 파일 내)
+    public: 모든 곳에서 볼 수 있다.
+    internal: 같은 모듈 내에서만 볼 수 있다.
+    protected: 하위 클래스 내에서만 볼 수 있다. (최상위 선언 불가)
+    private: 같은 클래스 내에서만 볼 수 있다. (최상위 선언 시, 같은 파일 내)
 */
 internal open class TalkativeButton : Focusable {
     private fun yell() = println("Hey!")
