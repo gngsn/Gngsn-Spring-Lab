@@ -278,3 +278,34 @@ class ValueObject5(     // all args constructor
         }
     var var2: String? = null    // getter, setter
 }
+/*
+public final class ValueObject5 {
+   @Nullable
+   private String var1;
+   @Nullable
+   private String var2;
+
+   @Nullable
+   public final String getVar1() {
+      return this.var1;
+   }
+
+   public final void setVar1(@Nullable String value) {
+      Intrinsics.checkNotNull(value);
+      if (((CharSequence)value).length() == 0) {
+         throw new IllegalArgumentException("must not empty!");
+      } else {
+         this.var1 = value;
+      }
+   }
+
+   @Nullable
+   public final String getVar2() {
+      return this.var2;
+   }
+
+   public final void setVar2(@Nullable String <set-?>) {
+      this.var2 = <set-?>;
+   }
+}
+*/
