@@ -168,14 +168,12 @@ public final class ValueObject3 {
       }
    }
 }
-
 */
 
 data class ValueObject4(    // all args constructor, component1, component2, copy, toString, hashCode, equals
     var var1: String,       // getter, setter
     var var2: String        // getter, setter
 )
-
 /*
 public final class ValueObject4 {
    @NotNull
@@ -267,5 +265,16 @@ public final class ValueObject4 {
       }
    }
 }
+*/
 
- */
+
+class ValueObject5(     // all args constructor
+) {
+    var var1: String? = null   // getter, setter
+        set(value) {
+            if (value!!.isEmpty())
+                throw IllegalArgumentException("must not empty!")
+            field = value // field: backing field
+        }
+    var var2: String? = null    // getter, setter
+}
