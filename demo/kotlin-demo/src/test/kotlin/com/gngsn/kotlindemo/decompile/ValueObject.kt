@@ -268,13 +268,22 @@ public final class ValueObject4 {
 */
 
 
+fun main() {
+    val v = ValueObject5()
+    v.var1 = "recursive!!"
+}
+
 class ValueObject5(     // all args constructor
 ) {
     var var1: String? = null   // getter, setter
         set(value) {
             if (value!!.isEmpty())
                 throw IllegalArgumentException("must not empty!")
-            field = value // field: backing field
+
+            // field: backing field
+            field = value       // this.var1 = value
+            this.var1 = value   // this.setVar1(value);
+            // DANGER: recursive
         }
     var var2: String? = null    // getter, setter
 }
@@ -296,6 +305,7 @@ public final class ValueObject5 {
          throw new IllegalArgumentException("must not empty!");
       } else {
          this.var1 = value;
+         this.setVar1(value);
       }
    }
 
