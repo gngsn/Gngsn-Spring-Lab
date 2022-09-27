@@ -26,9 +26,15 @@ class Person2(val name: String) {
             val jsonObject = JSONTokener(jsonText).nextValue() as JSONObject
             return Person2(jsonObject.get("name") as String)
         }
+
     }
+
+
 }
 
+fun <T> loadFromJSON(factory: JSONFactory<T>): T {
+    return factory.fromJSON("")
+}
 
 // 방법 3: 비즈니스 로직 모듈
 class Person3(val name: String) {
@@ -43,6 +49,8 @@ fun Person3.Companion.fromJSON(json: String): Person3 {
 
 fun main() {
     val json = "{name: gngsn}"
+
+    loadFromJSON(Person2)
 
     val person1 = Person1.Loader.fromJSON(json)
     println(person1.name)

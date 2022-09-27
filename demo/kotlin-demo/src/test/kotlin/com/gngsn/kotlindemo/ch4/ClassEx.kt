@@ -1,12 +1,10 @@
-@file:JvmName("obj2")
-
-package com.gngsn.kotlindemo.ch4
+package com.gngsn.kotlindemo.ch4.ClassEx
 
 class ClassEx {
     fun defineTest() = println("default access modifier test!")
 }
 
-class UserV1 constructor(_nickname: String) { //primary constructor
+class User constructor(_nickname: String) { //primary constructor
 
     val nickname: String
 
@@ -23,7 +21,7 @@ class UserV3(val nickname: String)
 
 class UserV4(val nickname: String, val isSubscribed: Boolean = true)
 
-val gngsn = UserV1("경선")
+val gngsn = User("경선")
 
 class ExtendClass {
     open class User(val nickname: String) { /* ... */ }
