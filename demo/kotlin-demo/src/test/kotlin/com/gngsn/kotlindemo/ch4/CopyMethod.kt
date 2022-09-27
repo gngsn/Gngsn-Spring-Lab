@@ -1,5 +1,6 @@
 package com.gngsn.kotlindemo.ch4
 
+import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 
 /*
@@ -24,6 +25,10 @@ class CopyMethod {
     @Test
     fun copyTest() {
         val park = Client("박경선", 10580)
-        println(park.copy(postalCode = 4000))
+        val copy = park.copy()
+        println(copy)
+
+        Assertions.assertTrue(park == copy)
+        Assertions.assertTrue(park !== copy)
     }
 }
