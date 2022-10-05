@@ -179,3 +179,77 @@ println(list.groupBy(String::first)) // {a=[a, ab], b=[b]}
 ```
 
 first는 String의 멤버가 아니라 **확장 함수**지만 여전히 멤버 참조를 사용해 first에 접근할 수 있다.
+
+
+
+### flatMap과 flatten
+
+*: 중첩된 컬렉션 안의 원소 처리*
+
+책에 대한 정보를 저장하는 도서관이 있다고 가정하자.
+
+``` kotlin
+class Book(val title: String, val authors: List<String>)
+```
+
+책마다 저자가 한 명 또는 여러 명 있을 수 있기 때문에, 도서관 내 모든 책의 저자를 모은 집합을 다음과 같이 가져올 수 있다.
+
+
+``` kotlin
+books.flatMap { it .authors }.toSet() // books 컬렉션에 있는 책을 쓴 모든 저자의 집합
+```
+
+#### .flatMap()
+
+: 먼저 인자로 주어진 람다를 컬렉션의 모든 객체에 적용하고(또는 매핑map) 람다를 적용한 결과 얻어지는 여러 리스트를 한 리스트로 한데 모은다(or flatten). 
+
+``` kotlin
+val strings = listOf (“abc”, “def”)
+println(strings.flatMap { it.toList() }) // [a, b, c, d, e, f]
+```
+
+// 그림 5.6 flatMap 함수를 적용한 결과
+
+`toList` 함수를 문자열에 적용하면 그 문자열에 속한 모든 문자로 이뤄진 리스트가 만들어진다. map과 toList를 함께 사용하면 그림 5.6의 가운데 줄에 표현한 것처럼 문자로 이뤄진 리스트로 이뤄진 리스트가 생긴다. 
+flatMap 함수는 다음 단계로 리스트의 리스 트에 들어있던 모든 원소로 이뤄진 단일 리스트를 반환한다. 다시 저자 목록을 살펴보자.
+
+``` kotlin
+val books = listOf(Book(“Thursday Next”, listOf (“Jasper Fforde”)), Book(“Mort”, listOf(“Terry Pratchett”)), Book(“Good Omens”, listOf(“Terry Pratchett”, “Neil Gaiman”)))
+printIn(books.flatMap { it.authors }.toSet()) // [Jasper Fforde, Terry Pratchett, Neil Gaiman]
+```
+
+book.authors 프로퍼티는 작가를 모아둔 컬렉션이다. 
+flatMap 함수는 모든 책의 작가를 평평한(문자열만으로 이뤄진) 리스트 하나로 모은 다. 
+toSet은 flatmap의 결과 리스트에서 중복을 없애고 집합으로 만들기 때문에, 최종 출력에서는 Terry Pratchett를 한 번만 볼 수 있다.
+
+
+#### flatten()
+: 2차 이상의 리스트를 하나의 리스트로 모은다.
+
+리스트의 리스트가 있는데 모든 중첩된 리스트의 원소를 한 리스트로 모아야 한다면 flatMap을 떠올릴 수 있을 것이다. 하지만 특별히 변환해야 할 내용이 없다면 리스트의 리스트를 평평하게 펼치기만하면 된다.
+그런경우 `listOfLists.flatten()` 처럼 flatten 함수를 사용할 수 있다.
+
+
+
+
+## 지연 계산(lazy) 컬렉션 연산
+
+앞 절에서는 `map`이나 `filter` 같은 몇 가지 컬렉션 함수를 살펴봤다. 그런 함수는 결과 컬렉션을 즉시eagerly 생성한다. 
+이는 컬렉션 함수를 연쇄하면 매 단계마다 계산 중간 결과를 새로운 컬렉션에 임시로 담는다는 말이다. 
+
+시퀀스sequence를 사용하면 중간 임시 컬렉션을 사용하지 않고도 컬렉션 연산을 연쇄할 수 있다.
+
+``` kotlin
+people.map(Person::name).filter { it.startsWith(“A”) }
+```
+
+코틀린 표준 라이브러리 참조 문서에는 filter와 map이 리스트를 반환한다고 써 있다. 이는 이 연쇄 호출이 리스트를 2개 만든다는 뜻이다. 한 리스트는 filter의 결과를 담고, 다른 하나는 map의 결과를 담는다. 원본 리스트에 원소가 2개밖에 없다면 리스트가 2개 더 생겨도 큰 문제가 되지 않겠지만, 원소가 수백만 개가 되면 훨씬 더 효율이 떨어진다.
+
+이를 더 효율적으로 만들기 위해서는 각 연산이 컬렉션을 직접 사용하는 대신 시퀀스 를 사용하게 만들어야 한다.
+
+``` kotlin
+people.asSequence()	 // 원본 컬렉션을 시퀀스로 변환
+		.map(Person::name) //  시퀀스도 컬렉션과 똑같은 API 제공
+		.filter { it.startsWith(“A”) }
+		.toList()					 // 결과 시퀀스를 다시 리스트로 변환
+```
