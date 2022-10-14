@@ -64,4 +64,19 @@ class PredicateCollection {
 
         Assertions.assertEquals(mapOf('a' to listOf("a", "ab"), 'b' to listOf("b")), result)
     }
+
+    @Test
+    fun intermediateNotRunTest() {
+        listOf(1, 2, 3, 4).asSequence ()
+            .map { print("map($it) "); it * it }
+            .filter { print ("filter($it) "); it % 2 == 0 } // print nothing
+    }
+
+    @Test
+    fun intermediateRunTest() {
+        listOf(1, 2, 3, 4).asSequence ()
+            .map { print("map($it) "); it * it }
+            .filter { print ("filter($it) "); it % 2 == 0 }
+            .toList() // map(1) filter(1) map(2) filter(4) map(3) filter(9) map(4) filter(16)
+    }
 }
