@@ -3,23 +3,25 @@ package com.gngsn.kotlindemo.ch5
 import com.gngsn.kotlindemo.ch5.LambdaExpression.Person
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
+import java.util.stream.Collectors
 
 class SequenceCollection {
 
     @Test
     fun collectionVsSequence() {
         val result1 = (1..4)
-            .map { print("map($it) ") ; it * it }
-            .filter { print ("filter($it) "); it % 2 == 0 }
+            .map { print("map($it) "); it * it }
+            .filter { print("filter($it) "); it % 2 == 0 }
 
         val result2 = (1..4)
             .asSequence()
-            .map { print("map($it) ") ; it * it }
-            .filter { print ("filter($it) "); it % 2 == 0 }
+            .map { print("map($it) "); it * it }
+            .filter { print("filter($it) "); it % 2 == 0 }
             .toList()
 
         Assertions.assertEquals(result1, result2)
     }
+
     @Test
     fun collectionVsSequence2() {
         val people = listOf(Person("Alice", 29), Person("Bob", 31))
@@ -33,5 +35,37 @@ class SequenceCollection {
             .toList()                             // 결과 시퀀스를 다시 리스트로 변환
 
         Assertions.assertEquals(result1, result2)
+    }
+
+    @Test
+    fun streamVsSequence() {
+        val people = listOf(Person("Alice", 29), Person("Bob", 31))
+        val sequenceName = people.asSequence()
+            .find { it.name.length > 5 }
+            ?.name
+
+        val streamName = people.stream()
+            .filter { it.name.length > 5 }
+            .findAny()
+            .get() // Error
+            .name
+
+        println("sequenceName : " + sequenceName)
+        println("streamName : " + streamName)
+    }
+    @Test
+    fun streamVsSequence2() {
+        val people = listOf(Person("Alice", 29), Person("Bob", 31))
+
+        val seqAdultsByName = people.asSequence()
+            .filter { it.age >= 18 }
+            .groupBy { it.name }
+
+        val stmAdultsByName = people.stream()
+            .filter { it.age >= 18 }
+            .collect(Collectors.groupingBy<Person, String> { it.name })
+
+        println("sequenceName : " + seqAdultsByName)
+        println("streamName : " + stmAdultsByName)
     }
 }
