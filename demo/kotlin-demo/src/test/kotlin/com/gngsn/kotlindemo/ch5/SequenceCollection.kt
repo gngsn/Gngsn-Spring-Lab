@@ -68,10 +68,9 @@ class SequenceCollection {
     @Test
     fun sequence() {
         val people = listOf(Person("Alice", 29), Person("Bob", 31))
-        val sequenceName = people.asSequence()         // 원본 컬렉션을 시퀀스로 변환
-            .map(Person::name)                    //  시퀀스도 컬렉션과 똑같은 API 제공
-            .filter { it.startsWith("A") }
-            .toList()                             // 결과 시퀀스를 다시 리스트로 변환
+        val sequenceName = people.asSequence()
+            .find { it.name.length > 5 }
+            ?.name
 
         println("sequenceName : " + sequenceName)
     }
