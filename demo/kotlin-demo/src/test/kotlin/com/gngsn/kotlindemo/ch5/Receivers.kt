@@ -49,6 +49,19 @@ class Receivers {
         append("\nNow I know the alphabet!")
     }.toString()
 
+    fun alphabetBuildString() = buildString {
+        for (letter in 'A'..'Z') {
+            append(letter)
+        }
+        append("\nNow I know the alphabet!")
+    }
+
+//    fun createViewWithCustomAttributes(context: Context) =
+//        Textview(context).apply {
+//            text = "Sample Text",
+//            textsize = 20.0
+//            setPadding(10, 0, 0, 0)
+//        }
 
     @Test
     fun applyTest() {
