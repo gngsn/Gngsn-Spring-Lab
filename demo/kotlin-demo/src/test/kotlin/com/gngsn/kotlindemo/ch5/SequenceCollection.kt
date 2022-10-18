@@ -1,6 +1,7 @@
 package com.gngsn.kotlindemo.ch5
 
 import com.gngsn.kotlindemo.ch5.LambdaExpression.Person
+import com.gngsn.kotlindemo.ch5.LambdaJava.postponeComputation
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 import java.util.stream.Collectors
@@ -55,26 +56,6 @@ class SequenceCollection {
     }
 
     @Test
-    fun stream() {
-        val people = listOf(Person("Alice", 29), Person("Bob", 31))
-        val streamName = people.stream()
-            .filter { it.name.length > 5 }
-            .findAny()
-            .get() // Error
-            .name
-
-        println("streamName : " + streamName)
-    }
-    @Test
-    fun sequence() {
-        val people = listOf(Person("Alice", 29), Person("Bob", 31))
-        val sequenceName = people.asSequence()
-            .find { it.name.length > 5 }
-            ?.name
-
-        println("sequenceName : " + sequenceName)
-    }
-    @Test
     fun streamVsSequence2() {
         val people = listOf(Person("Alice", 29), Person("Bob", 31))
 
@@ -90,5 +71,20 @@ class SequenceCollection {
         println("streamName : " + stmAdultsByName)
     }
 
+//    private fun postponeComputation(delay: Long, computation: Runnable) {
+//        Thread.sleep(delay)
+//        computation.run()
+//    }
+
+    @Test
+    fun postponeTest() {
+        postponeComputation(1000, object: Runnable {
+            override fun run() {
+                println(42)
+            }
+        })
+
+        postponeComputation(1000) { println(42) }
+    }
 
 }
