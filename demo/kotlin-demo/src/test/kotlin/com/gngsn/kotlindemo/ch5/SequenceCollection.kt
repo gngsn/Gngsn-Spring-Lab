@@ -71,13 +71,8 @@ class SequenceCollection {
         println("streamName : " + stmAdultsByName)
     }
 
-//    private fun postponeComputation(delay: Long, computation: Runnable) {
-//        Thread.sleep(delay)
-//        computation.run()
-//    }
-
     @Test
-    fun postponeTest() {
+    fun callJavaMethodTest() {
         postponeComputation(1000, object: Runnable {
             override fun run() {
                 println(42)
