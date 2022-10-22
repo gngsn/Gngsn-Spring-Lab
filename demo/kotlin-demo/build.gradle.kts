@@ -24,6 +24,7 @@ dependencies {
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4")
+    implementation("org.apache.shenyu:shenyu-spring-boot-starter-client-springmvc:2.5.0")
 
     /*
         serialization/deserialization of Kotlin classes and data classes
