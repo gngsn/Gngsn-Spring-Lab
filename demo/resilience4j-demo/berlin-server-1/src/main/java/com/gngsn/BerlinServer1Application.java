@@ -1,4 +1,4 @@
-package com.gngsn.resilience4jdemo;
+package com.gngsn;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

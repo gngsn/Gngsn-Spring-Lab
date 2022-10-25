@@ -1,4 +1,4 @@
-package com.gngsn.resilience4jdemo;
+package com.gngsn;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
