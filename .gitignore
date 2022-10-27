@@ -42,14 +42,14 @@ mvnw.*
 
 
 ### Gradle ###
-gradle/
-gradlew.*
-*.gradle
+.gradle
+**/build/
 !src/**/build/
 gradle-app.setting
 !gradle-wrapper.jar
 !gradle-wrapper.properties
 .gradletasknamecache
+*.hprof
 
 spring-test/emo/src/main/resources/jdbc.properties
 jdbc.properties
