@@ -1,6 +1,9 @@
 package com.gngsn;
 
-import org.springframework.core.annotation.AliasFor;
+import io.github.resilience4j.circuitbreaker.CircuitBreaker;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -10,25 +13,41 @@ import java.util.Random;
 @RestController("/api/v1")
 public class TestController {
 
+    private final TestService testService;
+    private final CircuitBreaker circuitBreaker;
+
+    private boolean isError = false;
+    Logger log = LoggerFactory.getLogger(TestService.class);
+    public TestController(TestService testService, CircuitBreaker circuitBreaker) {
+        this.testService = testService;
+        this.circuitBreaker = circuitBreaker;
+    }
+
     @RequestMapping("/limit")
-    public ResDTO failure(@RequestParam int id) {
-        if (id > 20) {
-            throw new RuntimeException();
-        }
-        return new ResDTO(200, "[Berlin Server] Request Success");
+    public ResDTO limiter(@RequestParam int id) {
+        String res = testService.successOrErrorWhenNumGreaterThan20(id);
+
+        log.info(res);
+        return new ResDTO(200, "[Berlin Server] " + res);
     }
 
     @RequestMapping("/limit/random")
-    public ResDTO randomFailure() {
+    public String randomLimiter() {
         Random random = new Random();
-        int num = random.nextInt(100);
-        if (num > 20) {
-            throw new RuntimeException();
-        }
-        return new ResDTO(200, "[Berlin Server] Request Success");
+
+        return CircuitBreaker.decorateCheckedSupplier(circuitBreaker,
+            () -> testService.successOrErrorWhenNumGreaterThan20(random.nextInt(100)))
+            .recover((throwable -> {
+                if (throwable instanceof ClassCastException) {
+                    return () -> "Ask to developer...";
+                } else if (throwable instanceof RuntimeException) {
+                    log.warn("### exception : {} ###", throwable.getMessage());
+                    return () -> "Please try again after few minutes...";
+                } else {
+                    return () -> "Server is down...";
+                }
+            })).get();
     }
-
-
     @RequestMapping("/delay")
     public ResDTO delay(@RequestParam long delay) throws InterruptedException {
         System.out.println("delay: " + delay);
