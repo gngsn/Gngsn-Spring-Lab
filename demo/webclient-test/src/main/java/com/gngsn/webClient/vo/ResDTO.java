@@ -1,4 +1,4 @@
-package com.gngsn.webClientTest.vo;
+package com.gngsn.webClient.vo;
 
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import lombok.Data;

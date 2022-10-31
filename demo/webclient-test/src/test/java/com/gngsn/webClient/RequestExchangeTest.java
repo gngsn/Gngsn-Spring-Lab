@@ -1,27 +1,25 @@
-package com.gngsn.webClientTest;
+package com.gngsn.webClient;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import com.gngsn.webClientTest.exception.BadWebClientRequestException;
-import com.gngsn.webClientTest.vo.ResDTO;
+import com.gngsn.webClient.exception.BadWebClientRequestException;
+import com.gngsn.webClient.vo.ResDTO;
 import io.netty.channel.ChannelOption;
 import io.netty.handler.timeout.ReadTimeoutHandler;
 import io.netty.handler.timeout.WriteTimeoutHandler;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.http.client.reactive.ReactorClientHttpConnector;
 import org.springframework.http.codec.json.Jackson2JsonDecoder;
 import org.springframework.http.codec.json.Jackson2JsonEncoder;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
+import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.ExchangeStrategies;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientException;
@@ -31,10 +29,9 @@ import reactor.netty.http.client.HttpClient;
 import reactor.netty.resources.ConnectionProvider;
 
 import java.time.Duration;
-import java.util.concurrent.atomic.AtomicReference;
 
 @Slf4j
-public class RequestRetrieveTest {
+public class RequestExchangeTest {
 
     private WebClient webClient;
 
@@ -50,11 +47,12 @@ public class RequestRetrieveTest {
         String URI = "http://127.0.0.1:8080/test/200";
         MultiValueMap<String, String> requestBody = new LinkedMultiValueMap<>();
 
-        ResponseEntity resDTO = this.retrievePostForMono(URI, requestBody).block();
-        log.info("\n" + resDTO.toString());
+        ResDTO resDTO = this.exchangePostForMono(URI, requestBody).block();
+        log.info(resDTO.toString());
 
-        Assertions.assertTrue(resDTO.getStatusCode().is2xxSuccessful());
+        Assertions.assertTrue(resDTO.getStatus().is2xxSuccessful());
     }
+
 
     @Test
     public void reqApiTest400() {
@@ -62,9 +60,10 @@ public class RequestRetrieveTest {
         MultiValueMap<String, String> requestBody = new LinkedMultiValueMap<>();
 
         try {
-            this.retrievePostForMono(URI, requestBody).block();
+            ResDTO resDTO = this.exchangePostForMono(URI, requestBody).block();
+            log.info("이건 출력 안됨 resDTO: {}", resDTO);
         } catch (BadWebClientRequestException wre) {
-            log.error("\nWebClientResponseException | msg: {}", wre.getMessage());
+            log.error("BadWebClientRequestException | msg: {}", wre.getMessage());
             Assertions.assertEquals(400, wre.getStatusCode());
 
             return;
@@ -85,9 +84,10 @@ public class RequestRetrieveTest {
         MultiValueMap<String, String> requestBody = new LinkedMultiValueMap<>();
 
         try {
-            this.retrievePostForMono(URI, requestBody).block();
+            ResDTO resDTO = this.exchangePostForMono(URI, requestBody).block();
+            log.info("이건 출력 안됨 resDTO: {}", resDTO);
         } catch (BadWebClientRequestException bwre) {
-            log.error("WebClientResponseException | msg: {}", bwre.getMessage());
+            log.error("BadWebClientRequestException | msg: {}", bwre.getMessage());
         } catch (WebClientResponseException wre) {
             log.error("WebClientResponseException | msg: {}", wre.getMessage());
             Assertions.assertEquals(500, wre.getRawStatusCode());
@@ -107,7 +107,8 @@ public class RequestRetrieveTest {
         MultiValueMap<String, String> requestBody = new LinkedMultiValueMap<>();
 
         try {
-            this.retrievePostForMono(URI, requestBody).block();
+            ResDTO resDTO = this.exchangePostForMono(URI, requestBody).block();
+            log.info("이건 출력 안됨 resDTO: {}", resDTO);
         } catch (BadWebClientRequestException bwre) {
             log.error("WebClientResponseException | msg: {}", bwre.getMessage());
         } catch (WebClientResponseException wre) {
@@ -121,35 +122,31 @@ public class RequestRetrieveTest {
         }
     }
 
-
-    private Mono<ResponseEntity<ResDTO>> retrievePostForMono(String uri, MultiValueMap<String, String> body) throws WebClientResponseException {
+    private Mono<ResDTO> exchangePostForMono(String uri, MultiValueMap<String, String> body) throws WebClientResponseException {
         // @formatter:off
         return webClient
             .post()
             .uri(uri)
-            .bodyValue(body)
-            .retrieve()
-            .onStatus(HttpStatus::is4xxClientError, response ->
-                Mono.error(
-                    new BadWebClientRequestException(
-                        response.rawStatusCode(),
-                        String.format("4xx 외부 요청 오류. statusCode: %s, response: %s, header: %s",
-                            response.rawStatusCode(),
-                            response.bodyToMono(String.class),
-                            response.headers().asHttpHeaders())
-                    )
-                )
-            )
-            .onStatus(HttpStatus::is5xxServerError, response ->
-                Mono.error(
-                    new WebClientResponseException(
-                        response.rawStatusCode(),
-                        String.format("5xx 외부 시스템 오류. %s", response.bodyToMono(String.class)),
-                        response.headers().asHttpHeaders(), null, null
-                    )
-                )
-            ).toEntity(ResDTO.class)
-            .doOnError(error -> log.error("doOnError logging: "+ error));
+            .contentType(MediaType.APPLICATION_JSON)
+            .body(BodyInserters.fromValue(body))
+            .exchangeToMono(response ->
+                response.bodyToMono(ResDTO.class)
+                    .map(validReqVO -> {
+
+                        if (response.statusCode().is2xxSuccessful()) {
+                            log.info("API 요청에 성공했습니다.");
+                            return validReqVO;
+                        }
+
+                        if (response.statusCode().is4xxClientError()) {
+                            log.error("API 요청 중 4xx 에러가 발생했습니다. 요청 데이터를 확인해주세요.");
+                            throw new BadWebClientRequestException(response.rawStatusCode(), String.format("4xx 외부 요청 오류. statusCode: %s, response: %s, header: %s", response.rawStatusCode(), response.bodyToMono(String.class), response.headers().asHttpHeaders()));
+                        }
+
+                        log.error("API 요청 중 Tree 서버에서 5xx 에러가 발생했습니다.");
+                        throw new WebClientResponseException(response.rawStatusCode(), String.format("5xx 외부 시스템 오류. %s", response.bodyToMono(String.class)), response.headers().asHttpHeaders(), null, null);
+                    })
+            ).doOnError(error -> log.error("doOnError logging: "+ error));
     }
 
     public WebClient commonWebClient(
@@ -167,7 +164,7 @@ public class RequestRetrieveTest {
     public HttpClient defaultHttpClient(ConnectionProvider provider) {
 
         return HttpClient.create(provider)
-            .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 1_000)
+            .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 5_000)
             .doOnConnected(conn ->
                 conn.addHandlerLast(new ReadTimeoutHandler(5)) //읽기시간초과 타임아웃
                     .addHandlerLast(new WriteTimeoutHandler(5)));

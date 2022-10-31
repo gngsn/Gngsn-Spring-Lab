@@ -42,8 +42,9 @@ mvnw.*
 
 
 ### Gradle ###
-.gradle
-**/build/
+gradle/
+gradlew.*
+*.gradle
 !src/**/build/
 gradle-app.setting
 !gradle-wrapper.jar

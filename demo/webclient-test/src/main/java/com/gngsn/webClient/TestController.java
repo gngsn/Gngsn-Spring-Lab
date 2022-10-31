@@ -1,16 +1,11 @@
-package com.gngsn.webClientTest;
+package com.gngsn.webClient;
 
-import com.gngsn.webClientTest.vo.ReqDTO;
-import com.gngsn.webClientTest.vo.ResDTO;
+import com.gngsn.webClient.vo.ReqDTO;
+import com.gngsn.webClient.vo.ResDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-
-import javax.validation.Valid;
-import java.time.LocalDateTime;
-
 
 @Slf4j
 @RestController

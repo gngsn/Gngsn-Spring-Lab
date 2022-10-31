@@ -1,4 +1,4 @@
-package com.gngsn.webClientTest.exception;
+package com.gngsn.webClient.exception;
 
 import lombok.Getter;
 

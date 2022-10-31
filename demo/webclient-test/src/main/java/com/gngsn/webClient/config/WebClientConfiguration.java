@@ -1,4 +1,4 @@
-package com.gngsn.webClientTest.config;
+package com.gngsn.webClient.config;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;

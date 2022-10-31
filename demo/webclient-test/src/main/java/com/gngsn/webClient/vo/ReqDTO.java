@@ -1,8 +1,7 @@
-package com.gngsn.webClientTest.vo;
+package com.gngsn.webClient.vo;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NonNull;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;

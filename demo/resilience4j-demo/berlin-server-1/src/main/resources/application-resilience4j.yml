@@ -1,0 +1,41 @@
+# actuator 집계정보를 보기 위한 설정
+management.health.diskspace.enabled: false
+management.health.circuitbreakers.enabled: true
+management.health.ratelimiters.enabled: false
+management.metrics.tags.application: ${spring.application.name}
+management.metrics.distribution.percentiles-histogram.http.server.requests: true
+management.metrics.distribution.percentiles-histogram.resilience4j.circuitbreaker.calls: true
+
+
+resilience4j.circuitbreaker:
+  configs:
+    default:
+      registerHealthIndicator: true
+      # 실패 비율 임계치를 백분율로 설정. 실패 비율이 임계치보다 같거나 크면 Circuit이 Open됨.
+      failureRateThreshold: 25
+      # 호출이 느린 비율 임계치를 백분율로 설정. slow로 판단하는 기준은 slowCallDurationThreshold 에서 설정한 값.
+      slowCallRateThreshold: 25
+      slowCallDurationThreshold: 2s
+      # circuit breaker가 half open 상태일때 허용할 수 있는 호출 횟수
+      permittedNumberOfCallsInHalfOpenState: 10
+      # sliding window type이 count-based일때 slidingWindowSize 횟수만큼의 호출을 기록하고 집계. time-based 일땐, slidingWindowSize 초 동안 호출을 기록하고 집계.
+      slidingWindowType:
+        - io.github.resilience4j.circuitbreaker.CircuitBreakerConfig.SlidingWindowType.COUNT_BASED
+      slidingWindowSize: 10
+      minimumNumberOfCalls: 10
+
+      # open -> half-open 으로 전환하기전 기다리는 시간
+      waitDurationInOpenState: 5s
+
+      # 별도의 모니터링 스레드를 만들어 전환할지 여부
+      automaticTransitionFromOpenToHalfOpenEnabled: true
+      eventConsumerBufferSize: 5
+
+      # 집계할 예외 대상에 관한 설정.
+      recordExceptions:
+        - org.springframework.web.client.ResourceAccessException
+
+      # 집계하지 않을 예외 대상에 관한 설정
+      ignoreExceptions:
+        - com.gngsn.common.exception.BadParameterException
+        - com.gngsn.common.exception.NotFoundException

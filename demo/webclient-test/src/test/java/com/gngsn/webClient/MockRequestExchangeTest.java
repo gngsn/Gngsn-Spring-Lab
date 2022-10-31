@@ -1,18 +1,18 @@
-package com.gngsn.webClientTest;
+package com.gngsn.webClient;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import com.gngsn.webClientTest.exception.BadWebClientRequestException;
-import com.gngsn.webClientTest.vo.ResDTO;
+import com.gngsn.webClient.exception.BadWebClientRequestException;
+import com.gngsn.webClient.vo.ResDTO;
 import io.netty.channel.ChannelOption;
 import io.netty.handler.timeout.ReadTimeoutHandler;
 import io.netty.handler.timeout.WriteTimeoutHandler;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mock;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.client.reactive.ReactorClientHttpConnector;
@@ -31,8 +31,12 @@ import reactor.netty.resources.ConnectionProvider;
 
 import java.time.Duration;
 
+
 @Slf4j
-public class RequestExchangeTest {
+public class MockRequestExchangeTest {
+
+    @Mock
+    private TestController testController;
 
     private WebClient webClient;
 
@@ -47,6 +51,7 @@ public class RequestExchangeTest {
     public void reqApiTest200() {
         String URI = "http://127.0.0.1:8080/test/200";
         MultiValueMap<String, String> requestBody = new LinkedMultiValueMap<>();
+        testController.res200();
 
         ResDTO resDTO = this.exchangePostForMono(URI, requestBody).block();
         log.info(resDTO.toString());
