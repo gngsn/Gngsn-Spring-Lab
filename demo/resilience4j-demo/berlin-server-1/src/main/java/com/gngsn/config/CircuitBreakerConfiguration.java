@@ -1,5 +1,6 @@
-package com.gngsn;
+package com.gngsn.config;
 
+import com.gngsn.ConstServerNm;
 import io.github.resilience4j.circuitbreaker.CircuitBreaker;
 import io.github.resilience4j.circuitbreaker.CircuitBreakerConfig;
 import io.github.resilience4j.circuitbreaker.CircuitBreakerRegistry;
@@ -13,23 +14,41 @@ import java.util.concurrent.TimeoutException;
 @Configuration
 public class CircuitBreakerConfiguration {
 
+    /**
+     * []
+     *
+     * @param circuitBreakerRegistry
+     * @return
+     */
     @Bean
     public CircuitBreaker circuitBreaker(CircuitBreakerRegistry circuitBreakerRegistry) {
-        CircuitBreaker circuitBreaker = circuitBreakerRegistry.circuitBreaker(ConstServerNm.BERLIN_SERVER_1);
-        String result = circuitBreaker.executeSupplier(() -> "Berlin Server 1's circuit breaker is active");
-
-        return circuitBreaker;
+        return circuitBreakerRegistry.circuitBreaker(ConstServerNm.BERLIN_SERVER_1);
     }
 
+    /**
+     * [second step]
+     * Create a CircuitBreakerRegistry with a custom global configuration
+     *
+     * @param circuitBreakerConfig
+     * @return
+     */
     @Bean
     public CircuitBreakerRegistry circuitBreakerRegistry(CircuitBreakerConfig circuitBreakerConfig) {
-        // Create a CircuitBreakerRegistry with a custom global configuration
         return CircuitBreakerRegistry.of(circuitBreakerConfig);
     }
 
+    /**
+     * [first step]
+     * : Create a custom configuration for a CircuitBreaker
+     *
+     * @return
+     */
     @Bean
     public CircuitBreakerConfig circuitBreakerConfig() {
-        // Create a custom configuration for a CircuitBreaker
+        // using default setting
+        CircuitBreakerConfig.ofDefaults();
+
+        // customizing setting
         return CircuitBreakerConfig.custom()
             .failureRateThreshold(50)
             .waitDurationInOpenState(Duration.ofMillis(1000))
