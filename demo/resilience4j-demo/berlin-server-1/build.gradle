@@ -20,6 +20,7 @@ dependencies {
     implementation "io.github.resilience4j:resilience4j-circuitbreaker:$resilience4jVersion"
     implementation "io.github.resilience4j:resilience4j-bulkhead:$resilience4jVersion"
     implementation "io.github.resilience4j:resilience4j-timelimiter:$resilience4jVersion"
+    implementation "io.github.resilience4j:resilience4j-micrometer:${resilience4jVersion}"
 
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.9.0'

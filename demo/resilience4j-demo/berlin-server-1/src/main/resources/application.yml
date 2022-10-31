@@ -1,0 +1,87 @@
+server:
+  port: 8008
+
+# Aspect Order : Retry (CircuitBreaker (RateLimiter (TimeLimiter (Bulkhead (Function)))))
+resilience4j.circuitbreaker:
+  instances:
+    berlin-server1:
+      registerHealthIndicator: true
+      slidingWindowSize: 2
+#    backendB:
+#      registerHealthIndicator: true
+#      slidingWindowSize: 10
+#      permittedNumberOfCallsInHalfOpenState: 3
+#      slidingWindowType: TIME_BASED
+#      minimumNumberOfCalls: 20
+#      waitDurationInOpenState: 50s
+#      failureRateThreshold: 50
+#      eventConsumerBufferSize: 10
+#      record-exceptions:
+#        - java.lang.RuntimeException
+#        - java.lang.NumberFormatException
+
+#resilience4j.retry:
+#  instances:
+#    backendA:
+#      maxAttempts: 3
+#      waitDuration: 10s
+#      enableExponentialBackoff: true
+#      exponentialBackoffMultiplier: 2
+#      retryExceptions:
+#        - org.springframework.web.client.HttpServerErrorException
+#        - java.io.IOException
+#      ignoreExceptions:
+#        - java.lang.IllegalArgumentException
+#    backendB:
+#      maxAttempts: 3
+#      waitDuration: 10s
+#      retryExceptions:
+#        - org.springframework.web.client.HttpServerErrorException
+#        - java.io.IOException
+#      ignoreExceptions:
+#        - java.lang.IllegalArgumentException
+#
+#resilience4j.bulkhead:
+#  instances:
+#    backendA:
+#      maxConcurrentCalls: 10
+#    backendB:
+#      maxWaitDuration: 10ms
+#      maxConcurrentCalls: 20
+#
+#resilience4j.thread-pool-bulkhead:
+#  instances:
+#    backendA:
+#      maxThreadPoolSize: 1
+#      coreThreadPoolSize: 1
+#      queueCapacity: 1
+#    backendB:
+#      maxThreadPoolSize: 1
+#      coreThreadPoolSize: 1
+#      queueCapacity: 1
+#    backendC:
+#      maxThreadPoolSize: 1
+#      coreThreadPoolSize: 1
+#      queueCapacity: 1
+#
+#resilience4j.ratelimiter:
+#  instances:
+#    backendA:
+#      limitForPeriod: 10
+#      limitRefreshPeriod: 1s
+#      timeoutDuration: 0
+#      registerHealthIndicator: true
+#      eventConsumerBufferSize: 100
+#    backendB:
+#      limitForPeriod: 6
+#      limitRefreshPeriod: 500ms
+#      timeoutDuration: 3s
+#
+#resilience4j.timelimiter:
+#  instances:
+#    backendA:
+#      timeoutDuration: 2s
+#      cancelRunningFuture: true
+#    backendB:
+#      timeoutDuration: 1s
+#      cancelRunningFuture: false

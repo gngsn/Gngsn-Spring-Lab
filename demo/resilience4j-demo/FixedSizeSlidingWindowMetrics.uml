@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Diagram>
+  <ID>JAVA</ID>
+  <OriginalElement>io.github.resilience4j.core.metrics.FixedSizeSlidingWindowMetrics</OriginalElement>
+  <nodes>
+    <node x="-239.81857164678252" y="333.7158203125">io.github.resilience4j.core.metrics.Measurement</node>
+    <node x="417.02559438463334" y="-52.689453125">io.github.resilience4j.core.metrics.SlidingTimeWindowMetrics</node>
+    <node x="105.01115824846863" y="-177.689453125">io.github.resilience4j.core.metrics.Metrics</node>
+    <node x="580.0255943846333" y="249.310546875">io.github.resilience4j.core.metrics.PartialAggregation</node>
+    <node x="-314.8185716467825" y="249.310546875">io.github.resilience4j.core.metrics.TotalAggregation</node>
+    <node x="-376.87579711279614" y="-37.70144361361645">io.github.resilience4j.core.metrics.FixedSizeSlidingWindowMetrics</node>
+    <node x="105.01115824846863" y="222.7158203125">io.github.resilience4j.core.metrics.AbstractAggregation</node>
+  </nodes>
+  <notes />
+  <edges>
+    <edge source="io.github.resilience4j.core.metrics.FixedSizeSlidingWindowMetrics" target="io.github.resilience4j.core.metrics.Metrics" relationship="REALIZATION">
+      <point x="0.0" y="-117.70144361361643" />
+      <point x="-140.0" y="-77.689453125" />
+      <point x="263.51115824846863" y="-77.689453125" />
+      <point x="0.0" y="37.5" />
+    </edge>
+    <edge source="io.github.resilience4j.core.metrics.TotalAggregation" target="io.github.resilience4j.core.metrics.AbstractAggregation" relationship="GENERALIZATION">
+      <point x="0.0" y="-26.5" />
+      <point x="-160.31857164678252" y="275.810546875" />
+      <point x="247.51115824846863" y="275.810546875" />
+      <point x="0.0" y="82.0" />
+    </edge>
+    <edge source="io.github.resilience4j.core.metrics.SlidingTimeWindowMetrics" target="io.github.resilience4j.core.metrics.Metrics" relationship="REALIZATION">
+      <point x="0.0" y="-126.0" />
+      <point x="679.0255943846333" y="-77.689453125" />
+      <point x="263.51115824846863" y="-77.689453125" />
+      <point x="0.0" y="37.5" />
+    </edge>
+    <edge source="io.github.resilience4j.core.metrics.Measurement" target="io.github.resilience4j.core.metrics.AbstractAggregation" relationship="GENERALIZATION">
+      <point x="0.0" y="-26.5" />
+      <point x="-160.31857164678252" y="360.2158203125" />
+      <point x="247.51115824846863" y="360.2158203125" />
+      <point x="0.0" y="82.0" />
+    </edge>
+    <edge source="io.github.resilience4j.core.metrics.PartialAggregation" target="io.github.resilience4j.core.metrics.AbstractAggregation" relationship="GENERALIZATION">
+      <point x="0.0" y="-49.0" />
+      <point x="679.0255943846333" y="298.310546875" />
+      <point x="247.51115824846863" y="298.310546875" />
+      <point x="0.0" y="82.0" />
+    </edge>
+  </edges>
+  <settings layout="Hierarchic" zoom="1.0" showDependencies="false" x="282.5" y="104.5" />
+  <SelectedNodes />
+  <Categories>
+    <Category>Fields</Category>
+    <Category>Methods</Category>
+  </Categories>
+  <SCOPE>All</SCOPE>
+  <VISIBILITY>private</VISIBILITY>
+</Diagram>
+

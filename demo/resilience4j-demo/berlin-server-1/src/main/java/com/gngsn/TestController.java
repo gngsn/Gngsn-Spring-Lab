@@ -32,11 +32,18 @@ public class TestController {
     }
 
     @RequestMapping("/limit/random")
-    public String randomLimiter() {
+    public String randomLimiter(int delay) {
+        return CircuitBreaker.decorateSupplier(circuitBreaker,
+            () -> testService.successOrErrorWhenNumGreaterThan20(delay))
+            .get();
+    }
+
+    @RequestMapping("/limit/random")
+    public String randomCheckedLimiter(int delay) {
         Random random = new Random();
 
         return CircuitBreaker.decorateCheckedSupplier(circuitBreaker,
-            () -> testService.successOrErrorWhenNumGreaterThan20(random.nextInt(100)))
+            () -> testService.successOrErrorWhenNumGreaterThan20(delay))
             .recover((throwable -> {
                 if (throwable instanceof ClassCastException) {
                     return () -> "Ask to developer...";

@@ -17,6 +17,7 @@ public class SucceedNTimesAndThenFail implements PotentialFailure {
             successCount++;
             return;
         }
+
         throw new CircuitBreakerException("Error occurred during service executes");
     }
 }
