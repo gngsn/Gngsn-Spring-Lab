@@ -48,31 +48,6 @@ public class CircuitBreakerTest {
         printMetricDetails(meterRegistry);
     }
 
-    @Test
-    void countBasedSlidingWindow() {
-        CircuitBreakerConfiguration conf = new CircuitBreakerConfiguration();
-        CircuitBreakerRegistry registry = conf.circuitBreakerRegistry(conf.circuitBreakerConfig());
-        CircuitBreaker circuitBreaker = conf.circuitBreaker(registry);
-
-        MeterRegistry meterRegistry = new SimpleMeterRegistry();
-        TaggedCircuitBreakerMetrics.ofCircuitBreakerRegistry(registry)
-            .bindTo(meterRegistry);
-
-        testService = new TestService(new SucceedNTimesAndThenFail(3), new NoDelay());
-        Supplier<String> supplier = circuitBreaker.decorateSupplier(() ->
-            testService.getServerName()
-        );
-
-        for (int i = 0; i < 20; i++) {
-            try {
-                supplier.get();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-        printMetricDetails(meterRegistry);
-    }
-
     void printMetricDetails(MeterRegistry meterRegistry) {
         Consumer<Meter> meterConsumer = meter -> {
             String desc = meter.getId().getDescription();
