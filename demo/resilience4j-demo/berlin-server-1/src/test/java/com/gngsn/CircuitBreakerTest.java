@@ -26,7 +26,7 @@ public class CircuitBreakerTest {
     TestService testService;
 
     @Test
-    void countBasedSlidingWindow_FailedCalls() {
+    void countBasedSlidingWindow() {
         CircuitBreakerConfiguration conf = new CircuitBreakerConfiguration();
         CircuitBreakerRegistry registry = conf.circuitBreakerRegistry(conf.circuitBreakerConfig());
         CircuitBreaker circuitBreaker = conf.circuitBreaker(registry);
@@ -34,9 +34,9 @@ public class CircuitBreakerTest {
         testService = new TestService(new SucceedNTimesAndThenFail(3), new NoDelay());
         testController = new TestController(testService, circuitBreaker);
 
-//        MeterRegistry meterRegistry = new SimpleMeterRegistry();
-//        TaggedCircuitBreakerMetrics.ofCircuitBreakerRegistry(registry)
-//            .bindTo(meterRegistry);
+        MeterRegistry meterRegistry = new SimpleMeterRegistry();
+        TaggedCircuitBreakerMetrics.ofCircuitBreakerRegistry(registry)
+            .bindTo(meterRegistry);
 
         for (int i = 0; i < 20; i++) {
             try {
@@ -45,7 +45,7 @@ public class CircuitBreakerTest {
                 e.printStackTrace();
             }
         }
-//        printMetricDetails(meterRegistry);
+        printMetricDetails(meterRegistry);
     }
 
     @Test
