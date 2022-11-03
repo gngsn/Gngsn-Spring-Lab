@@ -18,7 +18,7 @@ public class DefaultApiEntity  implements Serializable {
 	private Object data;
 
 	/**
-	 * Instantiates a new shenyu result.
+	 * Instantiates a new api result.
 	 *
 	 * @param code    the code
 	 * @param message the message

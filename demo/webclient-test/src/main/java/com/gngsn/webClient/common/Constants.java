@@ -446,26 +446,6 @@ public interface Constants {
 	String DEFAULT = "DEFAULT";
 
 	/**
-	 * context path name prefix.
-	 */
-	String CONTEXT_PATH_NAME_PREFIX = "/context-path";
-
-	/**
-	 * dubbo gray release selector id.
-	 */
-	String DUBBO_SELECTOR_ID = "dubboSelectorId";
-
-	/**
-	 * dubbo gray release rule id.
-	 */
-	String DUBBO_RULE_ID = "dubboRuleId";
-
-	/**
-	 * dubbo remote address.
-	 */
-	String DUBBO_REMOTE_ADDRESS = "dubboRemoteAddress";
-
-	/**
 	 * dubbo group.
 	 */
 	String GROUP = "group";
@@ -484,106 +464,6 @@ public interface Constants {
 	 * the empty json.
 	 */
 	String EMPTY_JSON = "{}";
-
-	/**
-	 * http accept encoding gzip.
-	 */
-	String HTTP_ACCEPT_ENCODING_GZIP = "gzip";
-
-	/**
-	 * general context.
-	 */
-	String GENERAL_CONTEXT = "generalContext";
-
-	/**
-	 * addGeneralContextType.
-	 */
-	String ADD_GENERAL_CONTEXT_TYPE = "addGeneralContext";
-
-	/**
-	 * transmitHeaderToGeneralContext.
-	 */
-	String TRANSMIT_HEADER_TO_GENERAL_CONTEXT_TYPE = "transmitHeaderToGeneralContext";
-
-	/**
-	 * When register by http, the meta register path.
-	 */
-	String META_PATH = "/shenyu-client/register-metadata";
-
-	/**
-	 * When register by http, the meta type.
-	 */
-	String META_TYPE = "metadata";
-
-	/**
-	 * When register by http, the uri path.
-	 */
-	String URI_PATH = "/shenyu-client/register-uri";
-
-	/**
-	 * When register by http, the login path.
-	 */
-	String LOGIN_PATH = "/platform/login";
-
-	/**
-	 * When register by http, admin username.
-	 */
-	String USER_NAME = "username";
-
-	/**
-	 * Login name.
-	 */
-	String LOGIN_NAME = "userName";
-
-	/**
-	 * When register by http, admin password.
-	 */
-	String PASS_WORD = "password";
-
-	/**
-	 * X-Access-Token.
-	 */
-	String X_ACCESS_TOKEN = "X-Access-Token";
-
-	/**
-	 * The admin return result code.
-	 */
-	String ADMIN_RESULT_CODE = "code";
-
-	/**
-	 * The admin return result data.
-	 */
-	String ADMIN_RESULT_DATA = "data";
-
-	/**
-	 * The admin return result token.
-	 */
-	String ADMIN_RESULT_TOKEN = "token";
-
-	/**
-	 * The admin return result expired time.
-	 */
-	String ADMIN_RESULT_EXPIRED_TIME = "expiredTime";
-
-	/**
-	 * The admin userName.
-	 */
-	String ADMIN_RESULT_USERNAME = "userName";
-
-	/**
-	 * The admin password.
-	 */
-	String ADMIN_RESULT_PASSWORD = "password";
-
-	/**
-	 * shenyu admin path configs fetch.
-	 */
-	String SHENYU_ADMIN_PATH_CONFIGS_FETCH = "/configs/fetch";
-
-	/**
-	 * shenyu admin path configs listener.
-	 */
-	String SHENYU_ADMIN_PATH_CONFIGS_LISTENER = "/configs/listener";
 
 	/**
 	 * zombie removal times.

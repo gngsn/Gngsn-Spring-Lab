@@ -13,7 +13,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.Objects;
 
 /**
- * The type Shenyu result utils.
+ * The type api result utils.
  */
 public final class WebFluxResultUtils {
 
@@ -36,15 +36,15 @@ public final class WebFluxResultUtils {
 		if (Objects.isNull(result)) {
 			return Mono.empty();
 		}
-		final ApiResult<?> shenyuResult = ApiResultWrap.apiResult();
-		Object resultData = shenyuResult.format(exchange, result);
+		final ApiResult<?> apiResult = ApiResultWrap.apiResult();
+		Object resultData = apiResult.format(exchange, result);
 		// basic data use text/plain
 		MediaType mediaType = MediaType.TEXT_PLAIN;
 		if (!ObjectTypeUtils.isBasicType(result)) {
-			mediaType = shenyuResult.contentType(exchange, resultData);
+			mediaType = apiResult.contentType(exchange, resultData);
 		}
 		exchange.getResponse().getHeaders().setContentType(mediaType);
-		final Object responseData = shenyuResult.result(exchange, resultData);
+		final Object responseData = apiResult.result(exchange, resultData);
 		assert null != responseData;
 		final byte[] bytes = (responseData instanceof byte[])
 			? (byte[]) responseData : responseData.toString().getBytes(StandardCharsets.UTF_8);

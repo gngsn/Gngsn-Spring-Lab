@@ -1,24 +1,24 @@
 package com.gngsn.webClient.common;
 
 /**
- * The enum shenyu result enum.
+ * The enum api result enum.
  */
 public enum ApiResultEnum {
 
 	/**
-	 * Fail shenyu result enum.
+	 * Fail api result enum.
 	 */
 	FAIL(-1, "Internal exception in gateway. Please try again later!"),
 
 	/**
-	 * Success shenyu result enum.
+	 * Success api result enum.
 	 */
 	SUCCESS(200, "Access to success!"),
 
 	/**
-	 * Sign is not pass shenyu result enum.
+	 * Sign is not pass api result enum.
 	 */
-	SIGN_IS_NOT_PASS(401, "Sign is not pass shenyu!"),
+	SIGN_IS_NOT_PASS(401, "Sign is not pass api!"),
 
 	/**
 	 * Authorization is incorrect.
@@ -26,12 +26,12 @@ public enum ApiResultEnum {
 	ERROR_TOKEN(401, "Illegal authorization"),
 
 	/**
-	 * Payload too large shenyu result enum.
+	 * Payload too large api result enum.
 	 */
 	PAYLOAD_TOO_LARGE(403, "Payload too large!"),
 
 	/**
-	 * Too many requests shenyu result enum.
+	 * Too many requests api result enum.
 	 */
 	TOO_MANY_REQUESTS(429, "You have been restricted, please try again later!"),
 
@@ -51,32 +51,12 @@ public enum ApiResultEnum {
 	DEFAULT_FALLBACK(429, "the fallback success, please check your service status!"),
 
 	/**
-	 * Meta data error shenyu result enum.
+	 * Meta data error api result enum.
 	 */
 	META_DATA_ERROR(430, "Meta data error!"),
 
 	/**
-	 * Dubbo have body param shenyu result enum.
-	 */
-	DUBBO_HAVE_BODY_PARAM(431, "Dubbo must have body param, please enter the JSON format in the body!"),
-
-	/**
-	 * Sofa have body param shenyu result enum.
-	 */
-	SOFA_HAVE_BODY_PARAM(432, "Sofa must have body param, please enter the JSON format in the body!"),
-
-	/**
-	 * Tars have body param shenyu result enum.
-	 */
-	TARS_HAVE_BODY_PARAM(433, "Tars must have body param, please enter the JSON format in the body!"),
-
-	/**
-	 * Tars invoke shenyu result enum.
-	 */
-	TARS_INVOKE(434, "Tars invoke error!"),
-
-	/**
-	 * Grpc have body param shenyu result enum.
+	 * Grpc have body param api result enum.
 	 */
 	GRPC_HAVE_BODY_PARAM(435, "Grpc must have body param, please enter the JSON format in the body!"),
 
@@ -84,12 +64,6 @@ public enum ApiResultEnum {
 	 * Grpc client resultenum.
 	 */
 	GRPC_CLIENT_NULL(436, "Grpc client is null, please check the context path!"),
-
-	/**
-	 * Motan have body param shenyu result enum.
-	 */
-	MOTAN_HAVE_BODY_PARAM(437, "Motan must have body param, please enter the JSON format in the body!"),
-
 
 	/**
 	 * full selector type enum.
@@ -102,32 +76,32 @@ public enum ApiResultEnum {
 	TIME_ERROR(-101, "Your time parameter is incorrect or has expired!"),
 
 	/**
-	 * Rule not find shenyu result enum.
+	 * Rule not find api result enum.
 	 */
 	RULE_NOT_FOUND(-102, "Rule not found!"),
 
 	/**
-	 * Service result error shenyu result enum.
+	 * Service result error api result enum.
 	 */
 	SERVICE_RESULT_ERROR(-103, "Service invocation exception, or no result is returned!"),
 
 	/**
-	 * Service timeout shenyu result enum.
+	 * Service timeout api result enum.
 	 */
 	SERVICE_TIMEOUT(-104, "Service call timeout!"),
 
 	/**
-	 * Sign time is timeout shenyu result enum.
+	 * Sign time is timeout api result enum.
 	 */
 	SIGN_TIME_IS_TIMEOUT(-105, "The signature timestamp has exceeded %s minutes!"),
 
 	/**
-	 * Cannot find url shenyu result enum.
+	 * Cannot find url api result enum.
 	 */
 	CANNOT_FIND_URL(-106, "Can not find url, please check your configuration!"),
 
 	/**
-	 * Cannot find selector shenyu result enum.
+	 * Cannot find selector api result enum.
 	 */
 	SELECTOR_NOT_FOUND(-107, "Can not find selector, please check your configuration!"),
 

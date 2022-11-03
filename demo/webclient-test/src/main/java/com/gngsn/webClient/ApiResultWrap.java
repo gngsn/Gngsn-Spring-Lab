@@ -5,7 +5,7 @@ import com.gngsn.webClient.util.SpringBeanUtils;
 import org.springframework.web.server.ServerWebExchange;
 
 /**
- * The type shenyu result warp.
+ * The type api result warp.
  */
 public final class ApiResultWrap {
 
@@ -71,9 +71,9 @@ public final class ApiResultWrap {
 	}
 
 	/**
-	 * shenyu result bean.
+	 * api result bean.
 	 *
-	 * @return the shenyu result bean.
+	 * @return the api result bean.
 	 */
 	public static ApiResult<?> apiResult() {
 		return SpringBeanUtils.getInstance().getBean(ApiResult.class);
