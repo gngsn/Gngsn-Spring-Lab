@@ -205,6 +205,8 @@ public interface Constants {
 	 */
 	String REWRITE_URI = "rewrite_uri";
 
+	String HTTP_ACCEPT_ENCODING_GZIP = "gzip";
+
 	/**
 	 * The constant URI.
 	 */

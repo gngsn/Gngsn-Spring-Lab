@@ -12,11 +12,11 @@ import org.springframework.web.server.ServerWebExchange;
 import java.io.IOException;
 import java.util.Objects;
 
-public interface ApiResult<T> {
+public interface HttpResult<T> {
 	/**
 	 * logger.
 	 */
-	static final Logger LOG = LoggerFactory.getLogger(ApiResult.class);
+	static final Logger LOG = LoggerFactory.getLogger(HttpResult.class);
 
 	static final ObjectMapper MAPPER = new ObjectMapper();
 

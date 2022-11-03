@@ -75,7 +75,7 @@ public final class ApiResultWrap {
 	 *
 	 * @return the api result bean.
 	 */
-	public static ApiResult<?> apiResult() {
-		return SpringBeanUtils.getInstance().getBean(ApiResult.class);
+	public static HttpResult<?> apiResult() {
+		return SpringBeanUtils.getInstance().getBean(HttpResult.class);
 	}
 }

@@ -33,12 +33,9 @@ public class WebClientPlugin extends AbstractHttpClientPlugin<ClientResponse> {
 		this.webClient = webClient;
 	}
 
-	@Override
-	protected Mono<ClientResponse> doRequest(final ServerWebExchange exchange, final String httpMethod, final URI uri,
-		final HttpHeaders httpHeaders, final Flux<DataBuffer> body) {
-		// springWebflux5.3 mark #exchange() deprecated. because #echange maybe make memory leak.
-		// https://github.com/spring-projects/spring-framework/issues/25751
-		// exchange is deprecated, so change to {@link WebClient.RequestHeadersSpec#exchangeToMono(Function)}
+	public Mono<ClientResponse> request(final ServerWebExchange exchange, final String httpMethod,
+										final URI uri, final HttpHeaders httpHeaders, final Flux<DataBuffer> body) {
+
 		return webClient.method(HttpMethod.valueOf(httpMethod)).uri(uri)
 			.headers(headers -> headers.addAll(httpHeaders))
 			.body(BodyInserters.fromDataBuffers(body))
@@ -46,8 +43,8 @@ public class WebClientPlugin extends AbstractHttpClientPlugin<ClientResponse> {
 				.flatMap(bytes -> Mono.fromCallable(() -> Optional.ofNullable(bytes))).defaultIfEmpty(Optional.empty())
 				.flatMap(option -> {
 					final ClientResponse.Builder builder = ClientResponse.create(response.statusCode())
-						.headers(headers -> headers.addAll(response.headers().asHttpHeaders()))
-						.cookies(cookies -> cookies.addAll(response.cookies()));
+						.headers(headers -> headers.addAll(response.headers().asHttpHeaders()));
+//						.cookies(cookies -> cookies.addAll(response.cookies()));
 					if (option.isPresent()) {
 						final DataBufferFactory dataBufferFactory = exchange.getResponse().bufferFactory();
 						return Mono.just(builder.body(Flux.just(dataBufferFactory.wrap(option.get()))).build());
