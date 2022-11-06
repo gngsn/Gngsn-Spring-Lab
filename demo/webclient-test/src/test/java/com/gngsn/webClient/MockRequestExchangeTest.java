@@ -3,8 +3,9 @@ package com.gngsn.webClient;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.gngsn.webClient.controller.TestController;
 import com.gngsn.webClient.exception.BadWebClientRequestException;
-import com.gngsn.webClient.vo.ResDTO;
+import com.gngsn.webClient.vo.ResResult;
 import io.netty.channel.ChannelOption;
 import io.netty.handler.timeout.ReadTimeoutHandler;
 import io.netty.handler.timeout.WriteTimeoutHandler;
@@ -53,10 +54,10 @@ public class MockRequestExchangeTest {
         MultiValueMap<String, String> requestBody = new LinkedMultiValueMap<>();
         testController.res200();
 
-        ResDTO resDTO = this.exchangePostForMono(URI, requestBody).block();
+        ResResult resDTO = this.exchangePostForMono(URI, requestBody).block();
         log.info(resDTO.toString());
 
-        Assertions.assertTrue(resDTO.getStatus().is2xxSuccessful());
+        Assertions.assertEquals(200, resDTO.getCode());
     }
 
 
@@ -66,7 +67,7 @@ public class MockRequestExchangeTest {
         MultiValueMap<String, String> requestBody = new LinkedMultiValueMap<>();
 
         try {
-            ResDTO resDTO = this.exchangePostForMono(URI, requestBody).block();
+            ResResult resDTO = this.exchangePostForMono(URI, requestBody).block();
             log.info("이건 출력 안됨 resDTO: {}", resDTO);
         } catch (BadWebClientRequestException wre) {
             log.error("BadWebClientRequestException | msg: {}", wre.getMessage());
@@ -90,7 +91,7 @@ public class MockRequestExchangeTest {
         MultiValueMap<String, String> requestBody = new LinkedMultiValueMap<>();
 
         try {
-            ResDTO resDTO = this.exchangePostForMono(URI, requestBody).block();
+            ResResult resDTO = this.exchangePostForMono(URI, requestBody).block();
             log.info("이건 출력 안됨 resDTO: {}", resDTO);
         } catch (BadWebClientRequestException bwre) {
             log.error("BadWebClientRequestException | msg: {}", bwre.getMessage());
@@ -113,7 +114,7 @@ public class MockRequestExchangeTest {
         MultiValueMap<String, String> requestBody = new LinkedMultiValueMap<>();
 
         try {
-            ResDTO resDTO = this.exchangePostForMono(URI, requestBody).block();
+            ResResult resDTO = this.exchangePostForMono(URI, requestBody).block();
             log.info("이건 출력 안됨 resDTO: {}", resDTO);
         } catch (BadWebClientRequestException bwre) {
             log.error("WebClientResponseException | msg: {}", bwre.getMessage());
@@ -128,7 +129,7 @@ public class MockRequestExchangeTest {
         }
     }
 
-    private Mono<ResDTO> exchangePostForMono(String uri, MultiValueMap<String, String> body) throws WebClientResponseException {
+    private Mono<ResResult> exchangePostForMono(String uri, MultiValueMap<String, String> body) throws WebClientResponseException {
         // @formatter:off
         return webClient
             .post()
@@ -136,7 +137,7 @@ public class MockRequestExchangeTest {
             .contentType(MediaType.APPLICATION_JSON)
             .body(BodyInserters.fromValue(body))
             .exchangeToMono(response ->
-                response.bodyToMono(ResDTO.class)
+                response.bodyToMono(ResResult.class)
                     .map(validReqVO -> {
 
                         if (response.statusCode().is2xxSuccessful()) {

@@ -1,9 +1,5 @@
 package com.gngsn.webClient.vo;
 
-import com.fasterxml.jackson.annotation.JsonPropertyOrder;
-import lombok.Data;
-import org.springframework.http.HttpStatus;
-
 import java.io.Serializable;
 import java.util.Objects;
 
@@ -20,7 +16,7 @@ public class ApiResult<T> implements Serializable {
 	/**
 	 * Instantiates a new shenyu result.
 	 */
-	public AdminResult() {
+	public ApiResult() {
 
 	}
 
@@ -31,7 +27,7 @@ public class ApiResult<T> implements Serializable {
 	 * @param message the message
 	 * @param data    the data
 	 */
-	public AdminResult(final Integer code, final String message, final T data) {
+	public ApiResult(final Integer code, final String message, final T data) {
 		this.code = code;
 		this.message = message;
 		this.data = data;
@@ -94,7 +90,7 @@ public class ApiResult<T> implements Serializable {
 
 	@Override
 	public String toString() {
-		return "ShenyuAdminResult{"
+		return "ApiResult{"
 			+ "code=" + code
 			+ ", message='" + message
 			+ '\'' + ", data=" + data
@@ -106,11 +102,11 @@ public class ApiResult<T> implements Serializable {
 		if (this == o) {
 			return true;
 		}
-		if (!(o instanceof AdminResult)) {
+		if (!(o instanceof ApiResult)) {
 			return false;
 		}
 		@SuppressWarnings("all")
-		AdminResult<T> that = (AdminResult<T>) o;
+		ApiResult<T> that = (ApiResult<T>) o;
 		return Objects.equals(code, that.code) && Objects.equals(message, that.message) && Objects.equals(data, that.data);
 	}
 

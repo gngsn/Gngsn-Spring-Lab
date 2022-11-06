@@ -1,4 +1,4 @@
-package com.gngsn.webClient;
+package com.gngsn.webClient.plugin;
 
 
 import com.gngsn.webClient.common.ApiResultEnum;

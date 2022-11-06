@@ -1,4 +1,4 @@
-package com.gngsn.webClient;
+package com.gngsn.webClient.controller;
 
 import com.gngsn.webClient.vo.ReqDTO;
 import com.gngsn.webClient.vo.ResResult;
@@ -6,6 +6,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import reactor.core.publisher.Mono;
 
 @RestController
 @RequestMapping("/test")
@@ -17,7 +18,13 @@ public class TestController {
 	@RequestMapping(value = "/200")
 	public ResResult res200() {
 		log.info("Request res 200");
-		return ResResult.success();
+		return ResResult.success("Request res 200");
+	}
+
+	@RequestMapping(value = "/mono/200")
+	public Mono<ResResult> resMono200() {
+		log.info("Request res 200");
+		return Mono.just(ResResult.success("Request res 200"));
 	}
 
 	@RequestMapping(value = "/400")
@@ -38,6 +45,6 @@ public class TestController {
 	public ResResult timeout(ReqDTO reqDTO) throws InterruptedException {
 		log.info("timeout test");
 		Thread.sleep(10_000);
-		return ResResult.success();
+		return ResResult.success("timeout test");
 	}
 }

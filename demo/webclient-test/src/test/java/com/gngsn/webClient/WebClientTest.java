@@ -1,162 +1,115 @@
 package com.gngsn.webClient;
 
 import com.gngsn.webClient.common.Constants;
+import com.gngsn.webClient.plugin.WebClientPlugin;
 import com.gngsn.webClient.util.SpringBeanUtils;
+import com.gngsn.webClient.vo.ResResult;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.ArgumentCaptor;
-import org.mockito.Captor;
-import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.core.ResolvableType;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.codec.json.Jackson2JsonDecoder;
 import org.springframework.mock.http.server.reactive.MockServerHttpRequest;
 import org.springframework.mock.web.server.MockServerWebExchange;
-import org.springframework.web.reactive.function.client.ClientRequest;
+import org.springframework.web.reactive.function.BodyExtractors;
 import org.springframework.web.reactive.function.client.ClientResponse;
-import org.springframework.web.reactive.function.client.ExchangeFunction;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
+import reactor.test.StepVerifier;
 
 import java.net.URI;
+import java.util.Objects;
+
+import static com.gngsn.webClient.config.WebClientConfiguration.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 @MockitoSettings(strictness = Strictness.LENIENT)
 class WebclientTestApplicationTests {
 
-	@Mock
-	private ExchangeFunction exchangeFunction;
+	private Jackson2JsonDecoder decoder;
 
-	@Captor
-	private ArgumentCaptor<ClientRequest> captor;
+    private WebClientPlugin webClientPlugin;
 
-	private WebClientPlugin webClientPlugin;
+    private WebClient webClient;
 
-	@BeforeEach
-	public void setup() {
-		ConfigurableApplicationContext context = mock(ConfigurableApplicationContext.class);
-		SpringBeanUtils.getInstance().setApplicationContext(context);
-		when(context.getBean(ShenyuResult.class)).thenReturn(mock(ShenyuResult.class));
+    Logger log = LoggerFactory.getLogger(WebclientTestApplicationTests.class);
 
-		WebClient webClient = mockWebClientOK();
-		webClientPlugin = new WebClientPlugin(webClient);
-	}
+    @BeforeEach
+    public void setUp() {
+        webClient = commonWebClient(defaultExchangeStrategies(), defaultHttpClient(connectionProvider()));
+    }
 
-	/**
-	 * test case for WebClientPlugin {@link WebClientPlugin#execute(ServerWebExchange, ShenyuPluginChain)}.
-	 */
+    @BeforeEach
+    public void setup() {
+        ConfigurableApplicationContext context = mock(ConfigurableApplicationContext.class);
+        SpringBeanUtils.getInstance().setApplicationContext(context);
+        when(context.getBean(ApiResult.class)).thenReturn(mock(ApiResult.class));
+
+		decoder = new Jackson2JsonDecoder();
+        webClientPlugin = new WebClientPlugin(webClient);
+    }
+
+    @Test
+    public void success_Test() {
+
+        ServerWebExchange webExchange = MockServerWebExchange
+            .from(
+                MockServerHttpRequest.get("http://127.0.0.1:8080/test/200")
+                    .header(HttpHeaders.CONTENT_TYPE, "application/json")
+                    .build()
+            );
+
+        HttpContext context = mock(HttpContext.class);
+
+        webExchange.getAttributes().put(Constants.CONTEXT, context);
+        webExchange.getAttributes().put(Constants.HTTP_URI, URI.create("http://127.0.0.1:8080/test/200"));
+        webExchange.getAttributes().put(Constants.HTTP_TIME_OUT, 300000L);
+
+        Mono<ClientResponse> clientResponseMono = webClientPlugin.request(webExchange);
+
+		webExchange.getAttributes().forEach((key, value) -> log.info("key: {}, value: {}", key, value));
+		StepVerifier.create(clientResponseMono)
+			.expectNextMatches(clientResponse -> clientResponse.statusCode().equals(HttpStatus.OK))
+			.verifyComplete();
+    }
+
 	@Test
-	public void testExecuted() {
-		final ShenyuPluginChain chainNoPathTest = mock(ShenyuPluginChain.class);
-		final WebClient webClientNoPathTest = mockWebClientOK();
-		ServerWebExchange exchangeNoPathTest = MockServerWebExchange
-			.from(MockServerHttpRequest.get("/test").build());
-		exchangeNoPathTest.getAttributes().put(Constants.CONTEXT, mock(ShenyuContext.class));
-		WebClientPlugin webClientPluginNoPathTest = new WebClientPlugin(webClientNoPathTest);
-		Mono<Void> monoNoPathTest = webClientPluginNoPathTest.execute(exchangeNoPathTest, chainNoPathTest);
-		StepVerifier.create(monoNoPathTest).expectSubscription().verifyComplete();
+    public void successClientCode() throws InterruptedException {
 
-		final ShenyuPluginChain chainPostTest = mock(ShenyuPluginChain.class);
-		final WebClient webClientPostTest = mockWebClientOK();
-		ServerWebExchange exchangePostTest = MockServerWebExchange
-			.from(MockServerHttpRequest.post("/test123?param=1").build());
-		exchangePostTest.getAttributes().put(Constants.CONTEXT, mock(ShenyuContext.class));
-		exchangePostTest.getAttributes().put(Constants.HTTP_URI, URI.create("/test123?param=1"));
-		WebClientPlugin webClientPluginPostTest = new WebClientPlugin(webClientPostTest);
-		Mono<Void> monoPostTest = webClientPluginPostTest.execute(exchangePostTest, chainPostTest);
-		StepVerifier.create(monoPostTest).expectSubscription().verifyError();
+        ServerWebExchange webExchange = MockServerWebExchange
+            .from(
+                MockServerHttpRequest.get("http://127.0.0.1:8080/test/200")
+                    .header(HttpHeaders.CONTENT_TYPE, "application/json")
+                    .build()
+            );
 
-		final ShenyuPluginChain chainOkTest = mock(ShenyuPluginChain.class);
-		final WebClient webClientOkTest = mockWebClientOK();
-		WebClientPlugin webClientPluginOkTest = new WebClientPlugin(webClientOkTest);
-		Mono<Void> monoOkTest = webClientPluginOkTest.execute(generateServerWebExchange(), chainOkTest);
-		StepVerifier.create(monoOkTest).expectSubscription().verifyError();
+        HttpContext context = mock(HttpContext.class);
 
-		final ShenyuPluginChain chainErrorTest = mock(ShenyuPluginChain.class);
-		final WebClient webClientErrorTest = mockWebClientError();
-		WebClientPlugin webClientPluginErrorTest = new WebClientPlugin(webClientErrorTest);
-		Mono<Void> monoErrorTest = webClientPluginErrorTest.execute(generateServerWebExchange(), chainErrorTest);
-		StepVerifier.create(monoErrorTest).expectSubscription().verifyError();
-	}
+        webExchange.getAttributes().put(Constants.CONTEXT, context);
+        webExchange.getAttributes().put(Constants.HTTP_URI, URI.create("http://127.0.0.1:8080/test/200"));
+        webExchange.getAttributes().put(Constants.HTTP_TIME_OUT, 300000L);
 
-	/**
-	 * test case for WebClientPlugin {@link WebClientPlugin#skip(ServerWebExchange)}.
-	 */
-	@Test
-	public void testSkip() {
-		ServerWebExchange exchangeNormal = generateServerWebExchange();
-		assertTrue(webClientPlugin.skip(exchangeNormal));
+        Mono<ClientResponse> clientResponseMono = webClientPlugin.request(webExchange);
 
-		ServerWebExchange exchangeHttp = generateServerWebExchange();
-		when(((ShenyuContext) exchangeHttp.getAttributes().get(Constants.CONTEXT)).getRpcType())
-			.thenReturn(RpcTypeEnum.HTTP.getName());
-		assertFalse(webClientPlugin.skip(exchangeHttp));
 
-		ServerWebExchange exchangeSpringCloud = generateServerWebExchange();
-		when(((ShenyuContext) exchangeSpringCloud.getAttributes().get(Constants.CONTEXT)).getRpcType())
-			.thenReturn(RpcTypeEnum.SPRING_CLOUD.getName());
-		assertFalse(webClientPlugin.skip(exchangeSpringCloud));
-	}
-
-	/**
-	 * test case for WebClientPlugin {@link WebClientPlugin#getOrder()}.
-	 */
-	@Test
-	public void testGetOrder() {
-		assertEquals(PluginEnum.WEB_CLIENT.getCode(), webClientPlugin.getOrder());
-	}
-
-	/**
-	 * test case for WebClientPlugin {@link WebClientPlugin#named()}.
-	 */
-	@Test
-	public void testNamed() {
-		assertEquals(PluginEnum.WEB_CLIENT.getName(), webClientPlugin.named());
-	}
-
-	private ServerWebExchange generateServerWebExchange() {
-		ServerWebExchange exchange = MockServerWebExchange.from(MockServerHttpRequest.get("/test").build());
-		exchange.getAttributes().put(Constants.CONTEXT, mock(ShenyuContext.class));
-		exchange.getAttributes().put(Constants.HTTP_URI, URI.create("/test"));
-		return exchange;
-	}
-
-	private WebClient mockWebClientOK() {
-		final ClientResponse.Headers headers = mock(ClientResponse.Headers.class);
-		when(headers.asHttpHeaders()).thenReturn(new HttpHeaders());
-
-		final ClientResponse mockResponse = mock(ClientResponse.class);
-		when(mockResponse.statusCode()).thenReturn(HttpStatus.OK);
-		when(mockResponse.headers()).thenReturn(headers);
-		when(mockResponse.bodyToMono(byte[].class)).thenReturn(Mono.just("{\"test\":\"ok\"}".getBytes()));
-		when(mockResponse.releaseBody()).thenReturn(Mono.empty());
-		given(this.exchangeFunction.exchange(this.captor.capture())).willReturn(Mono.just(mockResponse));
-		return WebClient.builder().baseUrl("/test")
-			.exchangeFunction(this.exchangeFunction)
-			.apply(consumer -> consumer.defaultHeader("Accept", "application/json")
-				.defaultCookie("id", "test"))
-			.build();
-	}
-
-	private WebClient mockWebClientError() {
-		final ClientResponse.Headers headers = mock(ClientResponse.Headers.class);
-		when(headers.asHttpHeaders()).thenReturn(new HttpHeaders());
-
-		final ClientResponse mockResponse = mock(ClientResponse.class);
-		when(mockResponse.statusCode()).thenReturn(HttpStatus.INTERNAL_SERVER_ERROR);
-		when(mockResponse.headers()).thenReturn(headers);
-		when(mockResponse.bodyToMono(byte[].class)).thenReturn(Mono.just(new byte[0]));
-		when(mockResponse.releaseBody()).thenReturn(Mono.empty());
-		given(this.exchangeFunction.exchange(this.captor.capture())).willReturn(Mono.just(mockResponse));
-		return WebClient.builder().baseUrl("/test")
-			.exchangeFunction(this.exchangeFunction)
-			.apply(consumer -> consumer.defaultHeader("Accept", "application/json")
-				.defaultCookie("id", "test"))
-			.build();
-	}
+        clientResponseMono
+            .subscribe(clientResponse ->
+                clientResponse.body(BodyExtractors.toDataBuffers())
+                    .flatMap(dataBuffer ->
+                        Mono.just(Objects.requireNonNull(decoder.decode(dataBuffer, ResolvableType.forType(ResResult.class), null, null))))
+                    .subscribe(flux -> System.out.println("o : " + flux))
+            );
+		Thread.sleep(1_000);
+    }
 }

@@ -1,8 +1,7 @@
-package com.gngsn.webClient;
+package com.gngsn.webClient.plugin;
 
 import com.gngsn.webClient.common.Constants;
 import com.gngsn.webClient.common.ResultEnum;
-import com.gngsn.webClient.plugin.AbstractHttpClientPlugin;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.buffer.DataBuffer;
@@ -46,9 +45,10 @@ public class WebClientPlugin extends AbstractHttpClientPlugin<ClientResponse> {
             .exchangeToMono(response -> response.bodyToMono(byte[].class)
                 .flatMap(bytes -> Mono.fromCallable(() -> Optional.ofNullable(bytes))).defaultIfEmpty(Optional.empty())
                 .flatMap(option -> {
+
                     final ClientResponse.Builder builder = ClientResponse.create(response.statusCode())
-                        .headers(headers -> headers.addAll(response.headers().asHttpHeaders()));
-//						.cookies(cookies -> cookies.addAll(response.cookies()));
+                        .headers(headers -> headers.addAll(response.headers().asHttpHeaders()))
+						.cookies(cookies -> cookies.addAll(response.cookies()));
                     if (option.isPresent()) {
                         final DataBufferFactory dataBufferFactory = exchange.getResponse().bufferFactory();
                         return Mono.just(builder.body(Flux.just(dataBufferFactory.wrap(option.get()))).build());
@@ -56,7 +56,6 @@ public class WebClientPlugin extends AbstractHttpClientPlugin<ClientResponse> {
                     return Mono.just(builder.build());
                 }))
             .doOnSuccess(res -> {
-                exchange.getResponse().setComplete();
                 if (res.statusCode().is2xxSuccessful()) {
                     exchange.getAttributes().put(Constants.CLIENT_RESPONSE_RESULT_TYPE, ResultEnum.SUCCESS.getName());
                 } else {

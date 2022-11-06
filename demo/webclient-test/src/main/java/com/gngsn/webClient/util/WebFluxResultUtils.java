@@ -1,6 +1,6 @@
 package com.gngsn.webClient.util;
 
-import com.gngsn.webClient.HttpResult;
+import com.gngsn.webClient.ApiResult;
 import com.gngsn.webClient.ApiResultWrap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,19 +35,19 @@ public final class WebFluxResultUtils {
 		if (Objects.isNull(result)) {
 			return Mono.empty();
 		}
-		final HttpResult<?> httpResult = ApiResultWrap.apiResult();
+		final ApiResult<?> apiResult = ApiResultWrap.apiResult();
 
-		Object resultData = httpResult.format(exchange, result);
+		Object resultData = apiResult.format(exchange, result);
 		// basic data use text/plain
 
 		MediaType mediaType = MediaType.TEXT_PLAIN;
 
 		if (!ObjectTypeUtils.isBasicType(result)) {
-			mediaType = httpResult.contentType(exchange, resultData);
+			mediaType = apiResult.contentType(exchange);
 		}
 
 		exchange.getResponse().getHeaders().setContentType(mediaType);
-		final Object responseData = httpResult.result(exchange, resultData);
+		final Object responseData = apiResult.result(exchange, resultData);
 		assert null != responseData;
 
 		final byte[] bytes = (responseData instanceof byte[])

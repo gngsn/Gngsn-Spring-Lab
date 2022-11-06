@@ -16,6 +16,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.client.reactive.ReactorClientHttpConnector;
 import org.springframework.http.codec.json.Jackson2JsonDecoder;
 import org.springframework.http.codec.json.Jackson2JsonEncoder;
+import org.springframework.web.reactive.function.client.ExchangeFunctions;
 import org.springframework.web.reactive.function.client.ExchangeStrategies;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.netty.http.client.HttpClient;
@@ -35,7 +36,7 @@ import java.time.Duration;
 @RequiredArgsConstructor
 public class WebClientConfiguration {
 
-    public final ObjectMapper OM = new ObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false).registerModule(new JavaTimeModule());
+    public static final ObjectMapper OM = new ObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false).registerModule(new JavaTimeModule());
 
     public static final String COMMON_WEB_CLIENT = "commonWebClient";
     public static final String WEB_CLIENT_HTTP_CLIENT = "defaultHttpClient";
@@ -43,20 +44,21 @@ public class WebClientConfiguration {
     public static final String WEB_CLIENT_EXCHANGE_STRATEGIES = "defaultExchangeStrategies";
 
     @Bean(name = COMMON_WEB_CLIENT)
-    public WebClient commonWebClient(
-            @Qualifier(value = WEB_CLIENT_EXCHANGE_STRATEGIES) ExchangeStrategies exchangeStrategies,
-            @Qualifier(value = WEB_CLIENT_HTTP_CLIENT) HttpClient httpClient
-    ) {
+    static public WebClient commonWebClient(
+        @Qualifier(value = WEB_CLIENT_EXCHANGE_STRATEGIES) ExchangeStrategies exchangeStrategies,
+        @Qualifier(value = WEB_CLIENT_HTTP_CLIENT) HttpClient httpClient
+        ) {
         return WebClient
                 .builder()
-                .clientConnector(new ReactorClientHttpConnector(httpClient))
+                .clientConnector(new ReactorClientHttpConnector(HttpClient.create()))
                 .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+                .exchangeFunction(ExchangeFunctions.create(new ReactorClientHttpConnector(httpClient), exchangeStrategies))
                 .exchangeStrategies(exchangeStrategies)
                 .build();
     }
 
     @Bean(name = WEB_CLIENT_HTTP_CLIENT)
-    public HttpClient defaultHttpClient(@Qualifier(value = WEB_CLIENT_CONNECTION_PROVIDER) ConnectionProvider provider) {
+    static public HttpClient defaultHttpClient(@Qualifier(value = WEB_CLIENT_CONNECTION_PROVIDER) ConnectionProvider provider) {
 
         return HttpClient.create(provider)
                 .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 5_000)
@@ -66,7 +68,7 @@ public class WebClientConfiguration {
     }
 
     @Bean(name = WEB_CLIENT_CONNECTION_PROVIDER)
-    public ConnectionProvider connectionProvider() {
+    static public ConnectionProvider connectionProvider() {
 
         return ConnectionProvider.builder("http-pool")
                 .maxConnections(100)     // connection pool의 갯수
@@ -77,7 +79,7 @@ public class WebClientConfiguration {
     }
 
     @Bean(name = WEB_CLIENT_EXCHANGE_STRATEGIES)
-    public ExchangeStrategies defaultExchangeStrategies() {
+    static public ExchangeStrategies defaultExchangeStrategies() {
 
         return ExchangeStrategies.builder().codecs(config -> {
             config.defaultCodecs().jackson2JsonEncoder(new Jackson2JsonEncoder(OM, MediaType.APPLICATION_JSON));

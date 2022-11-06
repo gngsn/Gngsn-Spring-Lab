@@ -12,11 +12,11 @@ import org.springframework.web.server.ServerWebExchange;
 import java.io.IOException;
 import java.util.Objects;
 
-public interface HttpResult<T> {
+public interface ApiResult<T> {
 	/**
 	 * logger.
 	 */
-	static final Logger LOG = LoggerFactory.getLogger(HttpResult.class);
+	static final Logger LOG = LoggerFactory.getLogger(ApiResult.class);
 
 	static final ObjectMapper MAPPER = new ObjectMapper();
 
@@ -44,7 +44,8 @@ public interface HttpResult<T> {
 			return origin;
 		}
 		// error result or rpc origin result.
-		return this.toJson(origin);
+		String json = this.toJson(origin);
+		return json;
 	}
 
 	default String toJson(final Object object) {
@@ -60,10 +61,9 @@ public interface HttpResult<T> {
 	 * the response context type, default is application/json.
 	 *
 	 * @param exchange the exchange
-	 * @param formatted the formatted data that is origin data(basic、byte[]) or json string
 	 * @return the context type
 	 */
-	default MediaType contentType(ServerWebExchange exchange, Object formatted) {
+	default MediaType contentType(ServerWebExchange exchange) {
 		final ClientResponse clientResponse = exchange.getAttribute(Constants.CLIENT_RESPONSE_ATTR);
 		if (Objects.nonNull(clientResponse) && clientResponse.headers().contentType().isPresent()) {
 			return clientResponse.headers().contentType().get();

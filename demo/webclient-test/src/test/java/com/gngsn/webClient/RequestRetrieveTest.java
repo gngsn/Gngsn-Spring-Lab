@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.gngsn.webClient.exception.BadWebClientRequestException;
-import com.gngsn.webClient.vo.ResDTO;
+import com.gngsn.webClient.vo.ResResult;
 import io.netty.channel.ChannelOption;
 import io.netty.handler.timeout.ReadTimeoutHandler;
 import io.netty.handler.timeout.WriteTimeoutHandler;
@@ -15,7 +15,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.http.client.reactive.ReactorClientHttpConnector;
 import org.springframework.http.codec.json.Jackson2JsonDecoder;
 import org.springframework.http.codec.json.Jackson2JsonEncoder;
@@ -48,10 +47,10 @@ public class RequestRetrieveTest {
         String URI = "http://127.0.0.1:8080/test/200";
         MultiValueMap<String, String> requestBody = new LinkedMultiValueMap<>();
 
-        ResponseEntity resDTO = this.retrievePostForMono(URI, requestBody).block();
+        ResResult resDTO = this.retrievePostForMono(URI, requestBody).block();
         log.info("\n" + resDTO.toString());
 
-        Assertions.assertTrue(resDTO.getStatusCode().is2xxSuccessful());
+        Assertions.assertEquals(200, resDTO.getCode());
     }
 
     @Test
@@ -120,7 +119,7 @@ public class RequestRetrieveTest {
     }
 
 
-    private Mono<ResponseEntity<ResDTO>> retrievePostForMono(String uri, MultiValueMap<String, String> body) throws WebClientResponseException {
+    private Mono<ResResult> retrievePostForMono(String uri, MultiValueMap<String, String> body) throws WebClientResponseException {
         // @formatter:off
         return webClient
             .post()
@@ -146,7 +145,7 @@ public class RequestRetrieveTest {
                         response.headers().asHttpHeaders(), null, null
                     )
                 )
-            ).toEntity(ResDTO.class)
+            ).bodyToMono(ResResult.class)
             .doOnError(error -> log.error("doOnError logging: "+ error));
     }
 

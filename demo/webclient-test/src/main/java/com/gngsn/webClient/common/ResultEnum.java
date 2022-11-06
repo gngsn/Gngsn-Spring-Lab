@@ -15,7 +15,8 @@ public enum ResultEnum {
 	/**
 	 * Error result enum.
 	 */
-	ERROR("error");
+	ERROR("error")
+	;
 
 	private final String name;
 
