@@ -15,7 +15,8 @@ import java.util.concurrent.TimeoutException;
 public class CircuitBreakerConfiguration {
 
     /**
-     * []
+     * [third step]
+     * Create circuit breaker via registry
      *
      * @param circuitBreakerRegistry
      * @return

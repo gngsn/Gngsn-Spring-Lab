@@ -1,6 +1,7 @@
-package com.gngsn;
+package com.gngsn.controller;
 
-import com.gngsn.service.TestService;
+import com.gngsn.ResDTO;
+import com.gngsn.service.OrderService;
 import io.github.resilience4j.circuitbreaker.CircuitBreaker;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,21 +12,21 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.Random;
 
 @RestController("/api/v1")
-public class TestController {
+public class OrderController {
 
-    private final TestService testService;
+    private final OrderService orderService;
     private final CircuitBreaker circuitBreaker;
 
     private boolean isError = false;
-    Logger log = LoggerFactory.getLogger(TestService.class);
-    public TestController(TestService testService, CircuitBreaker circuitBreaker) {
-        this.testService = testService;
+    Logger log = LoggerFactory.getLogger(OrderService.class);
+    public OrderController(OrderService orderService, CircuitBreaker circuitBreaker) {
+        this.orderService = orderService;
         this.circuitBreaker = circuitBreaker;
     }
 
     @RequestMapping("/limit")
     public ResDTO limiter(@RequestParam int id) {
-        String res = testService.successOrErrorWhenNumGreaterThan20(id);
+        String res = orderService.successOrErrorWhenNumGreaterThan20(id);
 
         log.info(res);
         return new ResDTO(200, "[Berlin Server] " + res);
@@ -34,7 +35,7 @@ public class TestController {
     @RequestMapping("/limit/random")
     public String randomLimiter(int delay) {
         return CircuitBreaker.decorateSupplier(circuitBreaker,
-            () -> testService.successOrErrorWhenNumGreaterThan20(delay))
+            () -> orderService.successOrErrorWhenNumGreaterThan20(delay))
             .get();
     }
 
@@ -43,7 +44,7 @@ public class TestController {
         Random random = new Random();
 
         return CircuitBreaker.decorateCheckedSupplier(circuitBreaker,
-            () -> testService.successOrErrorWhenNumGreaterThan20(delay))
+            () -> orderService.successOrErrorWhenNumGreaterThan20(delay))
             .recover((throwable -> {
                 if (throwable instanceof ClassCastException) {
                     return () -> "Ask to developer...";
