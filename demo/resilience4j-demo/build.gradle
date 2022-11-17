@@ -4,44 +4,29 @@ plugins {
     id 'java'
 }
 
-group = 'com.gngsn'
-version = '0.0.1-SNAPSHOT'
-sourceCompatibility = '1.8'
+group 'com.gngsn'
+version '0.0.1-SNAPSHOT'
+sourceCompatibility = '11'
 
 repositories {
     mavenCentral()
 }
 
-bootJar {
-    enabled = false
-}
-
-jar {
-    enabled = true
-}
-
 dependencies {
-    implementation 'org.springframework.boot:spring-boot-starter'
-    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    implementation 'org.springframework.boot:spring-boot-starter:2.7.4'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'io.github.resilience4j:resilience4j-spring-boot2:1.7.1'
+    implementation 'org.springframework.boot:spring-boot-starter-actuator:2.7.4'
+    implementation 'org.springframework.boot:spring-boot-starter-webflux:2.7.5'
+//    implementation 'org.springframework.boot:spring-boot-starter-webflux'
+
+    testImplementation 'org.springframework.boot:spring-boot-starter-test:2.7.4'
+//    testImplementation 'io.projectreactor:reactor-test'
+
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.9.0'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.9.0'
 }
 
-subprojects {
-
-    group = 'com.gngsn'
-    version = '0.0.1-SNAPSHOT'
-
-    apply plugin: 'java'
-    apply plugin: 'io.spring.dependency-management'
-    apply plugin: 'java-library'
-
-    repositories {
-        mavenCentral()
-    }
-
-    dependencyManagement {
-        imports {
-            mavenBom("org.springframework.boot:spring-boot-dependencies:2.1.7.RELEASE")
-        }
-    }
-
+test {
+    useJUnitPlatform()
 }

@@ -1,4 +1,4 @@
-package com.gngsn;
+package com.gngsn.dto;
 
 public class ResDTO {
     private int statusCode;

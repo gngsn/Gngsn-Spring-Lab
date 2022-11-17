@@ -1,8 +1,7 @@
 package com.gngsn;
 
 import com.gngsn.config.CircuitBreakerConfiguration;
-import com.gngsn.controller.OrderController;
-import com.gngsn.service.OrderService;
+import com.gngsn.controller.TestController;
 import io.github.resilience4j.circuitbreaker.CircuitBreaker;
 import io.github.resilience4j.circuitbreaker.CircuitBreakerRegistry;
 import io.github.resilience4j.micrometer.tagged.TaggedCircuitBreakerMetrics;
@@ -20,8 +19,7 @@ public class CircuitBreakerTest {
 
     Logger log = LoggerFactory.getLogger(CircuitBreakerTest.class);
 
-    OrderController orderController;
-    OrderService orderService;
+    TestController testController;
 
     @Test
     void countBasedSlidingWindow() {
@@ -29,8 +27,7 @@ public class CircuitBreakerTest {
         CircuitBreakerRegistry registry = conf.circuitBreakerRegistry(conf.circuitBreakerConfig());
         CircuitBreaker circuitBreaker = conf.circuitBreaker(registry);
 
-        orderService = new OrderService();
-        orderController = new OrderController(orderService, circuitBreaker);
+        testController = new TestController(circuitBreaker);
 
         MeterRegistry meterRegistry = new SimpleMeterRegistry();
         TaggedCircuitBreakerMetrics.ofCircuitBreakerRegistry(registry)
@@ -38,7 +35,7 @@ public class CircuitBreakerTest {
 
         for (int i = 0; i < 20; i++) {
             try {
-                orderController.randomLimiter(21);
+                testController.limiter(21);
             } catch (Exception e) {
                 e.printStackTrace();
             }

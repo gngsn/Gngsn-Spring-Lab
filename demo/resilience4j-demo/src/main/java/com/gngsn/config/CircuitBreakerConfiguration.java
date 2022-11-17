@@ -1,6 +1,6 @@
 package com.gngsn.config;
 
-import com.gngsn.ConstServerNm;
+import com.gngsn.ConstServerName;
 import io.github.resilience4j.circuitbreaker.CircuitBreaker;
 import io.github.resilience4j.circuitbreaker.CircuitBreakerConfig;
 import io.github.resilience4j.circuitbreaker.CircuitBreakerRegistry;
@@ -23,7 +23,7 @@ public class CircuitBreakerConfiguration {
      */
     @Bean
     public CircuitBreaker circuitBreaker(CircuitBreakerRegistry circuitBreakerRegistry) {
-        return circuitBreakerRegistry.circuitBreaker(ConstServerNm.BERLIN_SERVER_1);
+        return circuitBreakerRegistry.circuitBreaker(ConstServerName.BERLIN_SERVER);
     }
 
     /**
