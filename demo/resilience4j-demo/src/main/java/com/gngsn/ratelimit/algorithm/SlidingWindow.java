@@ -3,7 +3,7 @@ package com.gngsn.ratelimit.algorithm;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
-public class SlidingWindow implements RateLimiter{
+public class SlidingWindow implements RateLimiter {
 
     Queue<Long> slidingWindow;
     int timeWindowInSeconds;
@@ -20,7 +20,7 @@ public class SlidingWindow implements RateLimiter{
         long currentTime = System.currentTimeMillis();
         checkAndUpdateQueue(currentTime);
 
-        if(slidingWindow.size() < bucketCapacity){
+        if (slidingWindow.size() < bucketCapacity) {
             slidingWindow.offer(currentTime);
             return true;
         }
@@ -28,14 +28,14 @@ public class SlidingWindow implements RateLimiter{
         return false;
     }
 
-    private void checkAndUpdateQueue(long currentTime) {
-        if(slidingWindow.isEmpty()) return;
+    private void checkAndUpdateQueue(long curTimeMillis) {
+        if (slidingWindow.isEmpty()) return;
+        long calculatedTime = (curTimeMillis - slidingWindow.peek()) / 1000;
 
-        long calculatedTime = (currentTime - slidingWindow.peek())/1000;
-        while(calculatedTime >= timeWindowInSeconds){
+        while (calculatedTime >= timeWindowInSeconds) {
             slidingWindow.poll();
-            if(slidingWindow.isEmpty()) break;
-            calculatedTime = (currentTime - slidingWindow.peek())/1000;
+            if (slidingWindow.isEmpty()) break;
+            calculatedTime = (curTimeMillis - slidingWindow.peek()) / 1000;
         }
     }
 }

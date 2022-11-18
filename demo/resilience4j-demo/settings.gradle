@@ -1,7 +1,0 @@
-rootProject.name = 'resilience4j-demo'
-include 'berlin-server'
-include 'seoul-server'
-include 'auth-server'
-include 'resource-server'
-include 'server-core'
-
