@@ -1,36 +1,41 @@
 package com.gngsn.ratelimit.algorithm;
 
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
-import java.util.concurrent.atomic.AtomicInteger;
+import java.util.Queue;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
-public class SlidingWindow {
+public class SlidingWindow implements RateLimiter{
 
-    private final ConcurrentMap<Long, AtomicInteger> windows = new ConcurrentHashMap<>();
-    private final long windowSize;
-    private final long maxRequest;
-    private final long interval;
+    Queue<Long> slidingWindow;
+    int timeWindowInSeconds;
+    int bucketCapacity;
 
-    public SlidingWindow(long windowSize, long interval, long maxRequest) {
-        this.windowSize = windowSize;
-        this.interval = interval;
-        this.maxRequest = maxRequest;
+    public SlidingWindow(int timeWindowInSeconds, int bucketCapacity) {
+        this.timeWindowInSeconds = timeWindowInSeconds;
+        this.bucketCapacity = bucketCapacity;
+        slidingWindow = new ConcurrentLinkedQueue<>();
     }
 
-    boolean allow() { // 30sec 5 times -> 30sec
-        long now = System.nanoTime();
-        long curWindowKey = now / windowSize;
+    @Override
+    public boolean allow() {
+        long currentTime = System.currentTimeMillis();
+        checkAndUpdateQueue(currentTime);
 
-        windows.putIfAbsent(curWindowKey, new AtomicInteger(0));
-        long preWindowKey = curWindowKey - interval;
-        AtomicInteger preCount = windows.get(preWindowKey);
-
-        if (preCount == null) {
-            return windows.get(curWindowKey).incrementAndGet() <= maxRequest;
+        if(slidingWindow.size() < bucketCapacity){
+            slidingWindow.offer(currentTime);
+            return true;
         }
 
-        double preWeight = 1 - (now - curWindowKey) / interval;
-        long count = (long) (preCount.get() * preWeight + windows.get(curWindowKey).incrementAndGet());
-        return count <= maxRequest;
+        return false;
+    }
+
+    private void checkAndUpdateQueue(long currentTime) {
+        if(slidingWindow.isEmpty()) return;
+
+        long calculatedTime = (currentTime - slidingWindow.peek())/1000;
+        while(calculatedTime >= timeWindowInSeconds){
+            slidingWindow.poll();
+            if(slidingWindow.isEmpty()) break;
+            calculatedTime = (currentTime - slidingWindow.peek())/1000;
+        }
     }
 }
