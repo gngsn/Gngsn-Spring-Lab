@@ -1,4 +1,4 @@
-package com.gngsn.ratelimit.algorithm;
+package com.gngsn.ratelimit;
 
 public class TokenBucket {
 

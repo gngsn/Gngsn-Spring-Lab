@@ -1,6 +1,6 @@
-package com.gngsn.ratelimit;
+package com.gngsn.ratelimit.app;
 
-import com.gngsn.ratelimit.bucket.SlidingWindowBucket;
+import com.gngsn.ratelimit.SlidingWindowBucket;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;

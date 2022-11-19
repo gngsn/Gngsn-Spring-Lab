@@ -1,6 +1,5 @@
-package com.gngsn.ratelimit.bucket;
+package com.gngsn.ratelimit;
 
-import com.gngsn.ratelimit.algorithm.SlidingWindow;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -10,11 +9,11 @@ import java.util.Map;
 public class SlidingWindowBucket {
 
     Logger log = LoggerFactory.getLogger(SlidingWindowBucket.class);
-    Map<Integer, SlidingWindow> bucket;
+    Map<Integer, SlidingWindowCounter> bucket;
 
     public SlidingWindowBucket(int id) {
         bucket = new HashMap<>();
-        bucket.put(id, new SlidingWindow(1,5));
+        bucket.put(id, new SlidingWindowCounter(1, 1, 5));
     }
 
     public void access(int id){
