@@ -1,6 +1,6 @@
 package com.gngsn.ratelimit;
 
-public class TokenBucket {
+public class TokenBucket implements RateLimiter {
 
     private final long maxBucketSize;
     private final long refillRate;
@@ -12,15 +12,15 @@ public class TokenBucket {
         this.refillRate = refillRate;
 
         this.currentBucketSize = maxBucketSize;
-        this.lastRefillTimestamp = nanoTime();
+        this.lastRefillTimestamp = getNowInSec();
     }
 
-
-    public synchronized boolean allow(int tokens) {
+    @Override
+    public boolean allow() {
         refillTokens();
 
-        if (currentBucketSize > tokens) {
-            currentBucketSize -= tokens;
+        if (currentBucketSize > 0) {
+            currentBucketSize --;
 
             return true;
         }
@@ -29,15 +29,15 @@ public class TokenBucket {
     }
 
     private void refillTokens() {
-        final long now = nanoTime();
+        final long now = getNowInSec();
 
-        final double tokensToAdd = (now - this.lastRefillTimestamp) * refillRate /1e9;
+        final double tokensToAdd = (now - this.lastRefillTimestamp) * refillRate;
         this.currentBucketSize = Math.min(this.currentBucketSize + tokensToAdd, this.maxBucketSize);
         this.lastRefillTimestamp = now;
 
     }
 
-    private long nanoTime() {
-        return System.nanoTime();
+    private long getNowInSec() {
+        return System.currentTimeMillis() / 1000;
     }
 }

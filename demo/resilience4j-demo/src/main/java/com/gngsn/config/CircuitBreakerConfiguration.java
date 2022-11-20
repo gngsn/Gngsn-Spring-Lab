@@ -1,6 +1,5 @@
 package com.gngsn.config;
 
-import com.gngsn.ConstServerName;
 import io.github.resilience4j.circuitbreaker.CircuitBreaker;
 import io.github.resilience4j.circuitbreaker.CircuitBreakerConfig;
 import io.github.resilience4j.circuitbreaker.CircuitBreakerRegistry;
@@ -10,6 +9,8 @@ import org.springframework.context.annotation.Configuration;
 import java.io.IOException;
 import java.time.Duration;
 import java.util.concurrent.TimeoutException;
+
+import static com.gngsn.ConstantsName.TEST_SERVER;
 
 @Configuration
 public class CircuitBreakerConfiguration {
@@ -23,7 +24,7 @@ public class CircuitBreakerConfiguration {
      */
     @Bean
     public CircuitBreaker circuitBreaker(CircuitBreakerRegistry circuitBreakerRegistry) {
-        return circuitBreakerRegistry.circuitBreaker(ConstServerName.BERLIN_SERVER);
+        return circuitBreakerRegistry.circuitBreaker(TEST_SERVER);
     }
 
     /**

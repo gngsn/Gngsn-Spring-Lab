@@ -4,7 +4,6 @@ import com.gngsn.config.CircuitBreakerConfiguration;
 import com.gngsn.controller.TestController;
 import io.github.resilience4j.circuitbreaker.CircuitBreaker;
 import io.github.resilience4j.circuitbreaker.CircuitBreakerRegistry;
-import io.github.resilience4j.micrometer.tagged.TaggedCircuitBreakerMetrics;
 import io.micrometer.core.instrument.Meter;
 import io.micrometer.core.instrument.MeterRegistry;
 import io.micrometer.core.instrument.simple.SimpleMeterRegistry;
@@ -30,8 +29,8 @@ public class CircuitBreakerTest {
         testController = new TestController(circuitBreaker);
 
         MeterRegistry meterRegistry = new SimpleMeterRegistry();
-        TaggedCircuitBreakerMetrics.ofCircuitBreakerRegistry(registry)
-            .bindTo(meterRegistry);
+//        TaggedCircuitBreakerMetrics.ofCircuitBreakerRegistry(registry)
+//            .bindTo(meterRegistry);
 
         for (int i = 0; i < 20; i++) {
             try {
