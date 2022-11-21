@@ -2,42 +2,44 @@ package com.gngsn.controller;
 
 import com.gngsn.dto.ResDTO;
 import com.gngsn.service.RequestService;
-import io.github.resilience4j.circuitbreaker.CircuitBreaker;
-import io.github.resilience4j.circuitbreaker.CircuitBreakerRegistry;
+import io.github.resilience4j.circuitbreaker.CallNotPermittedException;
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import static com.gngsn.ConstantsName.TEST_SERVER;
 
 @RestController("/circuitBreaker")
 public class CircuitBreakerController {
 
     private final Logger log = LoggerFactory.getLogger(RequestService.class);
-    private final CircuitBreakerRegistry circuitBreakerRegistry;
-    private final CircuitBreaker circuitBreaker;
     private boolean isError = false;
 
-    public CircuitBreakerController(CircuitBreakerRegistry circuitBreakerRegistry, CircuitBreaker circuitBreaker) {
-        this.circuitBreakerRegistry = circuitBreakerRegistry;
-        this.circuitBreaker = circuitBreaker;
+    @GetMapping("/circuitBreaker")
+    public ResDTO circuitBreaker() {
+        for (int i = 0; i < 20; i++) {
+            circuitBreakerTestMethod(i);
+        }
+
+        return ResDTO.ok();
     }
 
 
-    @RequestMapping("/limit")
-    public ResDTO limiter(@RequestParam int id) {
+    @CircuitBreaker(name = TEST_SERVER, fallbackMethod = "fallback")
+    public String circuitBreakerTestMethod(int id) {
+        log.info("## circuitBreakerTestMethod param1 : {}", id);
 
         if (id % 2 == 0) {
             throw new RuntimeException("Request Failed");
         }
 
-        return new ResDTO(200, "Request Success");
+        return "Request Success";
     }
 
-
-    @Scheduled(fixedRate = 5000L)
-    public void errorFlagSwitch() {
-        isError = !isError;
+    private String fallback(int id, RuntimeException e) {
+        return "Handled the exception when the CircuitBreaker is open | param1 : " + id;
     }
 }
