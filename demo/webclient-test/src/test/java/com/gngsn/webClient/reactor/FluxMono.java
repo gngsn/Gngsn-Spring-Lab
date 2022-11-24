@@ -5,6 +5,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import reactor.core.publisher.ConnectableFlux;
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
+import reactor.test.StepVerifier;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -35,46 +37,40 @@ public class FluxMono {
         Flux<String> flux2 = Flux.range(0, 4).map(FluxMono::indexToName);
         flux2.subscribe(v -> log.info("First received {}", v), Throwable::printStackTrace);
         flux2.subscribe(v -> log.info("Second received {}", v), Throwable::printStackTrace);
+
+        StepVerifier.create(flux2)
+            .expectNext("kyeongsun")
+            .expectNext("sangho")
+            .expectNext("yongmi")
+            .expectNext("jinnan")
+            .verifyComplete();
     }
 
     @Test
     public void testColdVSHot() {
         Flux<String> flux = Flux.range(0, 4).map(FluxMono::indexToName);
-        ConnectableFlux<String> connectFlux = flux.publish(); // cold
+        ConnectableFlux<String> connectFlux = flux.publish(); // to hot
 
         connectFlux.subscribe(v -> log.info("First received {}", v), Throwable::printStackTrace);
         connectFlux.connect();
         connectFlux.subscribe(v -> log.info("Second received {}", v), Throwable::printStackTrace);
-
-//        StepVerifier.create(connectFlux)
-//            .expectNext("Finding a name kyeongsun for 0 from thread main").expectNext("First received kyeongsun")
-//            .expectNext("Finding a name sangho for 1 from thread main")
-//            .expectNext("First received sangho")
-//            .expectNext("Finding a name yongmi for 2 from thread main")
-//            .expectNext("First received yongmi")
-//            .expectNext("Finding a name jinnan for 3 from thread main")
-//            .expectNext("First received jinnan")
-//            .verifyComplete();
     }
 
     @Test
-    public void testOrder() {
+    public void fluxMethod() {
         AtomicInteger integer = new AtomicInteger();
         Flux<Integer> flux = Flux.generate(sink -> {
-            if (integer.get() > 50) throw new RuntimeException();
+            if (integer.get() == 5) throw new RuntimeException("Integer 5");
             sink.next(integer.incrementAndGet());
         });
 
-        flux.doOnNext(i -> System.out.println("doOnNext: " + i))
-            .doOnEach(i -> System.out.println("doOnEach: " + i))
-            .doOnRequest(i -> System.out.println("doOnRequest: " + i))
-            .doOnError(i -> System.out.println("doOnError: " + i))
-//            .flatMap(i -> {
-//                System.out.println("flatMap: " + i);
-//                return (i * i);
-//            })
-            .subscribe(i -> System.out.println("subscribe: " + i))
+        flux.take(200)
+            .doOnRequest(i -> System.out.println("doOnRequest: " + i)) // 1
+            .doOnNext(i -> System.out.println("doOnNext: " + i)) // 2 (onComplete)
+            .doOnEach(signal -> System.out.println("doOnEach: " + signal)) // 3 (onComplete/onError: Signal Consumer)
+            .doOnTerminate(() -> System.out.println("doOnTerminate (completing successfully or failing with an error) ")) // (onComplete/onError: propagated downstream)
+            .doOnError(thr -> System.out.println("doOnError: " + thr.getMessage())) // (onError)
+            .subscribe(i -> System.out.println("subscribe: " + i)) // 4 (onComplete)
         ;
-
     }
 }
