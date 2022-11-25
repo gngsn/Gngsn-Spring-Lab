@@ -121,7 +121,7 @@ Error는 주로 **자바 VM**에서 발생시키는 것이고 애플리케이션
 
 Exception 클래스는 체크 예외와 언체크 예외로 구분된다. 
 
-<img src="./img/checkedException.png" alt="checkedException" width="40%"/> 
+<img src="img/checkedException.png" alt="checkedException" width="40%"/> 
 
 <br><br>
 

@@ -15,8 +15,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class FluxMono {
-    static Logger log = LoggerFactory.getLogger(FluxMono.class);
+public class FluxTest {
+    static Logger log = LoggerFactory.getLogger(FluxTest.class);
 
     private static String[] NAME = new String[]{
         "kyeongsun",
@@ -36,10 +36,10 @@ public class FluxMono {
 
     @Test
     public void test() {
-        Flux<String> flux = Flux.range(0, 4).map(FluxMono::indexToNameWithPrint);
+        Flux<String> flux = Flux.range(0, 4).map(FluxTest::indexToNameWithPrint);
         flux.subscribe();
 
-        Flux<String> flux2 = Flux.range(0, 4).map(FluxMono::indexToName);
+        Flux<String> flux2 = Flux.range(0, 4).map(FluxTest::indexToName);
         flux2.subscribe(v -> log.info("First received {}", v), Throwable::printStackTrace);
         flux2.subscribe(v -> log.info("Second received {}", v), Throwable::printStackTrace);
 
@@ -53,7 +53,7 @@ public class FluxMono {
 
     @Test
     public void testColdVSHot() {
-        Flux<String> flux = Flux.range(0, 4).map(FluxMono::indexToName);
+        Flux<String> flux = Flux.range(0, 4).map(FluxTest::indexToName);
         ConnectableFlux<String> connectFlux = flux.publish(); // to hot
 
         connectFlux.subscribe(v -> log.info("First received {}", v), Throwable::printStackTrace);
@@ -61,6 +61,9 @@ public class FluxMono {
         connectFlux.subscribe(v -> log.info("Second received {}", v), Throwable::printStackTrace);
     }
 
+    /* ====================================
+             ALL Behavior method TEST
+     ==================================== */
     @Test
     public void fluxMethod() {
         AtomicInteger integer = new AtomicInteger();
@@ -79,40 +82,22 @@ public class FluxMono {
         ;
     }
 
+    /* ====================================
+                    ERROR TEST
+     ==================================== */
+    public <T> Flux<T> appendBoomError(Flux<T> source) {
+        return source.concatWith(Mono.error(new IllegalArgumentException("boom")));
+    }
     @Test
-    public void monoMethod() {
-        final List<String> basket1 = Arrays.asList("kiwi", "orange", "lemon", "orange", "lemon", "kiwi");
-        final List<String> basket2 = Arrays.asList("banana", "lemon", "lemon", "kiwi");
-        final List<String> basket3 = Arrays.asList("strawberry", "orange", "lemon", "grape", "strawberry");
-        final List<List<String>> baskets = Arrays.asList(basket1, basket2, basket3);
-        final Flux<List<String>> basketFlux = Flux.fromIterable(baskets);
+    public void testAppendBoomError() {
+        Flux<String> source = Flux.just("thing1", "thing2");
 
-        basketFlux.concatMap(basket -> {
-
-            log.info("basket : {}", basket);
-            final Mono<List<String>> distinctFruits = Flux.fromIterable(basket).distinct().collectList().subscribeOn(Schedulers.parallel());
-
-            log.info("distinctFruits : {}", distinctFruits);
-
-            final Mono<Map<String, Long>> countFruitsMono = Flux.fromIterable(basket)
-                .groupBy(fruit -> fruit) // 바구니로 부터 넘어온 과일 기준으로 group을 묶는다.
-                .concatMap(groupedFlux -> groupedFlux.count()
-                    .map(count -> {
-                        final Map<String, Long> fruitCount = new LinkedHashMap<>();
-                        fruitCount.put(groupedFlux.key(), count);
-                        return fruitCount;
-                    }) // 각 과일별로 개수를 Map으로 리턴
-                ) // concatMap으로 순서보장
-                .reduce((accumulatedMap, currentMap) -> new LinkedHashMap<String, Long>() { {
-                    putAll(accumulatedMap);
-                    putAll(currentMap);
-                }}) // 그동안 누적된 accumulatedMap에 현재 넘어오는 currentMap을 합쳐서 새로운 Map을 만든다. // map끼리 putAll하여 하나의 Map으로 만든다.
-                .subscribeOn(Schedulers.parallel());
-
-
-            log.info("countFruitsMono : {}", countFruitsMono);
-            return Flux.zip(distinctFruits, countFruitsMono, FruitInfo::new);
-        }).subscribe(System.out::println);
+        StepVerifier.create(
+                appendBoomError(source))
+            .expectNext("thing1")
+            .expectNext("thing2")
+            .expectErrorMessage("boom")
+            .verify();
     }
 }
 
