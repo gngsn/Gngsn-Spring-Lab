@@ -1,18 +1,17 @@
 package com.gngsn.webClient.reactor;
 
-import jdk.jfr.DataAmount;
-import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Scheduler;
 import reactor.core.scheduler.Schedulers;
 import reactor.test.StepVerifier;
-import reactor.test.StepVerifierOptions;
-import reactor.util.context.Context;
 
-@Slf4j
 public class MonoTest {
+
+	Logger log = LoggerFactory.getLogger(MonoTest.class);
 
 	@Test
 	public void create() {
@@ -24,9 +23,21 @@ public class MonoTest {
 	}
 
 	@Test
-	public void subscribe () {
+	public void onErrorComplete() { // replace onError signal with onComplete signal
 		Mono<String> data = Mono.just("mono create by cold publishing");
-		data.subscribe();
+
+		data.map(str -> {
+				System.out.println(str);
+				throw new MonoException();		// This Exception does not propagate external code
+//				throw new RuntimeException();	// RuntimeException, which is not corresponding with onErrorComplete condition, will be propagated external.
+			})
+			.doOnEach(signal -> log.info("before {}", signal.toString()))	// before onError(com.gngsn.webClient.reactor.MonoException)
+			.onErrorComplete() 												// onError -> onComplete: all Exception will be ignored
+			.onErrorComplete(MonoException.class)							// onError -> onComplete: only if MonoException
+			.onErrorComplete(throwable -> 									// onError -> onComplete: only if throwable equals MonoException
+				throwable.getClass().equals(MonoException.class))
+			.doOnEach(signal -> log.info("after {}", signal.toString()))	// after onComplete()
+			.subscribe();
 	}
 
 	@Test
@@ -44,6 +55,8 @@ public class MonoTest {
 
 		new Thread(() -> flux.subscribe(System.out::println));
 		Thread.sleep(2000);
+
+
 	}
 
 	@Test
@@ -51,5 +64,9 @@ public class MonoTest {
 
 	@Test
 	public void zip() {}
+
+}
+
+class MonoException extends RuntimeException {
 
 }

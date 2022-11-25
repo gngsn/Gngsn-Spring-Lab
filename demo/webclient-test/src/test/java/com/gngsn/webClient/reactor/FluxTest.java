@@ -6,13 +6,9 @@ import org.slf4j.LoggerFactory;
 import reactor.core.publisher.ConnectableFlux;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
-import reactor.core.scheduler.Schedulers;
 import reactor.test.StepVerifier;
 
-import java.util.Arrays;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.time.Duration;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class FluxTest {
@@ -35,7 +31,7 @@ public class FluxTest {
     }
 
     @Test
-    public void test() {
+    public void basic() {
         Flux<String> flux = Flux.range(0, 4).map(FluxTest::indexToNameWithPrint);
         flux.subscribe();
 
@@ -49,6 +45,14 @@ public class FluxTest {
             .expectNext("yongmi")
             .expectNext("jinnan")
             .verifyComplete();
+    }
+
+    @Test
+    public void interval() {
+        AtomicInteger integer = new AtomicInteger();
+        Flux<Integer> flux = Flux.generate(sink -> sink.next(integer.incrementAndGet()));
+
+        Flux.interval(Duration.ZERO).take(10).publish(longFlux -> s -> log.info(String.valueOf(s))).subscribe();
     }
 
     @Test
@@ -72,8 +76,7 @@ public class FluxTest {
             sink.next(integer.incrementAndGet());
         });
 
-        flux.take(200)
-            .doOnRequest(i -> System.out.println("doOnRequest: " + i)) // 1
+        flux.doOnRequest(i -> System.out.println("doOnRequest: " + i)) // 1
             .doOnNext(i -> System.out.println("doOnNext: " + i)) // 2 (onComplete)
             .doOnEach(signal -> System.out.println("doOnEach: " + signal)) // 3 (onComplete/onError: Signal Consumer)
             .doOnTerminate(() -> System.out.println("doOnTerminate (completing successfully or failing with an error) ")) // (onComplete/onError: propagated downstream)
