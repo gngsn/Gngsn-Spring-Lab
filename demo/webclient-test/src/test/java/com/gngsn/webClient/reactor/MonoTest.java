@@ -23,24 +23,6 @@ public class MonoTest {
 	}
 
 	@Test
-	public void onErrorComplete() { // replace onError signal with onComplete signal
-		Mono<String> data = Mono.just("mono create by cold publishing");
-
-		data.map(str -> {
-				System.out.println(str);
-				throw new MonoException();		// This Exception does not propagate external code
-//				throw new RuntimeException();	// RuntimeException, which is not corresponding with onErrorComplete condition, will be propagated external.
-			})
-			.doOnEach(signal -> log.info("before {}", signal.toString()))	// before onError(com.gngsn.webClient.reactor.MonoException)
-			.onErrorComplete() 												// onError -> onComplete: all Exception will be ignored
-			.onErrorComplete(MonoException.class)							// onError -> onComplete: only if MonoException
-			.onErrorComplete(throwable -> 									// onError -> onComplete: only if throwable equals MonoException
-				throwable.getClass().equals(MonoException.class))
-			.doOnEach(signal -> log.info("after {}", signal.toString()))	// after onComplete()
-			.subscribe();
-	}
-
-	@Test
 	public void publisher() throws InterruptedException {
 		Scheduler s = Schedulers.newParallel("parallel-scheduler", 4);
 
@@ -64,9 +46,5 @@ public class MonoTest {
 
 	@Test
 	public void zip() {}
-
-}
-
-class MonoException extends RuntimeException {
 
 }

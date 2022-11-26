@@ -3,14 +3,19 @@ package com.gngsn.webClient.reactor;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.lang.Nullable;
 import reactor.core.publisher.Mono;
+import reactor.core.publisher.Operators;
+import reactor.test.StepVerifier;
+import reactor.util.context.Context;
 
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 
 public class MonoOnErrorXxxTest {
 
-	Logger log = LoggerFactory.getLogger(MonoTest.class);
+	static Logger log = LoggerFactory.getLogger(MonoTest.class);
 
 	@Test
 	public void onErrorComplete() {
@@ -29,7 +34,12 @@ public class MonoOnErrorXxxTest {
 //			.onErrorComplete(throwable -> 									// onError -> onComplete: only if throwable equals MonoException
 //				throwable.getClass().equals(MonoException.class))
 			.doOnEach(signal -> log.info("after {}", signal.toString()))	// after onComplete()
-			.subscribe();
+//			.subscribe();
+			;
+
+		StepVerifier.create(data)
+			.expectNext("MONO_TEST")
+			.verifyComplete();
 	}
 
 	@Test
@@ -49,6 +59,38 @@ public class MonoOnErrorXxxTest {
 				throwable.getClass().equals(MonoException.class), loggingErrorBiConsumer)
 			.doOnEach(signal -> log.info("after {}", signal.toString()))	// after onComplete()
 			.subscribe();
+	}
+
+	@Test
+	public void onErrorContinue2() {
+		/*
+			ignore error and continue
+		*/
+		AtomicReference<Throwable> errorRef = new AtomicReference<>();
+		Mono<Integer> test = Mono.just(1)
+			.log()
+			.flatMap(i -> Mono.just(1 - i)
+				.map(v -> 30 / v)
+				.onErrorReturn(100)
+//				.onErrorStop()
+			)
+			.onErrorContinue(MonoOnErrorXxxTest::drop);
+
+
+		test.subscribe(t -> log.info("Result: " + t.toString()));
+	}
+
+	/**
+	 * Helper for other tests to emulate resumeDrop with the public consumer-based API.
+	 */
+	public static <T> void drop(@Nullable Throwable e, @Nullable T v) {
+		log.info("Throwable: '{}'. Object '{}'.", e.getMessage(), v);
+		if (v != null) {
+			Operators.onNextDropped(v, Context.empty());
+		}
+		if (e != null) {
+			Operators.onErrorDropped(e, Context.empty());
+		}
 	}
 
 	@Test
