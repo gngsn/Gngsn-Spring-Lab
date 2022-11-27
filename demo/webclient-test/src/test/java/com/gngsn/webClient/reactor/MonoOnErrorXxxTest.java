@@ -9,6 +9,7 @@ import reactor.core.publisher.Operators;
 import reactor.test.StepVerifier;
 import reactor.util.context.Context;
 
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
@@ -19,26 +20,25 @@ public class MonoOnErrorXxxTest {
 
 	@Test
 	public void onErrorComplete() {
-		/*
-			replace onError signal with onComplete signal
-		*/
-		Mono<String> data = Mono.just("MONO_TEST");
+		final AtomicInteger datasource = new AtomicInteger(0);
 
-		data.map(str -> {
-				throw new MonoException();		// This Exception does not propagate external code
-//				throw new RuntimeException();	// RuntimeException, which is not corresponding with onErrorComplete condition, will be propagated external.
-			})
-			.doOnEach(signal -> log.info("before {}", signal.toString()))	// before onError(com.gngsn.webClient.reactor.MonoException)
-			.onErrorComplete() 												// onError -> onComplete: all Exception will be ignored
-//			.onErrorComplete(MonoException.class)							// onError -> onComplete: only if MonoException
-//			.onErrorComplete(throwable -> 									// onError -> onComplete: only if throwable equals MonoException
-//				throwable.getClass().equals(MonoException.class))
-			.doOnEach(signal -> log.info("after {}", signal.toString()))	// after onComplete()
-//			.subscribe();
-			;
+		Mono<Integer> monoWithError = Mono.just(datasource)
+			.map(i -> 100 / i.get());
 
-		StepVerifier.create(data)
-			.expectNext("MONO_TEST")
+		StepVerifier.create(monoWithError)
+			.verifyErrorMessage("/ by zero");
+//			.verifyError(ArithmeticException.class);
+
+		Mono<Integer> mono = monoWithError
+			.doOnNext(signal ->  // before onError(java.lang.ArithmeticException: / by zero)
+				log.info("before {}", signal.toString()))
+//			.onErrorComplete() 												// onError -> onComplete: all Exception will be ignored
+//			.onErrorComplete(ArithmeticException.class)						// onError -> onComplete: only if MonoException
+			.onErrorComplete(throwable -> 									// onError -> onComplete: only if throwable equals MonoException
+				throwable.getClass().equals(ArithmeticException.class))
+			.doOnEach(signal -> log.info("after {}", signal.toString()));	// after onComplete()
+
+		StepVerifier.create(mono)
 			.verifyComplete();
 	}
 

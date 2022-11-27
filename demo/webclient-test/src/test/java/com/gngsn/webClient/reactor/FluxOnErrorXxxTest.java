@@ -83,10 +83,12 @@ public class FluxOnErrorXxxTest {
 			.onErrorContinue((t, v) -> {
 				errorDropped.add(t);
 				valueDropped.add((Integer) v);
-			});
+			})
+			;
 
 		StepVerifier.create(test)
 			.expectNoFusionSupport()
+//			.expectNext(100 / 0) <= emit error and is processed on onErrorContinue method
 			.expectNext(100 / 1)
 			.expectNext(100 / 2)
 			.expectNext(100 / 5)
@@ -95,7 +97,7 @@ public class FluxOnErrorXxxTest {
 			.expectComplete()
 			.verifyThenAssertThat()
 			.hasNotDroppedElements()
-//			.hasDroppedErrors(1)
+			.hasDroppedErrors(1)
 		;
 
 		Assertions.assertEquals(valueDropped, List.of(0));
