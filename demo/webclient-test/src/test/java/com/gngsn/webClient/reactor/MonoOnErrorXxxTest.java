@@ -95,27 +95,40 @@ public class MonoOnErrorXxxTest {
 
 	@Test
 	public void onErrorMap() {
-		/*
-			transform any error emitted to return type of Function<>
-		*/
-		Mono<String> data = Mono.just("MONO_TEST");
 		Function<Throwable, RuntimeException> mapToMonoExceptionFunc = (thr) -> {			// Error occur: '<<ERROR>>'. ignore current element 'MONO_TEST'.
 			log.error("Error occur: '{}'. Exception transform 'MonoException'.", thr.toString());
 			return new MonoException(thr.getMessage());
 		};
 
-		data.map(str -> { throw new RuntimeException("<<ERROR>>"); })
+		Mono<Integer> data = Mono.<Integer>error(new Exception())
 			.doOnEach(signal -> log.info("before {}", signal.toString()))	// before onError(java.lang.RuntimeException: <<ERROR>>)
 			.onErrorMap(mapToMonoExceptionFunc)								// onError -> onComplete: all Exception will be transformed
 //			.onErrorMap(RuntimeException.class, mapToMonoExceptionFunc) 	// onError -> onComplete: only if RuntimeException
 //			.onErrorMap(throwable -> 										// onError -> onComplete: only if throwable equals RuntimeException
 //				throwable.getClass().equals(RuntimeException.class), mapToMonoExceptionFunc)
 			.doOnEach(signal -> log.info("after {}", signal.toString()))	// after onError(com.gngsn.webClient.reactor.MonoOnErrorXxxTest$MonoException: <<ERROR>>)
-			.subscribe();
+			;
 
+		StepVerifier.create(data)
+			.expectError(MonoException.class)
+			.verify()
+			;
 		// Operator called default onErrorDropped
 	}
 
+	@Test
+	public void onErrorMapSimple() {
+		Mono<Integer> data = Mono.<Integer>error(new Exception("ERROR"))
+			.log()
+//							.onErrorMap(RuntimeException.class, t -> new MonoException(t.getMessage()))
+							.onErrorMap(t -> t.getMessage().contains("ERROR"), t -> new MonoException(t.getMessage()));
+
+		StepVerifier.create(data)
+			.expectError(MonoException.class)
+			.verify()
+			;
+		// Operator called default onErrorDropped
+	}
 
 	@Test
 	public void onErrorResume() {
