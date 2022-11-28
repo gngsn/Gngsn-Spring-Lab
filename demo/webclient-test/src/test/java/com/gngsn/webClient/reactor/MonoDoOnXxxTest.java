@@ -8,8 +8,11 @@ import reactor.core.publisher.SignalType;
 import reactor.test.StepVerifier;
 import reactor.test.subscriber.TestSubscriber;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.function.Function;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -145,5 +148,61 @@ public class MonoDoOnXxxTest {
         assertThat(calls).isEqualTo(1);
         assertThat(signalType).isEqualTo(SignalType.CANCEL);
     }
+
+    /* ===================================
+                   doFirst
+     ===================================== */
+
+    @Test
+    public void orderIsReversed_NoFusion() {
+        List<String> order = new ArrayList<>();
+
+        @SuppressWarnings("divzero")
+        Function<Integer, Integer> divZero = i -> i / 0;
+
+        StepVerifier.create(
+                Flux.just(1)
+                    .map(divZero)
+                    .doFirst(() -> order.add("one"))
+                    .doFirst(() -> order.add("two"))
+                    .doFirst(() -> order.add("three"))
+            )
+            .expectFusion()
+            .verifyError(ArithmeticException.class);
+
+        assertThat(order).containsExactly("three", "two", "one");
+    }
+
+    @Test
+    public void mixedWithOnSubscribe() {
+        List<String> order = new ArrayList<>();
+
+        StepVerifier.create(
+                Flux.just(1, 2)
+                    .doOnNext(i -> order.add("doOnNext" + i))
+                    .doFirst(() -> order.add("doFirst1"))
+                    .doOnSubscribe(sub -> order.add("doOnSubscribe1"))
+                    .doFirst(() -> order.add("doFirst2"))
+                    .doOnSubscribe(sub -> order.add("doOnSubscribe2"))
+            )
+            .expectFusion()
+            .expectNext(1, 2)
+            .verifyComplete();
+
+        assertThat(order).containsExactly(
+            "doFirst2",
+            "doFirst1",
+            "doOnSubscribe1",
+            "doOnSubscribe2",
+            "doOnNext1",
+            "doOnNext2"
+        );
+    }
+
+    /* ===================================
+                  doOnCancel
+     ===================================== */
+
+
 }
 

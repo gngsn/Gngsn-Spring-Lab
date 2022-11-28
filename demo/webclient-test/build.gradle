@@ -33,8 +33,8 @@ dependencies {
 
     /* reactor */
     implementation platform('io.projectreactor:reactor-bom:2020.0.24') // when gradle version is more than 5.x
-    implementation 'io.projectreactor:reactor-core'
-    implementation 'io.projectreactor:reactor-test:3.4.24'
+    implementation 'io.projectreactor:reactor-core:3.5.0'
+    implementation 'io.projectreactor:reactor-test:3.5.0'
 
     /* lombok */
     implementation 'org.projectlombok:lombok:1.18.24'
