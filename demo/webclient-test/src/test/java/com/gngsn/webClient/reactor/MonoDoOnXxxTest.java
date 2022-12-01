@@ -3,6 +3,8 @@ package com.gngsn.webClient.reactor;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.reactivestreams.Subscription;
+import reactor.core.publisher.BaseSubscriber;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.core.publisher.SignalType;
@@ -20,40 +22,12 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.Function;
+import java.util.logging.Level;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static reactor.core.publisher.Sinks.EmitFailureHandler.FAIL_FAST;
 
 public class MonoDoOnXxxTest {
-
-    @Test
-    void scenarioTerminatingOnComplete() {
-        TestSignalListener<Integer> testSignalListener = new TestSignalListener<>();
-
-        Flux<Integer> fullFlux = Flux.just(1, 2, 3).hide();
-
-        fullFlux.tap(() -> testSignalListener)
-            .subscribeWith(TestSubscriber.create());
-
-        System.out.println(Arrays.toString(testSignalListener.events.toArray()));
-        System.out.println(testSignalListener.listenerErrors);
-
-        assertThat(testSignalListener.listenerErrors).as("listener errors").isEmpty();
-
-        assertThat(testSignalListener.events)
-            .containsExactly(
-                "doFirst",
-                "doOnSubscription",
-                "doOnRequest:unbounded",
-                "doOnNext:1",
-                "doOnNext:2",
-                "doOnNext:3",
-                "doOnComplete",
-                "doAfterComplete",
-                "doFinally:ON_COMPLETE"
-            );
-    }
-
 
     /* ===================================
                 doAfterTerminate
@@ -221,7 +195,55 @@ public class MonoDoOnXxxTest {
             .subscribe(System.out::println);
 
         assertThat(cancelCounter).hasValue(1);
+    }
 
+    public void cancelTwiceCancelsOtherOnce() {
+        AtomicInteger cancelled = new AtomicInteger();
+        Flux<Integer> when = Flux.range(1, 10)
+            .log()
+            .doOnCancel(cancelled::incrementAndGet);
+
+        Flux.just(1)
+            .repeatWhen(other -> when)
+            .subscribe(new BaseSubscriber<Integer>() {
+                @Override
+                protected void hookOnSubscribe(Subscription subscription) {
+//                    subscription.request(1);
+                    subscription.cancel();
+                }
+            });
+    }
+
+
+    /* ===================================
+                testSignalListener
+     ===================================== */
+    @Test
+    void testSignalListener() {
+        TestSignalListener<Integer> testSignalListener = new TestSignalListener<>();
+
+        Flux<Integer> fullFlux = Flux.just(1, 2, 3).hide();
+
+        fullFlux.tap(() -> testSignalListener)
+            .subscribeWith(TestSubscriber.create());
+
+        System.out.println(Arrays.toString(testSignalListener.events.toArray()));
+        System.out.println(testSignalListener.listenerErrors);
+
+        assertThat(testSignalListener.listenerErrors).as("listener errors").isEmpty();
+
+        assertThat(testSignalListener.events)
+            .containsExactly(
+                "doFirst",
+                "doOnSubscription",
+                "doOnRequest:unbounded",
+                "doOnNext:1",
+                "doOnNext:2",
+                "doOnNext:3",
+                "doOnComplete",
+                "doAfterComplete",
+                "doFinally:ON_COMPLETE"
+            );
     }
 
 
