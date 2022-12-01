@@ -27,11 +27,9 @@ import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.ResourcePatternResolver;
 import org.springframework.core.task.TaskExecutor;
 import org.springframework.oxm.Marshaller;
-import org.springframework.oxm.jaxb.Jaxb2Marshaller;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 
 import java.io.IOException;
-import java.net.MalformedURLException;
 
 @Configuration
 @RequiredArgsConstructor
@@ -44,7 +42,7 @@ public class PartitionerJobConfiguration {
 
     @Bean
     public Job partitionerJob()
-        throws UnexpectedInputException, MalformedURLException, ParseException {
+        throws UnexpectedInputException, ParseException {
         return jobBuilderFactory
             .get("partitionerJob")
             .incrementer(new RunIdIncrementer())
@@ -70,16 +68,16 @@ public class PartitionerJobConfiguration {
             .get("slaveStep")
             .<Transaction, Transaction>chunk(1)
             .reader(flatFileItemReader(null))
-            .writer(staxEventItemWriterBuilder(marshaller()))
+            .writer(staxEventItemWriterBuilder(null))
             .build();
     }
 
-    @Bean
-    public Jaxb2Marshaller marshaller() {
-        Jaxb2Marshaller marshaller = new Jaxb2Marshaller();
-        marshaller.setClassesToBeBound(Transaction.class);
-        return marshaller;
-    }
+//    @Bean
+//    public Jaxb2Marshaller marshaller() {
+//        Jaxb2Marshaller marshaller = new Jaxb2Marshaller();
+//        marshaller.setClassesToBeBound(Transaction.class);
+//        return marshaller;
+//    }
 
     @Bean
     public TaskExecutor taskExecutor() {

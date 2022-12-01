@@ -33,14 +33,15 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
-import org.springframework.oxm.xstream.XStreamMarshaller;
+import org.springframework.oxm.jaxb.Jaxb2Marshaller;
 
 import javax.sql.DataSource;
+import java.io.File;
 
 import static com.gngsn.apressbatch.utils.ConstantsJobSteps.*;
 
 
-@Configuration // 기본적으로 구성클래스로 간주하기 때문에 Configauration을 명시할 필요가 없음
+@Configuration
 @RequiredArgsConstructor
 public class ImportJobConfiguration {
 
@@ -53,14 +54,14 @@ public class ImportJobConfiguration {
 
     // Job은 JobBuilderFactory에 의해 정의되는데, importCustomerUpdates 스텝을 실행하도록 지정한 후 build 메서드를 호출
     @Bean
-    public Job job() throws Exception {
+    public Job importJob() throws Exception {
         return this.jobBuilderFactory
             .get("importJob")
             .incrementer(new RunIdIncrementer())
             .start(importCustomerUpdates())
-//            .next(importTransactions())
-//            .next(applyTransaction())
-//            .next(generateStatements(null))
+            .next(importTransactions())
+            .next(applyTransaction())
+            .next(generateStatements(null))
             .build();
     }
 
@@ -87,12 +88,9 @@ public class ImportJobConfiguration {
 
     /**
      * importTransactions() Step
-     *
-     * @return
-     * @throws Exception
      */
     @Bean(IMPORT_TRANSACTIONS_STEP)
-    public Step importTransactions() throws Exception {
+    public Step importTransactions() {
         return this.stepBuilderFactory.get(IMPORT_TRANSACTIONS_STEP)
             .<Transaction, Transaction> chunk(100)
             .reader(transactionItemReader(null))
@@ -127,22 +125,22 @@ public class ImportJobConfiguration {
         해당 빌더에 Reader 이름(재시작이 가능하도록 하기 위함), 잡 파라미터에 주입되는 리소스, 각 파싱하기 위해 사용할 Jaxb2Marshaller도 전달
         build를 호출하면 StaxEventItemReader 제공.
      */
-    @Bean
     @StepScope
+    @Bean(name="transactionItemReader")
     public StaxEventItemReader<Transaction> transactionItemReader(
         @Value("#{jobParameters['transactionFile']}") Resource transactionFile
     ) {
         return new StaxEventItemReaderBuilder<Transaction>()
-            .name("fooReader")
-            .resource(new FileSystemResource("src/main/resources/data/transactions.xml"))
+            .name("transactionItemReader")
+            .resource(new FileSystemResource((File) transactionFile))
             .addFragmentRootElements("transaction")
             .unmarshaller(unmarshaller())
             .build();
     }
 
     @Bean
-    public XStreamMarshaller unmarshaller() {
-        return new XStreamMarshaller();
+    public Jaxb2Marshaller unmarshaller() {
+        return new Jaxb2Marshaller();
     }
 
     /*
@@ -187,9 +185,7 @@ public class ImportJobConfiguration {
         CustomerItemValidator validator
     ) {
         ValidatingItemProcessor<CustomerUpdate> customerValidatingItemProcessor = new ValidatingItemProcessor<>(validator);
-
         customerValidatingItemProcessor.setFilter(true);
-
         return customerValidatingItemProcessor;
     }
 
