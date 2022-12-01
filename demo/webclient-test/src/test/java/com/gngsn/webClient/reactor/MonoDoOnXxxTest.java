@@ -203,6 +203,133 @@ public class MonoDoOnXxxTest {
                   doOnCancel
      ===================================== */
 
+    @Test
+    void fluxCancelledByMonoProcessor() {
+        AtomicLong cancelCounter = new AtomicLong();
+        Flux.range(1, 10)
+            .log()
+            .doOnCancel(cancelCounter::incrementAndGet)
+            .shareNext()
+            .subscribe(System.out::println);
 
+        assertThat(cancelCounter).hasValue(1);
+
+    }
+
+
+    @Test
+    public void whenProcessorIsStreamed() {
+//		"When a processor is streamed"
+//		given: "a source composable and a async downstream"
+        Sinks.Many<Integer> source = Sinks.many().replay().all();
+        Scheduler scheduler = Schedulers.newParallel("test", 2);
+
+        try {
+            Mono<List<Integer>> res = source.asFlux()
+                .subscribeOn(scheduler)
+                .delaySubscription(Duration.ofMillis(1L))
+                .log("streamed")
+                .map(it -> it * 2)
+                .buffer()
+                .shareNext();
+
+            res.subscribe();
+
+//		when: "the source accepts a value"
+            source.emitNext(1, FAIL_FAST);
+            source.emitNext(2, FAIL_FAST);
+            source.emitNext(3, FAIL_FAST);
+            source.emitNext(4, FAIL_FAST);
+            source.emitComplete(FAIL_FAST);
+
+//		then: "the res is passed on"
+            assertThat(res.block()).containsExactly(2, 4, 6, 8);
+        }
+        finally {
+            scheduler.dispose();
+        }
+    }
+
+    /* ===================================
+                  doOnDiscard
+     ===================================== */
+
+    @Test
+    public void concatMapIterableDoOnDiscardTestDrainSync() {
+        ReferenceCounted referenceCounted1 = new ReferenceCounted(1);
+        ReferenceCounted referenceCounted2 = new ReferenceCounted(4);
+        ReferenceCounted referenceCounted3 = new ReferenceCounted(6);
+
+        Flux<ReferenceCounted> source =
+            Flux.just(1, 2, 3, 4, 5, 6) //drain sync
+                .filter(i -> i < 3)
+            .log()
+            .concatMapIterable(i -> Arrays.asList(
+                referenceCounted1,
+                referenceCounted2,
+                referenceCounted3
+                ))
+            .doOnDiscard(ReferenceCounted.class, ReferenceCounted::release);
+
+        StepVerifier.create(source)
+            .consumeNextWith(ReferenceCounted::release)
+            .thenCancel()
+            .verify();
+
+        assertThat(referenceCounted1.getRefCount()).as("ref1").isEqualTo(0);
+        assertThat(referenceCounted2.getRefCount()).as("ref2").isEqualTo(0);
+        assertThat(referenceCounted3.getRefCount()).as("ref3").isEqualTo(0);
+    }
+
+    @Test
+    public void doOnDiscardTestSync() {
+        AtomicInteger index = new AtomicInteger();
+        List<ReferenceCounted> refList = new ArrayList<>();
+
+        Flux<ReferenceCounted> source = Flux.<ReferenceCounted>generate(sink -> {
+            ReferenceCounted ref = new ReferenceCounted(index.incrementAndGet());
+
+            refList.add(ref);
+            sink.next(ref);
+        })
+            .log()
+            .filter(i -> i.index < 4)
+            .doOnDiscard(ReferenceCounted.class, System.out::println)
+            .doOnDiscard(ReferenceCounted.class, referenceCounted -> refList.forEach(ReferenceCounted::release))
+            ;
+
+        StepVerifier.create(source)
+            .consumeNextWith(ReferenceCounted::release)
+            .consumeNextWith(ReferenceCounted::release)
+            .consumeNextWith(ReferenceCounted::release)
+            .consumeNextWith(ReferenceCounted::release)
+            .thenCancel()
+            .verify();
+
+        assertThat(refList).as("ref1").isEmpty();
+    }
+
+    static class ReferenceCounted {
+
+        int refCount = 1;
+        final int index;
+
+        ReferenceCounted(int index) {
+            this.index = index;
+        }
+
+        public int getRefCount() {
+            return this.refCount;
+        }
+
+        public void release() {
+            this.refCount = 0;
+        }
+
+        @Override
+        public String toString() {
+            return "ReferenceCounted{index="+index+"}";
+        }
+    }
 }
 
