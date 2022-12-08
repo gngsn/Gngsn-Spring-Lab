@@ -108,7 +108,7 @@ class WebclientTestApplicationTests {
                 clientResponse.body(BodyExtractors.toDataBuffers())
                     .flatMap(dataBuffer ->
                         Mono.just(Objects.requireNonNull(decoder.decode(dataBuffer, ResolvableType.forType(ResResult.class), null, null))))
-                    .subscribe(flux -> System.out.println("o : " + flux))
+                    .subscribe()
             );
 		Thread.sleep(1_000);
     }
