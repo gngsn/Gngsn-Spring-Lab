@@ -54,4 +54,51 @@ public class FluxZipTest {
         Flux<Integer> f = Flux.zip(list, 123, obj -> 0);
         assertThat(f.getPrefetch()).isEqualTo(123);
     }
+
+    Flux<Integer> evenNumbers = Flux
+        .range(1, 5)
+        .filter(x -> x % 2 == 0); // i.e. 2, 4
+
+    Flux<Integer> oddNumbers = Flux
+        .range(1, 5)
+        .filter(x -> x % 2 > 0);  // ie. 1, 3, 5
+
+    @Test
+    public void givenFluxes_whenZipIsInvoked_thenZip() {
+        Flux<Integer> fluxOfIntegers = Flux.zip(
+            evenNumbers,
+            oddNumbers,
+            (a, b) -> a + b);
+        fluxOfIntegers.subscribe(System.out::println);
+
+        StepVerifier.create(fluxOfIntegers)
+            .expectNext(3) // 2 + 1
+            .expectNext(7) // 4 + 3
+            .expectComplete()
+            .verify();
+    }
+
+    @Test
+    public void givenFluxes_whenZipWithIsInvoked_thenZipWith() {
+        Flux<Integer> fluxOfIntegers = evenNumbers
+            .zipWith(oddNumbers, (a, b) -> a * b);
+        fluxOfIntegers.subscribe(System.out::println);
+        StepVerifier.create(fluxOfIntegers)
+            .expectNext(2)  // 2 * 1
+            .expectNext(12) // 4 * 3
+            .expectComplete()
+            .verify();
+    }
+
+    @Test
+    public void normalSameSize() {
+
+        Flux<Integer> f = Flux.range(1, 5)
+            .zipWithIterable(Arrays.asList(10, 20, 30, 40, 50), (a, b) -> a + b);
+        // 11 22 33 44 55
+        f.subscribe(System.out::println);
+//        ts.assertValues(11, 22, 33, 44, 55)
+//            .assertComplete()
+//            .assertNoError();
+    }
 }
