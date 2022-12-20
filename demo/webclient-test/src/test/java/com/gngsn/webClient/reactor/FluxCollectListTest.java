@@ -4,6 +4,7 @@ import org.junit.jupiter.api.Test;
 import reactor.core.publisher.Flux;
 import reactor.test.StepVerifier;
 
+import java.time.Duration;
 import java.util.Arrays;
 import java.util.Collections;
 
@@ -27,6 +28,32 @@ public class FluxCollectListTest {
     public void singleSourceNormalWithFuseableDownstream() {
         StepVerifier.create(
                 Flux.combineLatest(Collections.singletonList(Flux.just(1, 2, 3).hide()), (arr) -> arr[0].toString())
+                    //the map is Fuseable and sees the combine as fuseable too
+                    .map(x -> x + "!")
+                    .collectList())
+            .assertNext(l -> assertThat(l).containsExactly("1!", "2!", "3!"))
+            .verifyComplete();
+    }
+
+    @Test
+    public void singleSourceNormalWithoutFuseableDownstream() {
+        StepVerifier.create(
+                Flux.combineLatest(
+                        Collections.singletonList(Flux.just(1, 2, 3).hide()),
+                        (arr) -> arr[0].toString())
+                    //the collectList is NOT Fuseable
+                    .collectList()
+            )
+            .assertNext(l -> assertThat(l).containsExactly("1", "2", "3"))
+            .verifyComplete();
+    }
+
+    @Test
+    public void singleSourceFusedWithFuseableDownstream() {
+        StepVerifier.create(
+                Flux.combineLatest(
+                        Collections.singletonList(Flux.just(1, 2, 3)),
+                        (arr) -> arr[0].toString())
                     //the map is Fuseable and sees the combine as fuseable too
                     .map(x -> x + "!")
                     .collectList())
