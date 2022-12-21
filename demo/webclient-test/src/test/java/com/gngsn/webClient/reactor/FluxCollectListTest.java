@@ -2,9 +2,9 @@ package com.gngsn.webClient.reactor;
 
 import org.junit.jupiter.api.Test;
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.Sinks;
 import reactor.test.StepVerifier;
 
-import java.time.Duration;
 import java.util.Arrays;
 import java.util.Collections;
 
@@ -61,4 +61,27 @@ public class FluxCollectListTest {
             .verifyComplete();
     }
 
+    Sinks.EmitFailureHandler FAIL_FAST = (signalType, emission) -> false;
+
+    @Test
+    public void bufferWillAccumulateMultipleListsOfValues() {
+        Sinks.Many<Integer> numbers = Sinks.many().multicast().onBackpressureBuffer();
+        Sinks.Many<Integer> boundaryFlux = Sinks.many().multicast().onBackpressureBuffer();
+
+        StepVerifier.create(numbers.asFlux()
+                .buffer(boundaryFlux.asFlux())
+                .collectList())
+            .then(() -> {
+                numbers.emitNext(1, FAIL_FAST);
+                numbers.emitNext(2, FAIL_FAST);
+                numbers.emitNext(3, FAIL_FAST);
+                boundaryFlux.emitNext(1, FAIL_FAST);
+                numbers.emitNext(5, FAIL_FAST);
+                numbers.emitNext(6, FAIL_FAST);
+                numbers.emitComplete(FAIL_FAST);
+                //"the collected lists are available"
+            })
+            .assertNext(res -> assertThat(res).containsExactly(Arrays.asList(1, 2, 3), Arrays.asList(5, 6)))
+            .verifyComplete();
+    }
 }
