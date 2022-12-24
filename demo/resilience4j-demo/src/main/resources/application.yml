@@ -85,3 +85,11 @@ resilience4j.circuitbreaker:
 #    backendB:
 #      timeoutDuration: 1s
 #      cancelRunningFuture: false
+
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,beans,conditions, metrics, threaddump, heapdump
+#        exclude:

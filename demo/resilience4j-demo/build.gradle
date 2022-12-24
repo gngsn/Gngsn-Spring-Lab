@@ -1,45 +1,40 @@
 plugins {
     id 'org.springframework.boot' version '2.7.5'
-    id 'io.spring.dependency-management' version '1.0.11.RELEASE'
+//    id 'io.spring.dependency-management' version '1.0.11.RELEASE'
     id 'java'
-    id 'org.jetbrains.kotlin.jvm' version '1.8.0-Beta'
 }
 
 group 'com.gngsn'
 version '0.0.1-SNAPSHOT'
-sourceCompatibility = '11'
 
 repositories {
     mavenCentral()
 }
 
-dependencies {
-    implementation 'org.springframework.boot:spring-boot-starter'
-    implementation 'org.springframework.boot:spring-boot-starter-web'
-    implementation 'org.springframework.boot:spring-boot-starter-actuator'
-    implementation 'org.springframework.boot:spring-boot-starter-webflux'
-    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+bootJar {
+    enabled = false
+}
 
+jar {
+    enabled = true
+}
+
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter:2.7.5'
+    implementation 'org.springframework.boot:spring-boot-starter-web:2.7.5'
+    implementation 'org.springframework.boot:spring-boot-starter-actuator:2.7.5'
+    implementation 'org.springframework.boot:spring-boot-starter-webflux:2.7.5'
     implementation 'io.github.resilience4j:resilience4j-spring-boot2:1.7.1'
+
+    implementation group: 'org.slf4j', name: 'slf4j-api', version: '1.7.25'
 
 //    testImplementation 'io.projectreactor:reactor-test'
 
+    testImplementation 'org.springframework.boot:spring-boot-starter-test:2.7.5'
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.9.0'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.9.0'
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
 }
 
 test {
     useJUnitPlatform()
-}
-
-compileKotlin {
-    kotlinOptions {
-        jvmTarget = "1.8"
-    }
-}
-compileTestKotlin {
-    kotlinOptions {
-        jvmTarget = "1.8"
-    }
 }
