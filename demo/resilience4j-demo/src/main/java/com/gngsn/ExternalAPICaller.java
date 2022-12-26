@@ -2,23 +2,23 @@ package com.gngsn;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.web.client.RestTemplate;
+import org.springframework.web.reactive.function.client.WebClient;
 
 @Component
 public class ExternalAPICaller {
-    private final RestTemplate restTemplate;
+    private final WebClient webClient;
 
     @Autowired
-    public ExternalAPICaller(RestTemplate restTemplate) {
-        this.restTemplate = restTemplate;
+    public ExternalAPICaller(WebClient webClient) {
+        this.webClient = webClient;
     }
 
     public String callApi() {
-        return restTemplate.getForObject("/api/external", String.class);
+        return webClient.get().uri("/api/external").retrieve().bodyToMono(String.class).block();
     }
 
     public String callApiWithDelay() {
-        String result = restTemplate.getForObject("/api/external", String.class);
+        String result = webClient.get().uri("/api/external").retrieve().bodyToMono(String.class).block();
         try {
             Thread.sleep(5000);
         } catch (InterruptedException ignore) {

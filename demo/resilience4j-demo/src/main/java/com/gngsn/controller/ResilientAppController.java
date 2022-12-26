@@ -16,7 +16,7 @@ import java.util.concurrent.CompletableFuture;
 
 
 @RestController
-@RequestMapping("/api/")
+@RequestMapping("/api")
 public class ResilientAppController {
 
     private final ExternalAPICaller externalAPICaller;
