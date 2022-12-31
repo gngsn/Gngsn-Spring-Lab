@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-@RestController("/api/v1")
+@RestController("/v1")
 public class RateLimiterController {
 
     private final CircuitBreaker circuitBreaker;

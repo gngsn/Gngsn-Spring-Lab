@@ -29,6 +29,7 @@ public class ResilientAppController {
     @GetMapping("/circuit-breaker")
     @CircuitBreaker(name = "CircuitBreakerService")
     public String circuitBreakerApi() {
+        System.out.println("circuit-breaker");
         return externalAPICaller.callApi();
     }
 
