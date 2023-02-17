@@ -33,22 +33,11 @@ build/
 
 ### VS Code ###
 .vscode/
-
-
-mvnw
-mvnw.*
-.mvn
 .gitignore
 
 
 ### Gradle ###
-gradle/
-gradlew.*
-*.gradle
 !src/**/build/
-gradle-app.setting
-!gradle-wrapper.jar
-!gradle-wrapper.properties
 .gradletasknamecache
 *.hprof
 
