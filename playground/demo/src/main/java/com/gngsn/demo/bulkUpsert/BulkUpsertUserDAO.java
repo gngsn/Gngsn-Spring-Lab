@@ -35,12 +35,15 @@ public class BulkUpsertUserDAO {
     public int createTempTable() {
         return sqlSession.update(NAMESPACE + "createTempTable");
     }
+
     public int insertTempTable(List<UserVO> users) {
         return sqlSession.update(NAMESPACE + "insertTempTable", users);
     }
+
     public int updateMainTable() {
         return sqlSession.update(NAMESPACE + "updateMainTable");
     }
+
     public int dropTempTable() {
         return sqlSession.update(NAMESPACE + "dropTempTable");
     }

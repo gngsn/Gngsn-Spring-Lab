@@ -9,22 +9,22 @@
     <insert id="insertTestList" parameterType="com.gngsn.demo.deadlock.ReqDTO">
         /* demo.deadlock.insertTestList */
         INSERT INTO request (
-            req_id,
-            svc_cd,
-            user_id,
-            user_name,
-            reg_ymdt,
-            mod_ymdt
+        req_id,
+        svc_cd,
+        user_id,
+        user_name,
+        reg_ymdt,
+        mod_ymdt
         )
         VALUES
         <foreach collection="detailList" item="item" index="index" separator=",">
             (
-                #{reqId},
-                #{svcCd},
-                #{item.userId},
-                #{item.userName},
-                #{regYmdt},
-                #{modYmdt}
+            #{reqId},
+            #{svcCd},
+            #{item.userId},
+            #{item.userName},
+            #{regYmdt},
+            #{modYmdt}
             )
         </foreach>
     </insert>
@@ -33,7 +33,7 @@
     <delete id="deleteAlreadyExistTestList" parameterType="com.gngsn.demo.deadlock.ReqDTO">
         /* demo.deadlock.deleteAlreadyExistTestList */
         DELETE
-            FROM request
+        FROM request
         WHERE (svc_cd, user_id) IN (
         <foreach item="item" index="index" collection="detailList" separator=",">
             (#{svcCd}, #{item.userId})

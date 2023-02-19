@@ -2,7 +2,7 @@ package com.gngsn.demo.enumStrategy.before;
 
 public class UseStrategy {
 
-    public static void main(String[] args){
+    public static void main(String[] args) {
 
         Context context = new Context();
 

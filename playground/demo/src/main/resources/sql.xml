@@ -5,8 +5,8 @@
 
 <mapper namespace="demo.UserDAO">
     <insert id="insertUser" parameterType="com.gngsn.demo.common.user.UserVO">
-            INSERT INTO test (name, email, PASSWORD)
-            VALUES (#{name}, #{email}, #{password})
+        INSERT INTO test (name, email, PASSWORD)
+        VALUES (#{name}, #{email}, #{password})
     </insert>
 
     <insert id="bulkInsertUserList" parameterType="java.util.List">

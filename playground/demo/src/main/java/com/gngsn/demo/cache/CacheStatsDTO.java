@@ -9,7 +9,7 @@ public class CacheStatsDTO {
 
     private long hitCount;
     private long missCount;
-//    private long loadSuccessCount;
+    //    private long loadSuccessCount;
 //    private long loadFailureCount;
 //    private long totalLoadTime;
     private long evictionCount;

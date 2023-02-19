@@ -5,7 +5,8 @@
 
 <mapper namespace="demo.bulkUpsert">
     <sql id="_createTempTable">
-        CREATE TEMPORARY TABLE user_temp LIKE `user`
+        CREATE
+        TEMPORARY TABLE user_temp LIKE `user`
     </sql>
 
     <sql id="_insertTempTable">
@@ -17,12 +18,14 @@
 
     <sql id="_updateMainTable">
         UPDATE user u
-        INNER JOIN user_temp t ON u.name = t.name
-        SET u.type = t.type
+            INNER JOIN user_temp t
+        ON u.name = t.name
+            SET u.type = t.type
     </sql>
 
     <sql id="_dropTempTable">
-        DROP TEMPORARY TABLE user_temp
+        DROP
+        TEMPORARY TABLE user_temp
     </sql>
 
     <update id="createTempTable">

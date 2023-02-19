@@ -38,9 +38,9 @@ public class UserInsertRunner implements ApplicationRunner {
     private void genUser() {
         for (int i = 0; i < INSERT_SIZE; i++) {
             users.add(new UserVO(
-                    "gngsn" + i,
-                    "gngsn" + i + "@email.com",
-                    new RandomString().nextString())
+                "gngsn" + i,
+                "gngsn" + i + "@email.com",
+                new RandomString().nextString())
             );
         }
     }

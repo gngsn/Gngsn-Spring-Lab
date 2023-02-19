@@ -33,7 +33,7 @@ public class httpRefererController {
 
         try {
             referer = new URI(referer).getPath();    // domain, parameter 제외하고 uri만 get
-             return referer.startsWith(domain);
+            return referer.startsWith(domain);
         } catch (Exception e) {
             return false;
         }

@@ -51,7 +51,7 @@ public class BulkUpdateCompareTests {
         int updateUserCnt = userDAO.selectUpdateUserCnt();
         Assertions.assertEquals(TEST_SIZE, updateUserCnt);
 
-        log.info("### run time : {}s", (afterTime-beforeTime) / 1000); // TEST SET: 500 - 0.108s, 5000 - 0.204s
+        log.info("### run time : {}s", (afterTime - beforeTime) / 1000); // TEST SET: 500 - 0.108s, 5000 - 0.204s
     }
 
     @Test
@@ -69,7 +69,7 @@ public class BulkUpdateCompareTests {
         // Then : the number of updated data should be equal to half of the test set.
         Assertions.assertEquals(2 * TEST_SIZE, cnt);
 
-        log.info("### run time : {}s", (afterTime-beforeTime) / 1000);
+        log.info("### run time : {}s", (afterTime - beforeTime) / 1000);
     }
 
     // 2 * TEST_SIZE -> select + update

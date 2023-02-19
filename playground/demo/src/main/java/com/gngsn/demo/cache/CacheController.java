@@ -65,7 +65,7 @@ public class CacheController {
             detailDTO.setHitCount(stats.hitCount());
             detailDTO.setMissCount(stats.missCount());
 
-            for (Object key: cache.asMap().keySet()) {
+            for (Object key : cache.asMap().keySet()) {
                 Object value = cache.getIfPresent(key);
 
                 detailDTO.setKey(key);
@@ -147,7 +147,7 @@ public class CacheController {
     public ResponseEntity<String> clearTargetCache(@RequestParam String cacheName) {
 
         try {
-            ((CaffeineCache)cacheManager.getCache(cacheName)).clear();
+            ((CaffeineCache) cacheManager.getCache(cacheName)).clear();
 
             return new ResponseEntity<>(String.format("'%s' clear succes.", cacheName), HttpStatus.OK);
 

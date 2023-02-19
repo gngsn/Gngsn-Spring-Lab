@@ -9,11 +9,11 @@ import javax.validation.constraints.NotBlank;
 @AllArgsConstructor
 public class ReqDetailDTO {
 
-	@NotBlank(message = "'userId' cannot be null.")
-	private String userId;
+    @NotBlank(message = "'userId' cannot be null.")
+    private String userId;
 
-	@NotBlank(message = "'userName' cannot be null.")
-	private String userName;
+    @NotBlank(message = "'userName' cannot be null.")
+    private String userName;
 
 }
 

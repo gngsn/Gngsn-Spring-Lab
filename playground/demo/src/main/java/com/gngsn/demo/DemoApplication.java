@@ -5,7 +5,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.PropertySource;
 
 @PropertySource(value = {
-        "classpath:jdbc.properties"
+    "classpath:jdbc.properties"
 })
 @SpringBootApplication
 public class DemoApplication {

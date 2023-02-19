@@ -58,7 +58,7 @@ public class BulkUpdateTests {
         int updateUserCnt = userDAO.selectUpdateUserCnt();
         Assertions.assertEquals(updateUserCnt, UPDATE_SIZE);
 
-        log.info("### run time : {}s", (afterTime-beforeTime) / 1000); // TEST SET: 500 - 0.108s, 5000 - 0.204s
+        log.info("### run time : {}s", (afterTime - beforeTime) / 1000); // TEST SET: 500 - 0.108s, 5000 - 0.204s
     }
 
     @Test
@@ -85,7 +85,7 @@ public class BulkUpdateTests {
         int updateUserCnt = userDAO.selectUpdateUserCnt();
         Assertions.assertEquals(updateUserCnt, UPDATE_SIZE);
 
-        log.info("### run time : {}s", (afterTime-beforeTime) / 1000); // TEST SET: 500 - 0.108s, 5000 - 0.204s
+        log.info("### run time : {}s", (afterTime - beforeTime) / 1000); // TEST SET: 500 - 0.108s, 5000 - 0.204s
     }
 
     @Test
@@ -110,16 +110,14 @@ public class BulkUpdateTests {
         int updateUserCnt = userDAO.selectUpdateUserCnt();
         Assertions.assertEquals(updateUserCnt, UPDATE_SIZE);
 
-        log.info("### run time : {}s", (afterTime-beforeTime) / 1000); // TEST SET: 500 - 0.705s, 5000 - 1.491s
+        log.info("### run time : {}s", (afterTime - beforeTime) / 1000); // TEST SET: 500 - 0.705s, 5000 - 1.491s
     }
 
     /**
-     *
      * 500   :  0.056s
      * 2500  :  0.24s
      * 5000  :  0.427s
      * 10000 :  0.772s
-     *
      */
     @Test
     public void when_Upsert__then_EqualsUpdatedCount() {
@@ -145,7 +143,7 @@ public class BulkUpdateTests {
         int updateUserCnt = userDAO.selectUpdateUserCnt();
         Assertions.assertEquals(updateUserCnt, UPDATE_SIZE);
 
-        log.info("### run time : {}s", (afterTime-beforeTime) / 1000);
+        log.info("### run time : {}s", (afterTime - beforeTime) / 1000);
     }
 
 }

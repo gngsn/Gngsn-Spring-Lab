@@ -18,21 +18,21 @@ import javax.validation.Valid;
 @RequiredArgsConstructor
 public class ReqTestController {
 
-	private final UpdateService testService;
+    private final UpdateService testService;
 
-	@PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<Object> saveTestDataBulk(@Valid @RequestBody ReqDTO param) {
+    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Object> saveTestDataBulk(@Valid @RequestBody ReqDTO param) {
 
-		try {
-			log.info("[TEST API] Request param: {}", param);
+        try {
+            log.info("[TEST API] Request param: {}", param);
 
-			testService.asyncSaveTestDataSaveBulk(param); //데이터 저장
-			return new ResponseEntity<>("Request success(async)", HttpStatus.OK);
+            testService.asyncSaveTestDataSaveBulk(param); //데이터 저장
+            return new ResponseEntity<>("Request success(async)", HttpStatus.OK);
 
-		} catch (Exception e) {
-			log.error("Exception msg:{} | req param:{} | stack trace:", e.getMessage(), param, e);
-			return new ResponseEntity<>("Fail", HttpStatus.INTERNAL_SERVER_ERROR);
-		}
-	}
+        } catch (Exception e) {
+            log.error("Exception msg:{} | req param:{} | stack trace:", e.getMessage(), param, e);
+            return new ResponseEntity<>("Fail", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 
 }

@@ -16,19 +16,19 @@ import java.util.List;
 @NoArgsConstructor
 public class ReqDTO {
 
-	@NotBlank(message = "'reqId' cannot be null.")
-	private String reqId;
+    @NotBlank(message = "'reqId' cannot be null.")
+    private String reqId;
 
-	@NotBlank(message = "'svcCd' cannot be null.")
-	private String svcCd;
+    @NotBlank(message = "'svcCd' cannot be null.")
+    private String svcCd;
 
-	@Valid
-	@NotNull(message = "'detailList' cannot be null.")
-	@Size(min = 1, max = 1_000, message = "The maximum number of 'purchaseList' is {max}.")
-	private List<ReqDetailDTO> detailList;
+    @Valid
+    @NotNull(message = "'detailList' cannot be null.")
+    @Size(min = 1, max = 1_000, message = "The maximum number of 'purchaseList' is {max}.")
+    private List<ReqDetailDTO> detailList;
 
-	private LocalDateTime regYmdt;
-	private LocalDateTime modYmdt;
+    private LocalDateTime regYmdt;
+    private LocalDateTime modYmdt;
 
 }
 

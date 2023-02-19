@@ -22,49 +22,49 @@ import javax.annotation.PostConstruct;
 @SpringBootTest
 public class CacheTests {
 
-  @Autowired
-  CacheManager cacheManager;
+    @Autowired
+    CacheManager cacheManager;
 
-  @PostConstruct
-  public void init() {
-    cacheManager.getCache("users").putIfAbsent("selectUserByName_test1", new UserVO("test1", "test1@email.com", "qwerty"));
-    cacheManager.getCache("users").putIfAbsent("selectUserByName_test2", new UserVO("test2", "test2@email.com", "qwerty"));
-    cacheManager.getCache("users").putIfAbsent("selectUserByName_test3", new UserVO("test3", "test3@email.com", "qwerty"));
-    cacheManager.getCache("views").putIfAbsent("views_user1", 2);
-    cacheManager.getCache("views").putIfAbsent("views_user2", 5);
-    cacheManager.getCache("views").putIfAbsent("views_user4", 12);
-    cacheManager.getCache("views").putIfAbsent("views_user4", 12);
-    cacheManager.getCache("views").putIfAbsent("views_user6", 11);
-    cacheManager.getCache("views").putIfAbsent("views_user6", 11);
-    cacheManager.getCache("views").putIfAbsent("views_user6", 11);
-    cacheManager.getCache("views").putIfAbsent("views_user6", 11);
-  }
-
-  @Test
-  public void getAllCaches() {
-    for (String cacheName : cacheManager.getCacheNames()) {
-      log.info(cacheName);
+    @PostConstruct
+    public void init() {
+        cacheManager.getCache("users").putIfAbsent("selectUserByName_test1", new UserVO("test1", "test1@email.com", "qwerty"));
+        cacheManager.getCache("users").putIfAbsent("selectUserByName_test2", new UserVO("test2", "test2@email.com", "qwerty"));
+        cacheManager.getCache("users").putIfAbsent("selectUserByName_test3", new UserVO("test3", "test3@email.com", "qwerty"));
+        cacheManager.getCache("views").putIfAbsent("views_user1", 2);
+        cacheManager.getCache("views").putIfAbsent("views_user2", 5);
+        cacheManager.getCache("views").putIfAbsent("views_user4", 12);
+        cacheManager.getCache("views").putIfAbsent("views_user4", 12);
+        cacheManager.getCache("views").putIfAbsent("views_user6", 11);
+        cacheManager.getCache("views").putIfAbsent("views_user6", 11);
+        cacheManager.getCache("views").putIfAbsent("views_user6", 11);
+        cacheManager.getCache("views").putIfAbsent("views_user6", 11);
     }
+
+    @Test
+    public void getAllCaches() {
+        for (String cacheName : cacheManager.getCacheNames()) {
+            log.info(cacheName);
+        }
 
     /*   Functional
 
     cacheManager.getCacheNames().forEach(log::info);
     */
-  }
-
-  @Test
-  public void getAllKeyAndValue() {
-    for (String cacheName : cacheManager.getCacheNames()) {
-
-      Cache cache = ((CaffeineCache) cacheManager.getCache(cacheName)).getNativeCache();
-      log.info("cacheName: {}", cacheName);
-      for (Object key: cache.asMap().keySet()) {
-        Object value = cache.getIfPresent(key);
-
-        log.info("  key: {} - value: {}", key, value.toString());
-      }
-      init();
     }
+
+    @Test
+    public void getAllKeyAndValue() {
+        for (String cacheName : cacheManager.getCacheNames()) {
+
+            Cache cache = ((CaffeineCache) cacheManager.getCache(cacheName)).getNativeCache();
+            log.info("cacheName: {}", cacheName);
+            for (Object key : cache.asMap().keySet()) {
+                Object value = cache.getIfPresent(key);
+
+                log.info("  key: {} - value: {}", key, value.toString());
+            }
+            init();
+        }
 
     /*   Functional
 
@@ -75,56 +75,56 @@ public class CacheTests {
             log.info("  key: {} - value: {}", key, cache.getIfPresent(key).toString());
           }));
      */
-  }
+    }
 
-  @Test
-  public void getCachesStats() {
+    @Test
+    public void getCachesStats() {
 //    @Cacheable(cacheNames = CacheType.USERS.)
-    for (String cacheName : cacheManager.getCacheNames()) {
-      Cache cache = ((CaffeineCache) cacheManager.getCache(cacheName)).getNativeCache();
-      CacheStats stats = cache.stats();
-      log.info("cache '{}' - stats : {}", cacheName, stats.toString());
+        for (String cacheName : cacheManager.getCacheNames()) {
+            Cache cache = ((CaffeineCache) cacheManager.getCache(cacheName)).getNativeCache();
+            CacheStats stats = cache.stats();
+            log.info("cache '{}' - stats : {}", cacheName, stats.toString());
+        }
     }
-  }
 
-  public void beforeCache() {
-    log.info("-- before -- ");
-    getAllKeyAndValue();
-  }
-
-  @Test
-  public void removeAllCaches() {
-    beforeCache();
-    for (String cacheName : cacheManager.getCacheNames()) {
-      cacheManager.getCache(cacheName).clear();
+    public void beforeCache() {
+        log.info("-- before -- ");
+        getAllKeyAndValue();
     }
-    afterCache();
-  }
 
-  public void afterCache() {
-    log.info("-- after -- ");
-    getAllKeyAndValue();
-  }
+    @Test
+    public void removeAllCaches() {
+        beforeCache();
+        for (String cacheName : cacheManager.getCacheNames()) {
+            cacheManager.getCache(cacheName).clear();
+        }
+        afterCache();
+    }
+
+    public void afterCache() {
+        log.info("-- after -- ");
+        getAllKeyAndValue();
+    }
 
 
-  @Test
-  public void removeTargetCache() {
-    String targetCacheName = "views";
-    beforeCache();
+    @Test
+    public void removeTargetCache() {
+        String targetCacheName = "views";
+        beforeCache();
 
-    ((CaffeineCache)cacheManager.getCache(targetCacheName)).clear();
+        ((CaffeineCache) cacheManager.getCache(targetCacheName)).clear();
 
-    afterCache();
-  }
+        afterCache();
+    }
 
-  @Test
-  public void removeTargetKey() {
-    String targetCacheName = "views";
-    String targetCacheKey = "views_user3";
-    log.info("-- before -- ");
-    getAllKeyAndValue();
-    ((CaffeineCache)cacheManager.getCache(targetCacheName)).evict(targetCacheKey);
-    log.info("-- after -- ");
-    getAllKeyAndValue();
-  }
+    @Test
+    public void removeTargetKey() {
+        String targetCacheName = "views";
+        String targetCacheKey = "views_user3";
+        log.info("-- before -- ");
+        getAllKeyAndValue();
+        ((CaffeineCache) cacheManager.getCache(targetCacheName)).evict(targetCacheKey);
+        log.info("-- after -- ");
+        getAllKeyAndValue();
+    }
 }

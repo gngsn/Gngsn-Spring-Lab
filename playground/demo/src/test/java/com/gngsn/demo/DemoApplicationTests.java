@@ -27,11 +27,11 @@ class DemoApplicationTests {
     void before() {
         log.info("===================================\n");
 
-        for (int i=0; i < INSERT_SIZE; i++) {
+        for (int i = 0; i < INSERT_SIZE; i++) {
             users.add(new UserVO(
-                    "test" + i,
-                    "test@email.com",
-                    "vFnfSEsDj!@#$")
+                "test" + i,
+                "test@email.com",
+                "vFnfSEsDj!@#$")
             );
         }
 

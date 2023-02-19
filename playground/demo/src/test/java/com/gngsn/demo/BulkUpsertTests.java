@@ -57,7 +57,7 @@ public class BulkUpsertTests {
 
         // then
         Assertions.assertEquals(cnt, TEST_SIZE);
-        log.info("### run time : {}s", (afterTime-beforeTime) / 1000);
+        log.info("### run time : {}s", (afterTime - beforeTime) / 1000);
     }
 
 
@@ -75,7 +75,7 @@ public class BulkUpsertTests {
 
         // then
         Assertions.assertEquals(cnt, TEST_SIZE + (TEST_SIZE - insertSize));
-        log.info("### run time : {}s", (afterTime-beforeTime) / 1000);
+        log.info("### run time : {}s", (afterTime - beforeTime) / 1000);
     }
 
     @Test
@@ -91,8 +91,8 @@ public class BulkUpsertTests {
         double afterTime = System.currentTimeMillis();
 
         // then
-        Assertions.assertEquals(cnt, TEST_SIZE + (TEST_SIZE-insertSize));
-        log.info("### run time : {}s", (afterTime-beforeTime) / 1000);
+        Assertions.assertEquals(cnt, TEST_SIZE + (TEST_SIZE - insertSize));
+        log.info("### run time : {}s", (afterTime - beforeTime) / 1000);
     }
 
 
@@ -109,7 +109,7 @@ public class BulkUpsertTests {
 
         // then
         Assertions.assertEquals(cnt, TEST_SIZE + TEST_SIZE);
-        log.info("### run time : {}s", (afterTime-beforeTime) / 1000);
+        log.info("### run time : {}s", (afterTime - beforeTime) / 1000);
     }
 
 

@@ -31,7 +31,7 @@ public class CacheConfig {
                         .expireAfterWrite(cache.getExpireAfterWrite(), TimeUnit.SECONDS)
                         .maximumSize(cache.getMaximumSize())
                         .evictionListener((Object key, Object value, RemovalCause cause) -> {
-                            log.info("Key {} was evicted ({}): {}", key, cause, value);
+                                log.info("Key {} was evicted ({}): {}", key, cause, value);
                             }
                         )
                         .removalListener((Object key, Object value, RemovalCause cause) ->
@@ -48,8 +48,7 @@ public class CacheConfig {
 }
 
 /**
- *
- Key views_user2 was evicted (SIZE): 5
- Key views_user1 was evicted (SIZE): 2
- Key views_user4 was evicted (SIZE): 12
+ * Key views_user2 was evicted (SIZE): 5
+ * Key views_user1 was evicted (SIZE): 2
+ * Key views_user4 was evicted (SIZE): 12
  */

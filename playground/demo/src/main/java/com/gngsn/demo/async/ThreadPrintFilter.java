@@ -16,7 +16,7 @@ public class ThreadPrintFilter implements Filter {
 
         filterChain.doFilter(servletRequest, servletResponse);
 
-        if (servletRequest.isAsyncStarted()){
+        if (servletRequest.isAsyncStarted()) {
             log.debug("### [{}] async called CheckFilter", Thread.currentThread().getName());
         } else {
             log.debug("### [{}] called CheckFilter", Thread.currentThread().getName());
