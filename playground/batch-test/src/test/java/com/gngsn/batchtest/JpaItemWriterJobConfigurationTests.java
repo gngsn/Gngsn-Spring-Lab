@@ -10,7 +10,7 @@ import org.springframework.context.annotation.Configuration;
 @Slf4j
 public class JpaItemWriterJobConfigurationTests {
 
-	private static final int chunkSize = 10;
+    private static final int chunkSize = 10;
 
 
 }

@@ -26,27 +26,27 @@ import org.springframework.context.annotation.Configuration;
 @RequiredArgsConstructor
 @Configuration
 public class JpaItemWriterJobConfiguration {
-	private final JobBuilderFactory jobBuilderFactory;
-	private final StepBuilderFactory stepBuilderFactory;
+    private final JobBuilderFactory jobBuilderFactory;
+    private final StepBuilderFactory stepBuilderFactory;
 
-	private final SimpleTestTasklet simpleTestTasklet;
+    private final SimpleTestTasklet simpleTestTasklet;
 
-	private static final int chunkSize = 10;
+    private static final int chunkSize = 10;
 
-	@Bean
-	public Job simpleTestJob() {
-		return jobBuilderFactory.get("simpleTestJob")
-			.start(simpleTestTaskletStep())
-			.build();
-	}
+    @Bean
+    public Job simpleTestJob() {
+        return jobBuilderFactory.get("simpleTestJob")
+            .start(simpleTestTaskletStep())
+            .build();
+    }
 
-	@Bean
-	@StepScope
-	public TaskletStep simpleTestTaskletStep() {
-		return stepBuilderFactory.get("simpleTestTaskletStep")
-			.tasklet(simpleTestTasklet)
-			.build();
-	}
+    @Bean
+    @StepScope
+    public TaskletStep simpleTestTaskletStep() {
+        return stepBuilderFactory.get("simpleTestTaskletStep")
+            .tasklet(simpleTestTasklet)
+            .build();
+    }
 
 //	@Bean
 //	public Step jdbcStep() {
