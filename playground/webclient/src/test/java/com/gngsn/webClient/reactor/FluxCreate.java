@@ -73,7 +73,7 @@ public class FluxCreate {
             AtomicLong::new,
             (state, sink) -> {
                 long i = state.getAndIncrement();
-                sink.next("3 x " + i + " = " + 3*i);
+                sink.next("3 x " + i + " = " + 3 * i);
                 if (i == 3) sink.complete();
                 return state;
             });

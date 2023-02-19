@@ -4,11 +4,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.reactivestreams.Subscription;
-import reactor.core.publisher.BaseSubscriber;
-import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
-import reactor.core.publisher.SignalType;
-import reactor.core.publisher.Sinks;
+import reactor.core.publisher.*;
 import reactor.core.scheduler.Scheduler;
 import reactor.core.scheduler.Schedulers;
 import reactor.test.StepVerifier;
@@ -22,7 +18,6 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.Function;
-import java.util.logging.Level;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static reactor.core.publisher.Sinks.EmitFailureHandler.FAIL_FAST;
@@ -274,8 +269,7 @@ public class MonoDoOnXxxTest {
 
 //		then: "the res is passed on"
             assertThat(res.block()).containsExactly(2, 4, 6, 8);
-        }
-        finally {
+        } finally {
             scheduler.dispose();
         }
     }
@@ -293,13 +287,13 @@ public class MonoDoOnXxxTest {
         Flux<ReferenceCounted> source =
             Flux.just(1, 2, 3, 4, 5, 6) //drain sync
                 .filter(i -> i < 3)
-            .log()
-            .concatMapIterable(i -> Arrays.asList(
-                referenceCounted1,
-                referenceCounted2,
-                referenceCounted3
+                .log()
+                .concatMapIterable(i -> Arrays.asList(
+                    referenceCounted1,
+                    referenceCounted2,
+                    referenceCounted3
                 ))
-            .doOnDiscard(ReferenceCounted.class, ReferenceCounted::release);
+                .doOnDiscard(ReferenceCounted.class, ReferenceCounted::release);
 
         StepVerifier.create(source)
             .consumeNextWith(ReferenceCounted::release)
@@ -317,16 +311,15 @@ public class MonoDoOnXxxTest {
         List<ReferenceCounted> refList = new ArrayList<>();
 
         Flux<ReferenceCounted> source = Flux.<ReferenceCounted>generate(sink -> {
-            ReferenceCounted ref = new ReferenceCounted(index.incrementAndGet());
+                ReferenceCounted ref = new ReferenceCounted(index.incrementAndGet());
 
-            refList.add(ref);
-            sink.next(ref);
-        })
+                refList.add(ref);
+                sink.next(ref);
+            })
             .log()
             .filter(i -> i.index < 4)
             .doOnDiscard(ReferenceCounted.class, System.out::println)
-            .doOnDiscard(ReferenceCounted.class, referenceCounted -> refList.forEach(ReferenceCounted::release))
-            ;
+            .doOnDiscard(ReferenceCounted.class, referenceCounted -> refList.forEach(ReferenceCounted::release));
 
         StepVerifier.create(source)
             .consumeNextWith(ReferenceCounted::release)
@@ -358,7 +351,7 @@ public class MonoDoOnXxxTest {
 
         @Override
         public String toString() {
-            return "ReferenceCounted{index="+index+"}";
+            return "ReferenceCounted{index=" + index + "}";
         }
     }
 }

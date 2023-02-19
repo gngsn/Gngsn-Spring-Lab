@@ -1,35 +1,33 @@
 package com.gngsn.webClient.exception;
 
-import lombok.Getter;
-
 public class BadWebClientRequestException extends RuntimeException {
-	private static final long serialVersionUID = -2113106875266819123L;
+    private static final long serialVersionUID = -2113106875266819123L;
 
-	private final int statusCode;
+    private final int statusCode;
 
-	private String statusText;
+    private String statusText;
 
-	public BadWebClientRequestException(int statusCode) {
-		super();
-		this.statusCode = statusCode;
-	}
+    public BadWebClientRequestException(int statusCode) {
+        super();
+        this.statusCode = statusCode;
+    }
 
-	public BadWebClientRequestException(int statusCode, String msg) {
-		super(msg);
-		this.statusCode = statusCode;
-	}
+    public BadWebClientRequestException(int statusCode, String msg) {
+        super(msg);
+        this.statusCode = statusCode;
+    }
 
-	public BadWebClientRequestException(int statusCode, String msg, String statusText) {
-		super(msg);
-		this.statusCode = statusCode;
-		this.statusText = statusText;
-	}
+    public BadWebClientRequestException(int statusCode, String msg, String statusText) {
+        super(msg);
+        this.statusCode = statusCode;
+        this.statusText = statusText;
+    }
 
-	public int getStatusCode() {
-		return statusCode;
-	}
+    public int getStatusCode() {
+        return statusCode;
+    }
 
-	public String getStatusText() {
-		return statusText;
-	}
+    public String getStatusText() {
+        return statusText;
+    }
 }

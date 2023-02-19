@@ -47,35 +47,35 @@ public class WebClientConfiguration {
     static public WebClient commonWebClient(
         @Qualifier(value = WEB_CLIENT_EXCHANGE_STRATEGIES) ExchangeStrategies exchangeStrategies,
         @Qualifier(value = WEB_CLIENT_HTTP_CLIENT) HttpClient httpClient
-        ) {
+    ) {
         return WebClient
-                .builder()
-                .clientConnector(new ReactorClientHttpConnector(HttpClient.create()))
-                .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_FORM_URLENCODED_VALUE)
-                .exchangeFunction(ExchangeFunctions.create(new ReactorClientHttpConnector(httpClient), exchangeStrategies))
-                .exchangeStrategies(exchangeStrategies)
-                .build();
+            .builder()
+            .clientConnector(new ReactorClientHttpConnector(HttpClient.create()))
+            .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+            .exchangeFunction(ExchangeFunctions.create(new ReactorClientHttpConnector(httpClient), exchangeStrategies))
+            .exchangeStrategies(exchangeStrategies)
+            .build();
     }
 
     @Bean(name = WEB_CLIENT_HTTP_CLIENT)
     static public HttpClient defaultHttpClient(@Qualifier(value = WEB_CLIENT_CONNECTION_PROVIDER) ConnectionProvider provider) {
 
         return HttpClient.create(provider)
-                .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 5_000)
-                .doOnConnected(conn ->
-                        conn.addHandlerLast(new ReadTimeoutHandler(5)) //읽기시간초과 타임아웃
-                        .addHandlerLast(new WriteTimeoutHandler(5)));
+            .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 5_000)
+            .doOnConnected(conn ->
+                conn.addHandlerLast(new ReadTimeoutHandler(5)) //읽기시간초과 타임아웃
+                    .addHandlerLast(new WriteTimeoutHandler(5)));
     }
 
     @Bean(name = WEB_CLIENT_CONNECTION_PROVIDER)
     static public ConnectionProvider connectionProvider() {
 
         return ConnectionProvider.builder("http-pool")
-                .maxConnections(100)     // connection pool의 갯수
-                .pendingAcquireTimeout(Duration.ofMillis(0)) //커넥션 풀에서 커넥션을 얻기 위해 기다리는 최대 시간
-                .pendingAcquireMaxCount(-1) //커넥션 풀에서 커넥션을 가져오는 시도 횟수 (-1: no limit)
-                .maxIdleTime(Duration.ofMillis(2000L)) //커넥션 풀에서 idle 상태의 커넥션을 유지하는 시간
-                .build();
+            .maxConnections(100)     // connection pool의 갯수
+            .pendingAcquireTimeout(Duration.ofMillis(0)) //커넥션 풀에서 커넥션을 얻기 위해 기다리는 최대 시간
+            .pendingAcquireMaxCount(-1) //커넥션 풀에서 커넥션을 가져오는 시도 횟수 (-1: no limit)
+            .maxIdleTime(Duration.ofMillis(2000L)) //커넥션 풀에서 idle 상태의 커넥션을 유지하는 시간
+            .build();
     }
 
     @Bean(name = WEB_CLIENT_EXCHANGE_STRATEGIES)

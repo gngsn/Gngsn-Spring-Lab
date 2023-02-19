@@ -91,6 +91,7 @@ public class FluxTest {
     public <T> Flux<T> appendBoomError(Flux<T> source) {
         return source.concatWith(Mono.error(new IllegalArgumentException("boom")));
     }
+
     @Test
     public void testAppendBoomError() {
         Flux<String> source = Flux.just("thing1", "thing2");

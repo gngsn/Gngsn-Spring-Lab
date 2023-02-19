@@ -3,38 +3,33 @@ package com.gngsn.webClient;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import com.gngsn.webClient.controller.TestController;
 import com.gngsn.webClient.exception.BadWebClientRequestException;
 import com.gngsn.webClient.exception.TargetServerErrorException;
 import com.gngsn.webClient.vo.ResResult;
 import io.netty.channel.ChannelOption;
-import io.netty.handler.timeout.ReadTimeoutException;
 import io.netty.handler.timeout.ReadTimeoutHandler;
-import io.netty.handler.timeout.TimeoutException;
 import io.netty.handler.timeout.WriteTimeoutHandler;
 import lombok.extern.slf4j.Slf4j;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.function.ThrowingConsumer;
-import org.mockito.Mock;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.http.client.reactive.ReactorClientHttpConnector;
 import org.springframework.http.codec.json.Jackson2JsonDecoder;
 import org.springframework.http.codec.json.Jackson2JsonEncoder;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.reactive.function.BodyInserters;
-import org.springframework.web.reactive.function.client.*;
+import org.springframework.web.reactive.function.client.ExchangeStrategies;
+import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.reactive.function.client.WebClientRequestException;
+import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.core.publisher.Mono;
 import reactor.netty.http.client.HttpClient;
 import reactor.netty.resources.ConnectionProvider;
 import reactor.test.StepVerifier;
 
-import java.net.URI;
 import java.time.Duration;
 
 
@@ -103,20 +98,20 @@ public class MockRequestExchangeTest {
             .contentType(MediaType.APPLICATION_JSON)
             .body(BodyInserters.fromValue(body))
             .exchangeToMono(response -> {
-                    if (response.statusCode().is2xxSuccessful()) {
-                        log.info("API 요청에 성공했습니다.");
-                        return response.toEntity(ResResult.class).mapNotNull(HttpEntity::getBody);
-                    }
+                if (response.statusCode().is2xxSuccessful()) {
+                    log.info("API 요청에 성공했습니다.");
+                    return response.toEntity(ResResult.class).mapNotNull(HttpEntity::getBody);
+                }
 
-                    if (response.statusCode().is4xxClientError()) {
-                        log.error("API 요청 중 4xx 에러가 발생했습니다. 요청 데이터를 확인해주세요.");
-                        throw new BadWebClientRequestException(response.rawStatusCode(), "4xx 외부 요청 오류");
-                    }
+                if (response.statusCode().is4xxClientError()) {
+                    log.error("API 요청 중 4xx 에러가 발생했습니다. 요청 데이터를 확인해주세요.");
+                    throw new BadWebClientRequestException(response.rawStatusCode(), "4xx 외부 요청 오류");
+                }
 
-                    log.error("API 요청 중 요청한 서버에서 5xx 에러가 발생했습니다.");
-                    throw new TargetServerErrorException(response.rawStatusCode(), "5xx 외부 시스템 오류");
-                })
-            .doOnError(error -> log.error("doOnError logging: "+ error));
+                log.error("API 요청 중 요청한 서버에서 5xx 에러가 발생했습니다.");
+                throw new TargetServerErrorException(response.rawStatusCode(), "5xx 외부 시스템 오류");
+            })
+            .doOnError(error -> log.error("doOnError logging: " + error));
     }
 
     public WebClient commonWebClient(

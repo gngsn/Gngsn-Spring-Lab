@@ -44,7 +44,7 @@ public class ResResult implements Serializable {
     /**
      * return error.
      *
-     * @param msg  error msg
+     * @param msg error msg
      */
     public static ResResult error(final String msg) {
         return get(msg, null);
@@ -55,13 +55,13 @@ public class ResResult implements Serializable {
     }
 
 
-	@Override
-	public String toString() {
-		return "ResResult{"
-			+ "message='" + getMessage()
-			+ '\'' + ", data=" + getData()
-			+ '}';
-	}
+    @Override
+    public String toString() {
+        return "ResResult{"
+            + "message='" + getMessage()
+            + '\'' + ", data=" + getData()
+            + '}';
+    }
 
     @Override
     public boolean equals(Object o) {

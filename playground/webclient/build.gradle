@@ -1,5 +1,5 @@
 plugins {
-    id "java"
+    id "application"
     id "io.spring.dependency-management" version "1.0.7.RELEASE"
 }
 
@@ -10,12 +10,6 @@ description = 'webclient'
 repositories {
     mavenCentral()
 }
-
-//dependencyManagement {
-//    imports {
-//        mavenBom "io.projectreactor:reactor-bom:2022.0.3"
-//    }
-//}
 
 dependencies {
     /* spring-boot */
@@ -28,8 +22,6 @@ dependencies {
 
     /* reactor */
     implementation platform('io.projectreactor:reactor-bom:2022.0.3')
-
-    // implementation platform('io.projectreactor:reactor-bom:2020.0.24') when gradle version is more than 5.x
     implementation 'io.projectreactor:reactor-core:3.5.0'
     implementation 'io.projectreactor:reactor-test:3.5.0'
 

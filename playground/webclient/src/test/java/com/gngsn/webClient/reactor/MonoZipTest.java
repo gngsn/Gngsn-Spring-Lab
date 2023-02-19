@@ -34,7 +34,7 @@ public class MonoZipTest {
     public void StringArrayToString() {
         Function<Object[], String> conbinator = obArr -> Arrays.stream(obArr)
             .map(Object::toString)
-            .reduce((a,b) -> a.concat(" " + b))
+            .reduce((a, b) -> a.concat(" " + b))
             .orElse("");
 
         Mono<String> mono = Mono.zip(conbinator,
