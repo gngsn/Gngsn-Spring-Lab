@@ -151,7 +151,7 @@ class Basic {
         launch { // context of the parent, main runBlocking coroutine
             println("main runBlocking : I'm working in thread '${Thread.currentThread().name}'")
         } //지정하지 않았기에 외부 currentThread에 따른다.
-        launch (Dispatchers .Unconfined) { // 특정 스레드에 종속되지 않음 ? 메인 스레드 사용
+        launch(Dispatchers.Unconfined) { // 특정 스레드에 종속되지 않음 ? 메인 스레드 사용
             println("Unconfined : I’m working in thread '${Thread.currentThread().name}'")
         }
         launch(Dispatchers.Default) { // will get dispatched to DefaultDispatcher

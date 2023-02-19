@@ -2,7 +2,8 @@ package com.gngsn.kotlindemo.ch5
 
 class SamConstructure {
     fun createAllDoneRunnable(): Runnable {
-        return Runnable { println("All done! ")
+        return Runnable {
+            println("All done! ")
         }
     }
 

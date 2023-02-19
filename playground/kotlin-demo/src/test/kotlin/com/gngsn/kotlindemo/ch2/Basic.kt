@@ -9,7 +9,7 @@ import com.gngsn.kotlindemo.ch2.Basic.Color.*
 class Basic {
 
     // ========== function ============
-    fun ex1_max(a: Int, b: Int) : Int {
+    fun ex1_max(a: Int, b: Int): Int {
         return if (a > b) a else b
     }
 

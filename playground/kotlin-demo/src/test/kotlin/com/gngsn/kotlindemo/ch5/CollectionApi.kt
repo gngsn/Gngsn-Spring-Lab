@@ -8,7 +8,7 @@ import org.junit.jupiter.api.Test
 class CollectionApi {
     @Test
     fun filterTest() {
-        val list = listOf (1, 2, 3, 4)
+        val list = listOf(1, 2, 3, 4)
         val result = list.filter { it % 2 == 0 }
 
         Assertions.assertEquals(listOf(2, 4), result)
@@ -19,7 +19,7 @@ class CollectionApi {
         val people = listOf(Person("Alice", 29), Person("Bob", 31))
         val result = people.filter { it.age > 30 } // 30살 이상 filtering
 
-        Assertions.assertEquals(listOf(Person(name="Bob", age=31)), result)
+        Assertions.assertEquals(listOf(Person(name = "Bob", age = 31)), result)
     }
 
     @Test

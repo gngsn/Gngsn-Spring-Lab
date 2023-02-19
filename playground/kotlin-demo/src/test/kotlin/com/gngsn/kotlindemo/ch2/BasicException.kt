@@ -8,20 +8,18 @@ import java.io.StringReader
 
 class BasicException {
 
-    private fun readNumber(reader:BufferedReader): Int? {  // throws로 던질 수 있는 예외 명시 X
+    private fun readNumber(reader: BufferedReader): Int? {  // throws로 던질 수 있는 예외 명시 X
         try {
             val line = reader.readLine()
             return Integer.parseInt(line)
-        }
-        catch (e: NumberFormatException) {
+        } catch (e: NumberFormatException) {
             return null
-        }
-        finally {
+        } finally {
             reader.close()
         }
     }
 
-    private fun readNumber2(reader:BufferedReader): Int? {
+    private fun readNumber2(reader: BufferedReader): Int? {
         return try {
             Integer.parseInt(reader.readLine())  // return 값
         } catch (e: NumberFormatException) {
@@ -30,6 +28,7 @@ class BasicException {
             reader.close()
         }
     }
+
     @Test
     fun readerTest() {
         val reader = BufferedReader(StringReader("239"))

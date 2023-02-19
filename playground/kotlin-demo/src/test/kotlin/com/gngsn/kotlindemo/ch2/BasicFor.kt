@@ -46,14 +46,14 @@ class BasicFor {
         val binaryReps = ex_iter()
 
         // for..in 구문에 map을 쓰면 (key, value) 값 반환
-       for ((letter, binary) in binaryReps) {
+        for ((letter, binary) in binaryReps) {
             print("$letter = $binary | ")
-       }
+        }
     }
 
     @Test
     fun ex_for_in_list() {
-        val list = arrayListOf ("10", "11", "1001")
+        val list = arrayListOf("10", "11", "1001")
 
         // withIndex: 인덱스와 함께 컬렉션을 이터레이션
         for ((index, element) in list.withIndex()) {

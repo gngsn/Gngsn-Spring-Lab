@@ -26,17 +26,17 @@ fun Collection<String>.join(
 ) = joinToString(separator, prefix, postfix)
 
 open class View {
-    open fun click () = println ("View clicked")
+    open fun click() = println("View clicked")
 }
 
-class Button: View() {  //Button은 View를 확장한다.
+class Button : View() {  //Button은 View를 확장한다.
     override fun click() = println("Button clicked")
 }
 
-fun View.showOff() = println ("I’m a view! ")
-fun Button.showOff() = println ("I ’m a button! ")
+fun View.showOff() = println("I’m a view! ")
+fun Button.showOff() = println("I ’m a button! ")
 
-val String.lastChar:Char get() = get(length - 1)
+val String.lastChar: Char get() = get(length - 1)
 var StringBuilder.lastChar: Char
     get() = get(length - 1)
     set(value: Char) = this.setCharAt(length - 1, value)

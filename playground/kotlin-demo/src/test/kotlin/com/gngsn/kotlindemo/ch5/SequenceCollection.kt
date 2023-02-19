@@ -73,7 +73,7 @@ class SequenceCollection {
 
     @Test
     fun callJavaMethodTest() {
-        postponeComputation(1000, object: Runnable {
+        postponeComputation(1000, object : Runnable {
             override fun run() {
                 println(42)
             }

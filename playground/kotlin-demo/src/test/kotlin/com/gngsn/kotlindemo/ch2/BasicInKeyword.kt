@@ -44,6 +44,6 @@ class BasicInKeyword {
 
     @Test
     fun ex_set_In() {
-        Assertions.assertFalse("Kotlin" in setOf ("Java", "Scala"))
+        Assertions.assertFalse("Kotlin" in setOf("Java", "Scala"))
     }
 }

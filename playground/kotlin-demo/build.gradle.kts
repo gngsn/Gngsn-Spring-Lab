@@ -45,7 +45,8 @@ dependencies {
 
 tasks.withType<KotlinCompile> {
     kotlinOptions {
-        freeCompilerArgs = listOf("-Xjsr305=strict") // -Xjsr305 compiler flag with the strict options; dealing with null related issues at compile time.
+        freeCompilerArgs =
+            listOf("-Xjsr305=strict") // -Xjsr305 compiler flag with the strict options; dealing with null related issues at compile time.
         jvmTarget = "11"
     }
 }
