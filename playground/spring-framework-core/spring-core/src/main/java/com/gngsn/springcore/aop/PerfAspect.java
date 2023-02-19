@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 public class PerfAspect {
     // 2가지 정보가 필요 -> 해야할 일(advice), 어디에 적용할 것인가(pointcut)
 
-//    logPerf 라는 advice를 어디에 적용할 것인가 -> pointcut.
+    //    logPerf 라는 advice를 어디에 적용할 것인가 -> pointcut.
 //    @Around("execution(* com.gngsn.springcore..*.EventService.*(..))")
 //    @Around("@annotation(PerfLogging)")
     @Around("bean(simpleEventService)")

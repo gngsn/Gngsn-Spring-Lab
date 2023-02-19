@@ -1,21 +1,100 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/><title>IoC Container &amp; ETC</title><link rel="stylesheet" type="text/css" href="note.css"/></head><body><article id="7a13d85b-2b4b-4f66-a6f3-d6844f8e0d82" class="page sans"><header><div class="page-header-icon undefined"><span class="icon">👾</span></div><h1 class="page-title">IoC Container &amp; ETC</h1></header><div class="page-body"><p id="6d05e417-df67-4212-931b-5b5f1bf4dd27" class="">
-</p><ul id="f18b2a01-f992-4906-ae64-b707bed94c57" class="toggle"><li><details open=""><summary>content</summary><nav id="f10deb1f-398f-4011-84f7-b3e70b28ae7a" class="block-color-gray table_of_contents"><div class="table_of_contents-item table_of_contents-indent-0"><a class="table_of_contents-link" href="#83f2622c-1482-4f87-baf3-404ffd71d7ff">IoC 컨테이너 7부: MessageSource</a></div><div class="table_of_contents-item table_of_contents-indent-0"><a class="table_of_contents-link" href="#95da2b29-33b2-4033-9e76-c2d65a03c2fb">IoC 컨테이너 8부: ApplicationEventPublisher</a></div><div class="table_of_contents-item table_of_contents-indent-1"><a class="table_of_contents-link" href="#18a87c2f-6e83-423a-83da-84472fc9ee4b">이벤트 만들기</a></div><div class="table_of_contents-item table_of_contents-indent-1"><a class="table_of_contents-link" href="#c468d4ca-ff9f-4aa4-8c43-0878e8ad8754">이벤트 발생 시키는 방법</a></div><div class="table_of_contents-item table_of_contents-indent-1"><a class="table_of_contents-link" href="#f99bf470-375e-4341-9705-15570bdad159">이벤트 처리하는 방법</a></div><div class="table_of_contents-item table_of_contents-indent-1"><a class="table_of_contents-link" href="#5677fb13-10a8-4ae5-878f-2b80cf99607f">스프링이 제공하는 기본 이벤트</a></div><div class="table_of_contents-item table_of_contents-indent-0"><a class="table_of_contents-link" href="#ffd1f8dc-d7b6-423e-9bbb-48873d02c206">IoC 컨테이너 9부: ResourceLoader</a></div><div class="table_of_contents-item table_of_contents-indent-1"><a class="table_of_contents-link" href="#ff414fb6-23e0-42aa-8d86-f836e7db5988">리소스 읽어오기</a></div></nav></details></li></ul><p id="4568efeb-6568-4896-b8f0-05133adf918e" class="">
-</p><h2 id="83f2622c-1482-4f87-baf3-404ffd71d7ff" class="">IoC 컨테이너 7부: MessageSource</h2><p id="0529769f-b63a-417b-953f-4e0e1132f90f" class="">
-</p><p id="c5d03f10-db0e-4860-ac60-3d9d74ccab9b" class="">국제화 (i18n) 기능을 제공하는 인터페이스.</p><p id="02fd45a0-38b9-43ef-822e-e4e7b52bd7d0" class="">
-</p><blockquote id="fc5a2f78-ce3c-45bb-9fda-ca2807e7b452" class=""><em>ApplicationContext extends </em><em><strong>MessageSource</strong></em></blockquote><p id="0de73355-cd17-47c8-8b82-06ef33ee473d" class="">
-</p><p id="e550e208-be05-4691-9875-0fa9d4cb5430" class="">✔️ getMessage(String code, Object[] args, String, default, Locale, loc)</p><p id="99a8506f-a03b-4c90-9b9d-1e5d1b8f5b60" class="">✔️ ...</p><p id="851c6708-8b30-430b-b2f2-024b3783cfa2" class="">
-</p><p id="02064fce-ffa3-446c-b085-cd4d81b17550" class="">스프링 부트를 사용한다면 별다른 설정 필요없이 messages.properties 사용할 수 있음</p><p id="fac5b09f-29af-4e79-9aab-53e2e8d3e58c" class="">✔️ messages.properties</p><p id="4e557939-be5c-4975-a06c-d2448fd728fc" class="">✔️ messages_ko_kr.properties</p><p id="850412ba-5197-4c22-b7f2-b5370553d4cb" class="">✔️ ...</p><p id="db2db24c-5d07-4d3d-b253-e929615f8562" class="">
-</p><p id="94505000-9d1d-411c-9246-db789a4d273b" class=""><strong>릴로딩 기능이 있는 메시지 소스 사용하기</strong></p><pre id="1c0eefee-8385-49f4-b1f9-862e34ebdfcf" class="code code-wrap"><code>@Bean public MessageSource messageSource() { 
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <title>IoC Container &amp; ETC</title>
+    <link rel="stylesheet" type="text/css" href="note.css"/>
+</head>
+<body>
+<article id="7a13d85b-2b4b-4f66-a6f3-d6844f8e0d82" class="page sans">
+    <header>
+        <div class="page-header-icon undefined"><span class="icon">👾</span></div>
+        <h1 class="page-title">IoC Container &amp; ETC</h1></header>
+    <div class="page-body"><p id="6d05e417-df67-4212-931b-5b5f1bf4dd27" class="">
+    </p>
+        <ul id="f18b2a01-f992-4906-ae64-b707bed94c57" class="toggle">
+            <li>
+                <details open="">
+                    <summary>content</summary>
+                    <nav id="f10deb1f-398f-4011-84f7-b3e70b28ae7a" class="block-color-gray table_of_contents">
+                        <div class="table_of_contents-item table_of_contents-indent-0"><a class="table_of_contents-link"
+                                                                                          href="#83f2622c-1482-4f87-baf3-404ffd71d7ff">IoC
+                            컨테이너 7부: MessageSource</a></div>
+                        <div class="table_of_contents-item table_of_contents-indent-0"><a class="table_of_contents-link"
+                                                                                          href="#95da2b29-33b2-4033-9e76-c2d65a03c2fb">IoC
+                            컨테이너 8부: ApplicationEventPublisher</a></div>
+                        <div class="table_of_contents-item table_of_contents-indent-1"><a class="table_of_contents-link"
+                                                                                          href="#18a87c2f-6e83-423a-83da-84472fc9ee4b">이벤트
+                            만들기</a></div>
+                        <div class="table_of_contents-item table_of_contents-indent-1"><a class="table_of_contents-link"
+                                                                                          href="#c468d4ca-ff9f-4aa4-8c43-0878e8ad8754">이벤트
+                            발생 시키는 방법</a></div>
+                        <div class="table_of_contents-item table_of_contents-indent-1"><a class="table_of_contents-link"
+                                                                                          href="#f99bf470-375e-4341-9705-15570bdad159">이벤트
+                            처리하는 방법</a></div>
+                        <div class="table_of_contents-item table_of_contents-indent-1"><a class="table_of_contents-link"
+                                                                                          href="#5677fb13-10a8-4ae5-878f-2b80cf99607f">스프링이
+                            제공하는 기본 이벤트</a></div>
+                        <div class="table_of_contents-item table_of_contents-indent-0"><a class="table_of_contents-link"
+                                                                                          href="#ffd1f8dc-d7b6-423e-9bbb-48873d02c206">IoC
+                            컨테이너 9부: ResourceLoader</a></div>
+                        <div class="table_of_contents-item table_of_contents-indent-1"><a class="table_of_contents-link"
+                                                                                          href="#ff414fb6-23e0-42aa-8d86-f836e7db5988">리소스
+                            읽어오기</a></div>
+                    </nav>
+                </details>
+            </li>
+        </ul>
+        <p id="4568efeb-6568-4896-b8f0-05133adf918e" class="">
+        </p>
+        <h2 id="83f2622c-1482-4f87-baf3-404ffd71d7ff" class="">IoC 컨테이너 7부: MessageSource</h2>
+        <p id="0529769f-b63a-417b-953f-4e0e1132f90f" class="">
+        </p>
+        <p id="c5d03f10-db0e-4860-ac60-3d9d74ccab9b" class="">국제화 (i18n) 기능을 제공하는 인터페이스.</p>
+        <p id="02fd45a0-38b9-43ef-822e-e4e7b52bd7d0" class="">
+        </p>
+        <blockquote id="fc5a2f78-ce3c-45bb-9fda-ca2807e7b452" class=""><em>ApplicationContext extends </em><em><strong>MessageSource</strong></em>
+        </blockquote>
+        <p id="0de73355-cd17-47c8-8b82-06ef33ee473d" class="">
+        </p>
+        <p id="e550e208-be05-4691-9875-0fa9d4cb5430" class="">✔️ getMessage(String code, Object[] args, String, default,
+            Locale, loc)</p>
+        <p id="99a8506f-a03b-4c90-9b9d-1e5d1b8f5b60" class="">✔️ ...</p>
+        <p id="851c6708-8b30-430b-b2f2-024b3783cfa2" class="">
+        </p>
+        <p id="02064fce-ffa3-446c-b085-cd4d81b17550" class="">스프링 부트를 사용한다면 별다른 설정 필요없이 messages.properties 사용할 수 있음</p>
+        <p id="fac5b09f-29af-4e79-9aab-53e2e8d3e58c" class="">✔️ messages.properties</p>
+        <p id="4e557939-be5c-4975-a06c-d2448fd728fc" class="">✔️ messages_ko_kr.properties</p>
+        <p id="850412ba-5197-4c22-b7f2-b5370553d4cb" class="">✔️ ...</p>
+        <p id="db2db24c-5d07-4d3d-b253-e929615f8562" class="">
+        </p>
+        <p id="94505000-9d1d-411c-9246-db789a4d273b" class=""><strong>릴로딩 기능이 있는 메시지 소스 사용하기</strong></p>
+        <pre id="1c0eefee-8385-49f4-b1f9-862e34ebdfcf" class="code code-wrap"><code>@Bean public MessageSource messageSource() {
 		var messageSource = new ReloadableResourceBundleMessageSource(); 
 		messageSource.setBasename(&quot;classpath:/messages&quot;); 
 		messageSource.setDefaultEncoding(&quot;UTF-8&quot;); 
 		messageSource.setCacheSeconds(3); 
 		return messageSource; 
-}</code></pre><p id="bda5e810-18b6-4b23-96cc-896b0f6c5b7c" class="">
-</p><hr id="18acfc0a-7e26-491a-9228-962e1e11734c"/><p id="b9bd7fe6-f0ab-4f03-9875-e4bd19643958" class="">
-</p><h2 id="95da2b29-33b2-4033-9e76-c2d65a03c2fb" class="">IoC 컨테이너 8부: ApplicationEventPublisher</h2><p id="7fc4bbd1-9a59-45c7-a415-e372dc7730fe" class="">이벤트 프로그래밍에 필요한 인터페이스 제공. 옵저버 패턴 구현체. </p><p id="b45b64d8-35fd-4aee-a4d6-4adcf686b57d" class="">
-</p><blockquote id="cbf618c5-6dd7-4bbf-9af5-82dddf01348d" class=""><em>ApplicationContext extends </em><em><strong>ApplicationEventPublisher</strong></em></blockquote><p id="3e89cd9e-8cad-4e7e-a516-3df6b62b5359" class="">
-</p><ul id="cc4f2b5c-03bf-4c64-a927-0c917a999cab" class="toggle"><li><details open=""><summary><mark class="highlight-gray">ApplicationEvent를 상속 받는 Event 객체 생성</mark></summary><pre id="d927005b-4489-4d3d-80b6-c582db88af49" class="code code-wrap"><code>public class MyEvent extends ApplicationEvent {
+}</code></pre>
+        <p id="bda5e810-18b6-4b23-96cc-896b0f6c5b7c" class="">
+        </p>
+        <hr id="18acfc0a-7e26-491a-9228-962e1e11734c"/>
+        <p id="b9bd7fe6-f0ab-4f03-9875-e4bd19643958" class="">
+        </p>
+        <h2 id="95da2b29-33b2-4033-9e76-c2d65a03c2fb" class="">IoC 컨테이너 8부: ApplicationEventPublisher</h2>
+        <p id="7fc4bbd1-9a59-45c7-a415-e372dc7730fe" class="">이벤트 프로그래밍에 필요한 인터페이스 제공. 옵저버 패턴 구현체. </p>
+        <p id="b45b64d8-35fd-4aee-a4d6-4adcf686b57d" class="">
+        </p>
+        <blockquote id="cbf618c5-6dd7-4bbf-9af5-82dddf01348d" class=""><em>ApplicationContext extends </em><em><strong>ApplicationEventPublisher</strong></em>
+        </blockquote>
+        <p id="3e89cd9e-8cad-4e7e-a516-3df6b62b5359" class="">
+        </p>
+        <ul id="cc4f2b5c-03bf-4c64-a927-0c917a999cab" class="toggle">
+            <li>
+                <details open="">
+                    <summary>
+                        <mark class="highlight-gray">ApplicationEvent를 상속 받는 Event 객체 생성</mark>
+                    </summary>
+                    <pre id="d927005b-4489-4d3d-80b6-c582db88af49" class="code code-wrap"><code>public class MyEvent extends ApplicationEvent {
     private int data;
 
     public MyEvent(Object source, int data) {
@@ -26,8 +105,16 @@
     public int getData() {
         return data;
     }
-}</code></pre><p id="cc9017fb-fbed-44f6-866e-93ba76b2eaa9" class="">
-</p></details></li></ul><ul id="bb8ae3a2-ee95-4516-bc11-9d9a6cc9ecdd" class="toggle"><li><details open=""><summary>✔️ publishEvent(ApplicationEvent event) </summary><pre id="a9623247-0c2a-4d4e-adbb-eaa5bccfcc4a" class="code code-wrap"><code>@Component
+}</code></pre>
+                    <p id="cc9017fb-fbed-44f6-866e-93ba76b2eaa9" class="">
+                    </p></details>
+            </li>
+        </ul>
+        <ul id="bb8ae3a2-ee95-4516-bc11-9d9a6cc9ecdd" class="toggle">
+            <li>
+                <details open="">
+                    <summary>✔️ publishEvent(ApplicationEvent event)</summary>
+                    <pre id="a9623247-0c2a-4d4e-adbb-eaa5bccfcc4a" class="code code-wrap"><code>@Component
 public class AppRunner implements ApplicationRunner {
 
     @Autowired
@@ -38,9 +125,26 @@ public class AppRunner implements ApplicationRunner {
         System.out.println(&quot;======= Event AppRunner =======&quot;);
         publishEvent.publishEvent(new MyEvent(this, 100));
     }
-}</code></pre></details></li></ul><p id="2665c214-f93f-400f-abe0-6ea12c1b3f17" class="">
-</p><h3 id="18a87c2f-6e83-423a-83da-84472fc9ee4b" class="">이벤트 만들기</h3><p id="d494a23c-579c-47d7-a484-46d0efb979e8" class="">✔️ ApplicationEvent 상송</p><p id="e1b5a2e0-5456-4416-8dab-6fdcf12c8ba9" class="">✔️ 스프링 4.2 부터는 이 클래스를 <strong>상속받지 않아도 이벤트로 사용</strong>할 수 있다. </p><ul id="1998b0fe-1c8b-4e6b-82c4-715f41162673" class="toggle"><li><details open=""><summary><strong>ApplicationEvent 변화 → 상속 제거</strong></summary><p id="4886e1d7-c4e6-4d79-84c3-a0d444012e15" class="">스프링 프레임워크가 추구하는 방향 → <strong>비침투성</strong>을 반영</p><p id="9e8aaf95-8bb8-4a1a-b637-408afb4207a7" class="">→ 스프링 패키지가 추가되어 있지 않음</p><p id="951ea9f7-6ef5-4060-a972-8310a3330fe9" class="">
-</p><pre id="87dc2ab4-9807-4916-85a1-0fd89fa4922d" class="code code-wrap"><code>public class MyEvent {
+}</code></pre>
+                </details>
+            </li>
+        </ul>
+        <p id="2665c214-f93f-400f-abe0-6ea12c1b3f17" class="">
+        </p>
+        <h3 id="18a87c2f-6e83-423a-83da-84472fc9ee4b" class="">이벤트 만들기</h3>
+        <p id="d494a23c-579c-47d7-a484-46d0efb979e8" class="">✔️ ApplicationEvent 상송</p>
+        <p id="e1b5a2e0-5456-4416-8dab-6fdcf12c8ba9" class="">✔️ 스프링 4.2 부터는 이 클래스를 <strong>상속받지 않아도 이벤트로 사용</strong>할 수
+            있다. </p>
+        <ul id="1998b0fe-1c8b-4e6b-82c4-715f41162673" class="toggle">
+            <li>
+                <details open="">
+                    <summary><strong>ApplicationEvent 변화 → 상속 제거</strong></summary>
+                    <p id="4886e1d7-c4e6-4d79-84c3-a0d444012e15" class="">스프링 프레임워크가 추구하는 방향 → <strong>비침투성</strong>을 반영
+                    </p>
+                    <p id="9e8aaf95-8bb8-4a1a-b637-408afb4207a7" class="">→ 스프링 패키지가 추가되어 있지 않음</p>
+                    <p id="951ea9f7-6ef5-4060-a972-8310a3330fe9" class="">
+                    </p>
+                    <pre id="87dc2ab4-9807-4916-85a1-0fd89fa4922d" class="code code-wrap"><code>public class MyEvent {
     private int data;
 
     Object source;
@@ -57,17 +161,44 @@ public class AppRunner implements ApplicationRunner {
     public int getData() {
         return data;
     }
-}</code></pre></details></li></ul><ul id="5cc9b4b0-f7c6-4fb5-a17f-b25815b22232" class="toggle"><li><details open=""><summary><strong>ApplicationListener 변화 → 상속 제거, Annotation</strong></summary><p id="5e31fe78-6164-43ec-b1de-29bc2e442bee" class="">ApplicationListener 를 상속받지 않고 Annotation으로 추가할 수 있다.</p><pre id="2bb6f272-aefe-4155-b9e3-9ddeccf6dc9d" class="code code-wrap"><code>@Component
+}</code></pre>
+                </details>
+            </li>
+        </ul>
+        <ul id="5cc9b4b0-f7c6-4fb5-a17f-b25815b22232" class="toggle">
+            <li>
+                <details open="">
+                    <summary><strong>ApplicationListener 변화 → 상속 제거, Annotation</strong></summary>
+                    <p id="5e31fe78-6164-43ec-b1de-29bc2e442bee" class="">ApplicationListener 를 상속받지 않고 Annotation으로 추가할
+                        수 있다.</p>
+                    <pre id="2bb6f272-aefe-4155-b9e3-9ddeccf6dc9d" class="code code-wrap"><code>@Component
 public class MyEventHandler {
 
     @EventListener
     public void onApplicationEvent(MyEvent event) {
         System.out.println(&quot;이벤트 받았다. 데이터는 &quot; + event.getData());
     }
-}</code></pre><p id="eaaad998-83d5-461b-8175-812975e4659a" class="">
-</p></details></li></ul><p id="71c052dd-4324-4c04-a453-57705165d227" class="">
-</p><h3 id="c468d4ca-ff9f-4aa4-8c43-0878e8ad8754" class="">이벤트 발생 시키는 방법</h3><p id="2114b85b-fc1b-4b37-8688-5992a09ce0f1" class="">✔️ ApplicationEventPublisher.publishEvent(); </p><p id="0aae9a07-b1ce-48ae-a44a-0058ae0697a6" class="">
-</p><h3 id="f99bf470-375e-4341-9705-15570bdad159" class="">이벤트 처리하는 방법</h3><p id="a2218aed-3a46-4d5e-98a4-815346e87a25" class="">✔️ ApplicationListener&lt;이벤트&gt; 구현한 클래스 만들어서 빈으로 등록하기.</p><p id="1c369d02-457a-47f1-a345-6d6e726952c1" class="">✔️ 스프링 4.2 부터는 @EventListener를 사용해서 빈의 메소드에 사용할 수 있다.</p><p id="9a01ed1f-196f-485f-bb5f-79b347840e30" class="">✔️ 기본적으로는 synchronized.</p><ul id="485d7ff8-56d9-4425-9384-69ef1972595e" class="toggle"><li><details open=""><summary>✔️ 순서를 정하고 싶다면 <strong>@Order</strong>와 함께 사용.</summary><pre id="7fd85aee-9389-446f-b6c3-af2556e5a234" class="code code-wrap"><code>@Component
+}</code></pre>
+                    <p id="eaaad998-83d5-461b-8175-812975e4659a" class="">
+                    </p></details>
+            </li>
+        </ul>
+        <p id="71c052dd-4324-4c04-a453-57705165d227" class="">
+        </p>
+        <h3 id="c468d4ca-ff9f-4aa4-8c43-0878e8ad8754" class="">이벤트 발생 시키는 방법</h3>
+        <p id="2114b85b-fc1b-4b37-8688-5992a09ce0f1" class="">✔️ ApplicationEventPublisher.publishEvent(); </p>
+        <p id="0aae9a07-b1ce-48ae-a44a-0058ae0697a6" class="">
+        </p>
+        <h3 id="f99bf470-375e-4341-9705-15570bdad159" class="">이벤트 처리하는 방법</h3>
+        <p id="a2218aed-3a46-4d5e-98a4-815346e87a25" class="">✔️ ApplicationListener&lt;이벤트&gt; 구현한 클래스 만들어서 빈으로
+            등록하기.</p>
+        <p id="1c369d02-457a-47f1-a345-6d6e726952c1" class="">✔️ 스프링 4.2 부터는 @EventListener를 사용해서 빈의 메소드에 사용할 수 있다.</p>
+        <p id="9a01ed1f-196f-485f-bb5f-79b347840e30" class="">✔️ 기본적으로는 synchronized.</p>
+        <ul id="485d7ff8-56d9-4425-9384-69ef1972595e" class="toggle">
+            <li>
+                <details open="">
+                    <summary>✔️ 순서를 정하고 싶다면 <strong>@Order</strong>와 함께 사용.</summary>
+                    <pre id="7fd85aee-9389-446f-b6c3-af2556e5a234" class="code code-wrap"><code>@Component
 public class MyEventHandler {
 
     @EventListener
@@ -77,9 +208,28 @@ public class MyEventHandler {
         System.out.println(Thread.currentThread().toString());
         System.out.println(&quot;이벤트 받았다. 데이터는 &quot; + event.getData());
     }
-}</code></pre></details></li></ul><ul id="2cb00c17-06cb-458a-b809-b176c91e8410" class="toggle"><li><details open=""><summary>✔️ 비동기적으로 실행하고 싶다면 @Async와 함께 사용. </summary><p id="76e96ce7-10a2-4cc4-bd04-03765fa50c03" class="">Thread가 다르기 때문에 Order가 소용이 없음</p><p id="6eb89e8d-f674-4fa1-8f32-6e6e837c4038" class="">
-</p></details></li></ul><p id="2e4c46db-a8dd-43fe-af93-f3b7573627b1" class="">
-</p><h3 id="5677fb13-10a8-4ae5-878f-2b80cf99607f" class="">스프링이 제공하는 기본 이벤트</h3><ul id="1a69e7a9-de47-461b-923c-099546618240" class="toggle"><li><details open=""><summary>✔️ <strong>ContextRefreshedEvent</strong>: ApplicationContext를 초기화 했더나 리프래시 했을 때 발생.</summary><pre id="0ba6d931-25b2-4d32-9cd3-67ab2f7a5b5b" class="code code-wrap"><code>@Component
+}</code></pre>
+                </details>
+            </li>
+        </ul>
+        <ul id="2cb00c17-06cb-458a-b809-b176c91e8410" class="toggle">
+            <li>
+                <details open="">
+                    <summary>✔️ 비동기적으로 실행하고 싶다면 @Async와 함께 사용.</summary>
+                    <p id="76e96ce7-10a2-4cc4-bd04-03765fa50c03" class="">Thread가 다르기 때문에 Order가 소용이 없음</p>
+                    <p id="6eb89e8d-f674-4fa1-8f32-6e6e837c4038" class="">
+                    </p></details>
+            </li>
+        </ul>
+        <p id="2e4c46db-a8dd-43fe-af93-f3b7573627b1" class="">
+        </p>
+        <h3 id="5677fb13-10a8-4ae5-878f-2b80cf99607f" class="">스프링이 제공하는 기본 이벤트</h3>
+        <ul id="1a69e7a9-de47-461b-923c-099546618240" class="toggle">
+            <li>
+                <details open="">
+                    <summary>✔️ <strong>ContextRefreshedEvent</strong>: ApplicationContext를 초기화 했더나 리프래시 했을 때 발생.
+                    </summary>
+                    <pre id="0ba6d931-25b2-4d32-9cd3-67ab2f7a5b5b" class="code code-wrap"><code>@Component
 public class AnotherHandler {
 
     @EventListener
@@ -87,8 +237,21 @@ public class AnotherHandler {
         System.out.println(Thread.currentThread().toString());
         System.out.println(&quot;[ContextRefreshedEvent]\n&quot; + event.getSource());
     }
-}</code></pre><p id="afc8657a-e6cd-45de-8ba1-6ac1b7f429be" class="">
-</p></details></li></ul><p id="5ab91149-9dac-426e-a014-d1d478f1811a" class="">✔️ ContextStartedEvent: ApplicationContext를 start()하여 라이프사이클 빈들이 시작 신호를 받은 시점에 발생.</p><p id="8b4c9acd-2ffb-45f1-9b54-2c77b8773ef1" class="">✔️ ContextStoppedEvent: ApplicationContext를 stop()하여 라이프사이클 빈들이 정지 신호를 받은 시점에 발생.</p><ul id="8a695dd1-ba54-424f-befb-382f749eb2be" class="toggle"><li><details open=""><summary>✔️ <strong>ContextClosedEvent</strong>: ApplicationContext를 close()하여 싱글톤 빈 소멸되는 시점에 발생.</summary><pre id="6a914f32-fb23-4def-9023-690185c55846" class="code code-wrap"><code>@Component
+}</code></pre>
+                    <p id="afc8657a-e6cd-45de-8ba1-6ac1b7f429be" class="">
+                    </p></details>
+            </li>
+        </ul>
+        <p id="5ab91149-9dac-426e-a014-d1d478f1811a" class="">✔️ ContextStartedEvent: ApplicationContext를 start()하여
+            라이프사이클 빈들이 시작 신호를 받은 시점에 발생.</p>
+        <p id="8b4c9acd-2ffb-45f1-9b54-2c77b8773ef1" class="">✔️ ContextStoppedEvent: ApplicationContext를 stop()하여
+            라이프사이클 빈들이 정지 신호를 받은 시점에 발생.</p>
+        <ul id="8a695dd1-ba54-424f-befb-382f749eb2be" class="toggle">
+            <li>
+                <details open="">
+                    <summary>✔️ <strong>ContextClosedEvent</strong>: ApplicationContext를 close()하여 싱글톤 빈 소멸되는 시점에 발생.
+                    </summary>
+                    <pre id="6a914f32-fb23-4def-9023-690185c55846" class="code code-wrap"><code>@Component
 public class AnotherHandler {
 
     @EventListener
@@ -101,16 +264,45 @@ public class AnotherHandler {
 /*
 Thread[SpringApplicationShutdownHook,5,main]
 Another ContextClosedEvent org.springframework.boot.web.servlet.context.AnnotationConfigServletWebServerApplicationContext@783f1e67, started on Sat Feb 26 22:44:25 KST 2022
-*/</code></pre><p id="a86db868-9180-4ca2-a668-6653889d4ab0" class="">
-</p></details></li></ul><p id="9309f8c6-3d16-4988-b865-c7a4b8c75395" class="">✔️ RequestHandledEvent: HTTP 요청을 처리했을 때 발생.</p><p id="8527f42d-83a7-4082-951d-55534560aba7" class="">
-</p><p id="d371a62f-657e-4492-a657-87200cfef47c" class="">
-</p><p id="1c9147b6-9e6f-4600-9d3f-a7317619ad38" class="">
-</p><hr id="5f9cd99d-e6b0-4b1f-8246-5401a52d4c5a"/><p id="533b9455-65ef-495d-a450-e1fe397cc6de" class="">
-</p><h2 id="ffd1f8dc-d7b6-423e-9bbb-48873d02c206" class="">IoC 컨테이너 9부: ResourceLoader</h2><p id="7534418d-fe3a-4937-a565-67fbaae61417" class="">
-</p><p id="a34bc154-e1df-47b9-814d-c6f03f0ec39e" class="">리소스를 읽어오는 기능을 제공하는 인터페이스</p><p id="e3d73802-a686-44dd-9fac-bb00981b26e5" class=""><strong><code>ApplicationContext</code></strong><code> extends ResourceLoader</code></p><p id="0829ee21-b669-4e09-b02a-86262626d923" class="">
-</p><h3 id="ff414fb6-23e0-42aa-8d86-f836e7db5988" class="">리소스 읽어오기</h3><p id="320bbd5e-729c-405f-bcb1-df90b54bade3" class="">✔️ 파일 시스템에서 읽어오기</p><p id="7eee8593-8f55-4492-8f91-97d786f01fa6" class="">✔️ 클래스패스에서 읽어오기</p><p id="3ffad350-a93f-4daa-ae76-6a3cc95730e4" class="">✔️ URL로 읽어오기</p><p id="bb58b082-e1a4-49f8-8f46-6221d19bf24e" class="">✔️ 상대/절대 경로로 읽어오기</p><p id="19c82fb2-a687-490c-b666-d12ae155bd05" class="">
-</p><p id="ace5eb40-6d28-4f55-b297-741d6d0e5687" class=""><code>Resource </code><strong><code>getResource</code></strong><code>(java.lang.String location)</code></p><p id="4826d90f-fd2c-4bef-a1d7-f3b9cf2a9387" class="">
-</p><ul id="18c96d55-cb20-4c66-834f-7c4561985912" class="toggle"><li><details open=""><summary>CODE</summary><pre id="d2daa527-ea17-444b-9957-597baffc4061" class="code code-wrap"><code>@Component
+*/</code></pre>
+                    <p id="a86db868-9180-4ca2-a668-6653889d4ab0" class="">
+                    </p></details>
+            </li>
+        </ul>
+        <p id="9309f8c6-3d16-4988-b865-c7a4b8c75395" class="">✔️ RequestHandledEvent: HTTP 요청을 처리했을 때 발생.</p>
+        <p id="8527f42d-83a7-4082-951d-55534560aba7" class="">
+        </p>
+        <p id="d371a62f-657e-4492-a657-87200cfef47c" class="">
+        </p>
+        <p id="1c9147b6-9e6f-4600-9d3f-a7317619ad38" class="">
+        </p>
+        <hr id="5f9cd99d-e6b0-4b1f-8246-5401a52d4c5a"/>
+        <p id="533b9455-65ef-495d-a450-e1fe397cc6de" class="">
+        </p>
+        <h2 id="ffd1f8dc-d7b6-423e-9bbb-48873d02c206" class="">IoC 컨테이너 9부: ResourceLoader</h2>
+        <p id="7534418d-fe3a-4937-a565-67fbaae61417" class="">
+        </p>
+        <p id="a34bc154-e1df-47b9-814d-c6f03f0ec39e" class="">리소스를 읽어오는 기능을 제공하는 인터페이스</p>
+        <p id="e3d73802-a686-44dd-9fac-bb00981b26e5" class=""><strong><code>ApplicationContext</code></strong><code>
+            extends ResourceLoader</code></p>
+        <p id="0829ee21-b669-4e09-b02a-86262626d923" class="">
+        </p>
+        <h3 id="ff414fb6-23e0-42aa-8d86-f836e7db5988" class="">리소스 읽어오기</h3>
+        <p id="320bbd5e-729c-405f-bcb1-df90b54bade3" class="">✔️ 파일 시스템에서 읽어오기</p>
+        <p id="7eee8593-8f55-4492-8f91-97d786f01fa6" class="">✔️ 클래스패스에서 읽어오기</p>
+        <p id="3ffad350-a93f-4daa-ae76-6a3cc95730e4" class="">✔️ URL로 읽어오기</p>
+        <p id="bb58b082-e1a4-49f8-8f46-6221d19bf24e" class="">✔️ 상대/절대 경로로 읽어오기</p>
+        <p id="19c82fb2-a687-490c-b666-d12ae155bd05" class="">
+        </p>
+        <p id="ace5eb40-6d28-4f55-b297-741d6d0e5687" class="">
+            <code>Resource </code><strong><code>getResource</code></strong><code>(java.lang.String location)</code></p>
+        <p id="4826d90f-fd2c-4bef-a1d7-f3b9cf2a9387" class="">
+        </p>
+        <ul id="18c96d55-cb20-4c66-834f-7c4561985912" class="toggle">
+            <li>
+                <details open="">
+                    <summary>CODE</summary>
+                    <pre id="d2daa527-ea17-444b-9957-597baffc4061" class="code code-wrap"><code>@Component
 public class AppRunner implements ApplicationRunner {
 
     @Autowired
@@ -125,5 +317,13 @@ public class AppRunner implements ApplicationRunner {
         System.out.println(resource.getDescription());
         System.out.println(Files.readString(Path.of(resource.getURI())));
     }
-}</code></pre></details></li></ul><p id="34c4fe4a-1835-4045-be4a-da7c89d49789" class="">
-</p><p id="81c74b02-f2a0-4cfb-8c44-9d739ee36b3c" class="">자세한건 다음에 이어질 Resource 추상화 시간에 자세히 다루겠습니다.</p></div></article></body></html>
+}</code></pre>
+                </details>
+            </li>
+        </ul>
+        <p id="34c4fe4a-1835-4045-be4a-da7c89d49789" class="">
+        </p>
+        <p id="81c74b02-f2a0-4cfb-8c44-9d739ee36b3c" class="">자세한건 다음에 이어질 Resource 추상화 시간에 자세히 다루겠습니다.</p></div>
+</article>
+</body>
+</html>

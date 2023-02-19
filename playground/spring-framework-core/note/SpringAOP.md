@@ -37,11 +37,11 @@ AOP를 적용하면?
 
 ### AOP 적용 방법
 
-**✔️ 컴파일** 
+**✔️ 컴파일**
 
 : java → class, 조작된 바이트 코드를 생성
 
-**✔️ 로드 타임** 
+**✔️ 로드 타임**
 
 : 클래스(Target)는 아주 순수하게 컴파일하고 그 클래스(Target)를 로딩하는 시점에 로드타임 위빙(끼어넣음)
 
@@ -51,9 +51,10 @@ AOP를 적용하면?
 
 **✔️ 런타임**
 
-: Spring AOP가 하는 방식, Bean에 Aspect를 적용해야한다는 것을 알고있음. 클래스의 A Class라고 하면, A 타입의 프록시 빈을 만들어서 실제 A가 갖고 있는 메서드인 foo 를 불러오기 직전에 hello라는 일을 하고 A를 호출
+: Spring AOP가 하는 방식, Bean에 Aspect를 적용해야한다는 것을 알고있음. 클래스의 A Class라고 하면, A 타입의 프록시 빈을 만들어서 실제 A가 갖고 있는 메서드인 foo 를 불러오기 직전에
+hello라는 일을 하고 A를 호출
 
-빈을 생성할 때의 성능 비용. 다른 설정 없음 
+빈을 생성할 때의 성능 비용. 다른 설정 없음
 
 → 이 방법이 가장 현실적이고 많이 선택
 
@@ -80,7 +81,7 @@ AOP를 적용하면?
 ✔️ 기존 코드를 건드리지 않고 성능을 측정해 보자. (프록시 패턴으로)
 
 - Code (Cross Cutting Concern)
-    
+
     ```java
     @Override
         public void createEvent() {
@@ -97,11 +98,11 @@ AOP를 적용하면?
             // cross cutting concern
         }
     ```
-    
-    기존의 코드를 건들여서 작동 타임을 확인하고 있음. 
-    
+
+  기존의 코드를 건들여서 작동 타임을 확인하고 있음.
+
 - Code : 위의 코드 변경 → **Proxy 생성**
-    
+
     ```java
     @Primary
     @Service
@@ -125,7 +126,6 @@ AOP를 적용하면?
         }
     }
     ```
-    
 
 ### 문제점
 
@@ -135,7 +135,7 @@ AOP를 적용하면?
 
 ✔️ 객체들 **관계도 복잡**하고...
 
-동적으로 프록시 객체를 만드는 법이 있다. 
+동적으로 프록시 객체를 만드는 법이 있다.
 
 이 방법을 기반으로 IoC 컨테이너가 제공하는 방법과 혼합해서 위 문제를 심플하게 해결할 수 있다.
 
@@ -155,7 +155,8 @@ AOP를 적용하면?
 
 - 클라이언트 코드 변경 없음.
 
-- [AbstractAutoProxyCreator](https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/aop/framework/autoproxy/AbstractAutoProxyCreator.html) implements [BeanPostProcessor](https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/beans/factory/config/BeanPostProcessor.html)
+- [AbstractAutoProxyCreator](https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/aop/framework/autoproxy/AbstractAutoProxyCreator.html)
+  implements [BeanPostProcessor](https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/beans/factory/config/BeanPostProcessor.html)
 
 → 얘가 SimpleEventService(예제 코드 참조)와 같은 라는 빈을 감싸는 프록시 빈을 만들어준다.
 
@@ -178,7 +179,7 @@ AOP를 적용하면?
 
 ✔️ @Aspect
 
-✔️ 빈으로 등록해야 하니까 (컴포넌트 스캔을 사용한다면) @Component도 추가. 
+✔️ 빈으로 등록해야 하니까 (컴포넌트 스캔을 사용한다면) @Component도 추가.
 
 ```java
 @Component

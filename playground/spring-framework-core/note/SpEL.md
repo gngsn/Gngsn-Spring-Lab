@@ -8,7 +8,8 @@
 
 ✔️ 객체 그래프를 조회하고 조작하는 기능을 제공한다.
 
-✔️ [Unified EL](https://docs.oracle.com/javaee/5/tutorial/doc/bnahq.html)과 비슷하지만, **메소드 호출을 지원**하며, **문자열 템플릿 기능**도 제공한다. 
+✔️ [Unified EL](https://docs.oracle.com/javaee/5/tutorial/doc/bnahq.html)과 비슷하지만, **메소드 호출을 지원**하며, **문자열 템플릿 기능**도
+제공한다.
 
 → 스프링 전반에 걸쳐 필요하게 되어서 코어에 추가되어 아래 사용되는 곳에서 사용됨
 
@@ -39,7 +40,7 @@
 ✔️ 레퍼런스 참고
 
 - **Code**
-    
+
     ```java
     @Component
     public class AppRunner implements ApplicationRunner {
@@ -82,9 +83,9 @@
     */
     
     ```
-    
+
 - Bean 접근 가능
-    
+
     ```java
     @Component
     public class Sample {
@@ -95,7 +96,7 @@
         public void setData(int data) { this.data = data; }
     }
     ```
-    
+
     ```java
     @Component
     public class AppRunner implements ApplicationRunner {
@@ -109,9 +110,8 @@
         }
     }
     ```
-    
 
-메서드를 호출하는 기능도 있는데, 잘 사용하지는 않음 
+메서드를 호출하는 기능도 있는데, 잘 사용하지는 않음
 
 ### 실제로 어디서 쓰나?
 
@@ -122,12 +122,12 @@
 ✔️ [스프링 시큐리티](https://docs.spring.io/spring-security/site/docs/3.0.x/reference/el-access.html)
 
 - 메소드 시큐리티, @PreAuthorize, @PostAuthorize, @PreFilter, @PostFilter
-    
+
     ```java
     @PreAuthorize("hasPermission(#contact, 'admin')")
       public void deletePermission(Contact contact, Sid recipient, Permission permission);
     ```
-    
+
 
 - XML 인터셉터 URL 설정
 
@@ -138,13 +138,12 @@
 - @Query 애노테이션
 
 - ✔️ [Thymeleaf](https://blog.outsider.ne.kr/997)
-    
+
     ```java
     #{T(kr.ne.outsider.Codes).values()}
     #{T(kr.ne.outsider.Codes).ERROR}
     #{T(kr.ne.outsider.Codes).MESSAGE}
     ```
-    
 
 ✔️ ...
 

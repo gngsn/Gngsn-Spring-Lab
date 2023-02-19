@@ -48,7 +48,7 @@ public class BookServiceTest {
 
 ✔️ 의존성 관리
 
-✔️ 스코프 
+✔️ 스코프
 
 **싱글톤**: 한 개의 객체를 공유
 
@@ -61,23 +61,25 @@ IoC 컨테이너의 가장 최상단 인터페이스는 `BeanFactory`: IoC 컨�
 BeanFactory LifeCycle들이 나와있음.
 
 - **BeanFactory LifeCycle**
-    
-    Bean factory implementations should support the standard bean lifecycle interfaces as far as possible. The full set of initialization methods and their standard order is:
-    
-    1. BeanNameAware's `setBeanName`
-    2. BeanClassLoaderAware's `setBeanClassLoader`
-    3. BeanFactoryAware's `setBeanFactory`
-    4. EnvironmentAware's `setEnvironment`
-    5. EmbeddedValueResolverAware's `setEmbeddedValueResolver`
-    6. ResourceLoaderAware's `setResourceLoader` (only applicable when running in an application context)
-    7. ApplicationEventPublisherAware's `setApplicationEventPublisher` (only applicable when running in an application context)
-    8. MessageSourceAware's `setMessageSource` (only applicable when running in an application context)
-    9. ApplicationContextAware's `setApplicationContext` (only applicable when running in an application context)
-    10. ServletContextAware's `setServletContext` (only applicable when running in a web application context)
-    11. `postProcessBeforeInitialization` methods of BeanPostProcessors
-    12. InitializingBean's `afterPropertiesSet`
+
+  Bean factory implementations should support the standard bean lifecycle interfaces as far as possible. The full set of
+  initialization methods and their standard order is:
+
+    1. BeanNameAware's `setBeanName`
+    2. BeanClassLoaderAware's `setBeanClassLoader`
+    3. BeanFactoryAware's `setBeanFactory`
+    4. EnvironmentAware's `setEnvironment`
+    5. EmbeddedValueResolverAware's `setEmbeddedValueResolver`
+    6. ResourceLoaderAware's `setResourceLoader` (only applicable when running in an application context)
+    7. ApplicationEventPublisherAware's `setApplicationEventPublisher` (only applicable when running in an application
+       context)
+    8. MessageSourceAware's `setMessageSource` (only applicable when running in an application context)
+    9. ApplicationContextAware's `setApplicationContext` (only applicable when running in an application context)
+    10. ServletContextAware's `setServletContext` (only applicable when running in a web application context)
+    11. `postProcessBeforeInitialization` methods of BeanPostProcessors
+    12. InitializingBean's `afterPropertiesSet`
     13. a custom init-method definition
-    14. `postProcessAfterInitialization` methods of BeanPostProcessors
+    14. `postProcessAfterInitialization` methods of BeanPostProcessors
 
 의존성주입이 되는 조건이 빈으로 등록되는 것.
 
@@ -198,7 +200,7 @@ public @interface SpringBootApplication { ... }
 
 또, `@SpringBootConfiguration` 이 등록되어 있음 (`@Configuration`을 가짐)
 
-그래서 `SpringCoreApplication` 가 사실상 `Bean` 설정 파일임 
+그래서 `SpringCoreApplication` 가 사실상 `Bean` 설정 파일임
 
 (따로 ApplicationContext를 상속받지 않고 사용할 수 있는 SpringBoot가 지원해주는 기능인것임. → Spring 이 아니라 Boot!)
 
@@ -269,9 +271,9 @@ Setter 주입이지만 에러가 난다.
 
 → 적어도 BookService 자체 인터페이스는 생성할 수는 있지만, 이 빈을 만들 때 Autowired를 하라고 했기 때문에 자동으로 생성하면서 에러를 발생
 
-빈 의존성 주입을 필수가 아닌 상태로 빌드하려면 아래와 같이 사용 
+빈 의존성 주입을 필수가 아닌 상태로 빌드하려면 아래와 같이 사용
 
-의존성 주입이 안된 상태로 빌드가 된 것. 
+의존성 주입이 안된 상태로 빌드가 된 것.
 
 ```java
 @Autowired(required = false)
@@ -289,12 +291,11 @@ public class BookRepository {}
 - 빈 이름으로 시도,
     - 같은 이름의 빈 찾으면 해당 빈 사용
     - 같은 이름 못 찾으면 실패
-    
 
 ### 📌 같은 타입의 빈이 여러개 일 때
 
 - *상황*
-    
+
     ```java
     public interface BookRepository {}
     
@@ -306,7 +307,7 @@ public class BookRepository {}
     public class SecondBookRepository 
     implements BookRepository {}
     ```
-    
+
     ```java
     @Service
     public class BookService {
@@ -314,9 +315,9 @@ public class BookRepository {}
         private BookRepository bookRepository;
     }
     ```
-    
-    위와 같이 두 개의 Bean이 발견되면? →  아래와 같은 ERROR
-    
+
+  위와 같이 두 개의 Bean이 발견되면? → 아래와 같은 ERROR
+
     ```bash
     Field bookRepository in ....BookService required a single bean, but 2 were found:
     	- firstBookRepository: defined in file ...
@@ -325,18 +326,18 @@ public class BookRepository {}
     Action:
     Consider marking one of the beans as @Primary, updating the consumer to accept multiple beans, or using @Qualifier to identify the bean that should be consumed
     ```
-    
 
-- ✔️ @Primary  ← 아래보다 Typesafe, 추천
-    
+
+- ✔️ @Primary ← 아래보다 Typesafe, 추천
+
     ```java
     @Repository @Primary
     public class FirstBookRepository 
     implements BookRepository {}
     ```
-    
+
 - ✔️ @Qualifier (빈 이름으로 주입)
-    
+
     ```java
     @Service
     public class BookService {
@@ -345,9 +346,9 @@ public class BookRepository {}
         private BookRepository bookRepository;
     }
     ```
-    
+
 - ✔️ 해당 타입의 빈 모두 주입 받기
-    
+
     ```java
     @Service
     public class BookService {
@@ -359,12 +360,12 @@ public class BookRepository {}
             this.bookRepository.forEach(System.out::println);
         }
     ```
-    
+
 
 - ✔️ 이름으로 불러오기 (추천 X)
-    
-    사실 Autowired 는 타입도 보고 이름도 본다. 
-    
+
+  사실 Autowired 는 타입도 보고 이름도 본다.
+
     ```java
     @Service
     public class BookService {
@@ -373,7 +374,6 @@ public class BookRepository {}
     		// bookRepository : class com.gngsn.springcore.book.FirstBookRepository
     }
     ```
-    
 
 ### 📌 동작 원리
 
@@ -392,11 +392,12 @@ public void setUp() {}
 // initialization Lifecycle 이전과 이후에 작업을 할 수 있는 callback이 존재
 ```
 
-✔️ [AutowiredAnnotationBeanPostProcessor](https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/beans/factory/annotation/AutowiredAnnotationBeanPostProcessor.html) extends BeanPostProcessor
+✔️ [AutowiredAnnotationBeanPostProcessor](https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/beans/factory/annotation/AutowiredAnnotationBeanPostProcessor.html)
+extends BeanPostProcessor
 
 - 스프링이 제공하는 @Autowired와 @Value 애노테이션 그리고 JSR-330의 @Inject 애노테이션을 지원하는 애노테이션 처리기.
 
-[🔗 Github Link](https://github.com/gngsn/Gngsn-Spring-Lab/blob/89521031733efcce81b58bea46db0a4303ab502a/spring-framework-core/spring-core/src/main/java/com/gngsn/springcore/book/BookServiceRunner.java) 
+[🔗 Github Link](https://github.com/gngsn/Gngsn-Spring-Lab/blob/89521031733efcce81b58bea46db0a4303ab502a/spring-framework-core/spring-core/src/main/java/com/gngsn/springcore/book/BookServiceRunner.java)
 
 `BeanFactory` 가 자기 안에 등록되어있는 `BeanPostProcessor` 들을 찾는다.
 
@@ -405,8 +406,6 @@ public void setUp() {}
 찾아서 다른 일반적인 `Bean` 들에게 `BeanPostProcessor` 를 적용하는 것.
 
 ---
-
- 
 
 ## IoC 컨테이너 4부: @Component와 컴포넌트 스캔
 
@@ -449,7 +448,7 @@ public @interface ComponentScan {
 }
 ```
 
-그래서 ProjecctNameApplication(main을 포함한 초기 생성되는 클래스)을 기준으로 스캔을 하는데, 
+그래서 ProjecctNameApplication(main을 포함한 초기 생성되는 클래스)을 기준으로 스캔을 하는데,
 
 그래서 패키지 밖의 클래스 혹은 다른 패키지들은 Scan이 안되어서 Bean이 생성되지 않고, Autowired가 불가능하게 되는 것.
 
@@ -457,7 +456,10 @@ public @interface ComponentScan {
 
 ✔️ @ComponentScan은 스캔할 패키지와 애노테이션에 대한 정보
 
-✔️ 실제 스캐닝은 **[ConfigurationClassPostProcessor](https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/context/annotation/ConfigurationClassPostProcessor.html)**라는 [BeanFactoryPostProcessor](https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/beans/factory/config/BeanFactoryPostProcessor.html)에 의해 처리 됨.
+✔️ 실제
+스캐닝은 **[ConfigurationClassPostProcessor](https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/context/annotation/ConfigurationClassPostProcessor.html)**
+라는 [BeanFactoryPostProcessor](https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/beans/factory/config/BeanFactoryPostProcessor.html)
+에 의해 처리 됨.
 
 BeanPostProcessor와 비슷하긴 한데, 실행되는 시점이 다름
 
@@ -472,7 +474,7 @@ BeanPostProcessor와 비슷하긴 한데, 실행되는 시점이 다름
 static, builder, instance를 만들어서 생성하는 3가지 방법이 있음.
 
 - Functional을 사용한 빈 등록 - builder
-    
+
     ```java
     public static void main(String[] args) {
         new SpringApplicationBuilder()
@@ -484,7 +486,6 @@ static, builder, instance를 만들어서 생성하는 3가지 방법이 있음.
                 .run(args);
     }
     ```
-    
 
 [🔗 Github Link](https://github.com/gngsn/Gngsn-Spring-Lab/blob/89521031733efcce81b58bea46db0a4303ab502a/spring-framework-core/spring-core/src/main/java/com/gngsn/springcore/SpringCoreApplication.java)
 
@@ -514,8 +515,6 @@ public class SpringCoreApplication {
 ```
 
 ---
-
- 
 
 ## IoC 컨테이너 5부: 빈의 스코프
 
@@ -576,7 +575,7 @@ com.gngsn.springcore.beanScope.Single@25a17c29
 ✔️ 프로토타입 빈이 업데이트가 안되네?
 
 - code
-    
+
     ```java
     @Component
     public class AppRunner implements ApplicationRunner {
@@ -618,20 +617,19 @@ com.gngsn.springcore.beanScope.Single@25a17c29
     com.gngsn.springcore.beanScope.Proto@25ddc048**
     */
     ```
-    
 
 ✔️ 업데이트 하려면
 
 - scoped-proxy
-    
+
     ```java
     @Component @Scope(value = "prototype", proxyMode = ScopedProxyMode.TARGET_CLASS)
     public class Proto {}
     // 모든 Single 내 Proto가 변경됨
     ```
-    
+
 - Object-Provider
-    
+
     ```java
     @Component
     public class Single {
@@ -643,7 +641,7 @@ com.gngsn.springcore.beanScope.Single@25a17c29
         }
     }
     ```
-    
+
 
 - Provider (표준)
 
@@ -655,7 +653,7 @@ com.gngsn.springcore.beanScope.Single@25a17c29
 
 Prototype을 매번 바꿔줘야 하니까 Proxy로 감싼다.
 
-`ScopedProxyMode.TARGET_CLASS` **는 ****Class 기반의 프록시**를 생성해서 실제 인스턴스(Proto)를 감싸는 프록시 인스턴스(Proxy)를 만들고, 
+`ScopedProxyMode.TARGET_CLASS` **는 ****Class 기반의 프록시**를 생성해서 실제 인스턴스(Proto)를 감싸는 프록시 인스턴스(Proxy)를 만들고,
 
 이 프록시 인스턴스를 Bean으로 등록한다.
 

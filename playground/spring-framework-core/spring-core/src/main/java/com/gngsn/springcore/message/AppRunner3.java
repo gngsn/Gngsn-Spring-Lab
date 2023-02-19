@@ -18,8 +18,8 @@ public class AppRunner3 implements ApplicationRunner {
     public void run(ApplicationArguments args) throws Exception {
         System.out.println("======= Message AppRunner =======");
 //        while(true) {
-            System.out.println(messageSource.getMessage("greeting", new String[]{"gngsn"}, Locale.KOREA));
-            System.out.println(messageSource.getMessage("greeting", new String[]{"gngsn"}, Locale.getDefault()));
+        System.out.println(messageSource.getMessage("greeting", new String[]{"gngsn"}, Locale.KOREA));
+        System.out.println(messageSource.getMessage("greeting", new String[]{"gngsn"}, Locale.getDefault()));
 //        }
     }
 }

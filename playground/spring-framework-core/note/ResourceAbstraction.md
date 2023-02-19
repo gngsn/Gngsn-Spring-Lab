@@ -3,7 +3,7 @@
 ## Resource 추상화
 
 > org.springframework.core.io.Resource
-> 
+>
 
 ### 특징
 
@@ -47,13 +47,14 @@ Resource resource = resourceLoader.getResource(/* 내부적으로 이 안에 문
 
 ### 구현체
 
-✔️ **UrlResource**: [java.net.URL](https://docs.oracle.com/javase/7/docs/api/java/net/URL.html) 참고, 기본으로 지원하는 프로토콜 **http, https, ftp, file, jar**.
+✔️ **UrlResource**: [java.net.URL](https://docs.oracle.com/javase/7/docs/api/java/net/URL.html) 참고, 기본으로 지원하는 프로토콜 **
+http, https, ftp, file, jar**.
 
 ✔️ ClassPathResource: 지원하는 접두어 **classpath**:
 
 ✔️ FileSystemResource
 
-✔️ **ServletContextResource**: 웹 애플리케이션 루트에서 상대 경로로 리소스 찾는다. 
+✔️ **ServletContextResource**: 웹 애플리케이션 루트에서 상대 경로로 리소스 찾는다.
 
 → 사실상 가장 많이 사용됨. 읽어들이는 타입이 applicationContext의 타입에 따라 달라짐
 

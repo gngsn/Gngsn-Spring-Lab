@@ -20,7 +20,7 @@ public class BookService {
 //    @Autowired @Qualifier("firstBookRepository")
 //    private BookRepository bookRepository;
 
-//    3. 이름으로 표시
+    //    3. 이름으로 표시
 //    @Autowired
 //    private BookRepository firstBookRepository;
     @Autowired

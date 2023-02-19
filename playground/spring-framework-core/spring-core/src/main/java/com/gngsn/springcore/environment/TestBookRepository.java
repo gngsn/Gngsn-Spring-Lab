@@ -8,4 +8,5 @@ import org.springframework.stereotype.Repository;
 public class TestBookRepository implements BookRepository {
 }
 
-interface BookRepository {}
+interface BookRepository {
+}

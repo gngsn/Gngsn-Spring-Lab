@@ -3,17 +3,18 @@
 ### Validation 추상화
 
 > *[org.springframework.validation.Validator](https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/validation/Validator.html)*
-> 
+>
 
-애플리케이션에서 사용하는 객체 검증용 인터페이스. 
+애플리케이션에서 사용하는 객체 검증용 인터페이스.
 
 ### 특징
 
 ✔️ 어떤한 계층과도 관계가 없다. => 모든 계층(웹, 서비스, 데이터)에서 사용해도 좋다.
 
-✔️ 구현체 중 하나로, JSR-303(Bean Validation 1.0)과 JSR-349(Bean Validation 1.1)을 지원한다. ([LocalValidatorFactoryBean](https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/validation/beanvalidation/LocalValidatorFactoryBean.html))
+✔️ 구현체 중 하나로, JSR-303(Bean Validation 1.0)과 JSR-349(Bean Validation 1.1)을
+지원한다. ([LocalValidatorFactoryBean](https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/validation/beanvalidation/LocalValidatorFactoryBean.html))
 
-✔️ DataBinder에 들어가 바인딩 할 때 같이 사용되기도 한다. 
+✔️ DataBinder에 들어가 바인딩 할 때 같이 사용되기도 한다.
 
 ### 인터페이스
 
@@ -24,7 +25,7 @@
 - 구현할 때 ValidationUtils 사용하며 편리 함.
 
 - 원시적인 코드
-    
+
     ```java
     public class EventValidator implements Validator {
         @Override
@@ -44,7 +45,7 @@
         }
     }
     ```
-    
+
     ```java
     @Component
     public class AppRunner implements ApplicationRunner {
@@ -75,9 +76,9 @@
     }
     
     ```
-    
+
 - **Validator** 로 변경
-    
+
     ```java
     @Component
     public class AppRunner implements ApplicationRunner {
@@ -108,7 +109,7 @@
         }
     }
     ```
-    
+
     ```bash
     
     ======= Validator AppRunner =======
@@ -133,17 +134,16 @@
     Min
     0 이상이어야 합니다
     ```
-    
+
 
 - 검증에 필요한 package
-    
+
     ```xml
     <dependency>
     		<groupId>org.springframework.boot</groupId>
     		<artifactId>spring-boot-starter-validation</artifactId>
     </dependency>
     ```
-    
 
 ### 스프링 부트 2.0.5 이상 버전을 사용할 때
 

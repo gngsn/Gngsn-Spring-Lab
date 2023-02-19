@@ -5,7 +5,7 @@
 국제화 (i18n) 기능을 제공하는 인터페이스.
 
 > *ApplicationContext extends **MessageSource***
-> 
+>
 
 ✔️ getMessage(String code, Object[] args, String, default, Locale, loc)
 
@@ -35,13 +35,13 @@
 
 ## IoC 컨테이너 8부: ApplicationEventPublisher
 
-이벤트 프로그래밍에 필요한 인터페이스 제공. 옵저버 패턴 구현체. 
+이벤트 프로그래밍에 필요한 인터페이스 제공. 옵저버 패턴 구현체.
 
 > *ApplicationContext extends **ApplicationEventPublisher***
-> 
+>
 
 - ApplicationEvent를 상속 받는 Event 객체 생성
-    
+
     ```java
     public class MyEvent extends **ApplicationEvent** {
         private int data;
@@ -56,9 +56,9 @@
         }
     }
     ```
-    
+
 - ✔️ publishEvent(ApplicationEvent event)
-    
+
     ```java
     @Component
     public class AppRunner implements ApplicationRunner {
@@ -73,20 +73,19 @@
         }
     }
     ```
-    
 
 ### 이벤트 만들기
 
 ✔️ ApplicationEvent 상송
 
-✔️ 스프링 4.2 부터는 이 클래스를 **상속받지 않아도 이벤트로 사용**할 수 있다. 
+✔️ 스프링 4.2 부터는 이 클래스를 **상속받지 않아도 이벤트로 사용**할 수 있다.
 
 - **ApplicationEvent 변화 → 상속 제거**
-    
-    스프링 프레임워크가 추구하는 방향 → **비침투성**을 반영
-    
-    → 스프링 패키지가 추가되어 있지 않음
-    
+
+  스프링 프레임워크가 추구하는 방향 → **비침투성**을 반영
+
+  → 스프링 패키지가 추가되어 있지 않음
+
     ```java
     public class MyEvent {
         private int data;
@@ -107,11 +106,11 @@
         }
     }
     ```
-    
+
 - **ApplicationListener 변화 → 상속 제거, Annotation**
-    
-    ApplicationListener 를 상속받지 않고 Annotation으로 추가할 수 있다.
-    
+
+  ApplicationListener 를 상속받지 않고 Annotation으로 추가할 수 있다.
+
     ```java
     @Component
     public class MyEventHandler {
@@ -122,11 +121,10 @@
         }
     }
     ```
-    
 
 ### 이벤트 발생 시키는 방법
 
-✔️ ApplicationEventPublisher.publishEvent(); 
+✔️ ApplicationEventPublisher.publishEvent();
 
 ### 이벤트 처리하는 방법
 
@@ -137,7 +135,7 @@
 ✔️ 기본적으로는 synchronized.
 
 - ✔️ 순서를 정하고 싶다면 **@Order**와 함께 사용.
-    
+
     ```java
     @Component
     public class MyEventHandler {
@@ -151,16 +149,15 @@
         }
     }
     ```
-    
+
 - ✔️ 비동기적으로 실행하고 싶다면 @Async와 함께 사용.
-    
-    Thread가 다르기 때문에 Order가 소용이 없음
-    
+
+  Thread가 다르기 때문에 Order가 소용이 없음
 
 ### 스프링이 제공하는 기본 이벤트
 
 - ✔️ **ContextRefreshedEvent**: ApplicationContext를 초기화 했더나 리프래시 했을 때 발생.
-    
+
     ```java
     @Component
     public class AnotherHandler {
@@ -172,14 +169,13 @@
         }
     }
     ```
-    
 
 ✔️ ContextStartedEvent: ApplicationContext를 start()하여 라이프사이클 빈들이 시작 신호를 받은 시점에 발생.
 
 ✔️ ContextStoppedEvent: ApplicationContext를 stop()하여 라이프사이클 빈들이 정지 신호를 받은 시점에 발생.
 
 - ✔️ **ContextClosedEvent**: ApplicationContext를 close()하여 싱글톤 빈 소멸되는 시점에 발생.
-    
+
     ```java
     @Component
     public class AnotherHandler {
@@ -196,7 +192,6 @@
     Another ContextClosedEvent org.springframework.boot.web.servlet.context.AnnotationConfigServletWebServerApplicationContext@783f1e67, started on Sat Feb 26 22:44:25 KST 2022
     */
     ```
-    
 
 ✔️ RequestHandledEvent: HTTP 요청을 처리했을 때 발생.
 
@@ -221,7 +216,7 @@
 `Resource **getResource**(java.lang.String location)`
 
 - CODE
-    
+
     ```java
     @Component
     public class AppRunner implements ApplicationRunner {
@@ -240,6 +235,5 @@
         }
     }
     ```
-    
 
 자세한건 다음에 이어질 Resource 추상화 시간에 자세히 다루겠습니다.

@@ -8,7 +8,8 @@ public class Event {
     @NotEmpty
     String title;
 
-    @NotNull @Min(0)
+    @NotNull
+    @Min(0)
     Integer limit;
 
     @Email

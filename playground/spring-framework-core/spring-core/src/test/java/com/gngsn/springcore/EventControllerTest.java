@@ -15,8 +15,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @RunWith(SpringRunner.class)
 @WebMvcTest({
-        EventConverter.class,
-        EventController.class
+    EventConverter.class,
+    EventController.class
 }) // component-scan이 가능한 웹과 관련된 빈들을 설정
 public class EventControllerTest {
 
@@ -26,7 +26,7 @@ public class EventControllerTest {
     @Test
     public void getTest() throws Exception {
         mockMvc.perform(get("/event/1"))
-                .andExpect(status().isOk())
-                .andExpect(content().string("1"));
+            .andExpect(status().isOk())
+            .andExpect(content().string("1"));
     }
 }
