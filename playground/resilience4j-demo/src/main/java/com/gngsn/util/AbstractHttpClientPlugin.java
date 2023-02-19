@@ -53,11 +53,11 @@ public abstract class AbstractHttpClientPlugin<R> {
 
         final Mono<R> response = request(
 //                /* ServerWebExchange */ exchange,
-                /* MethodValue */ exchange.getRequest().getMethodValue(),
-                /* Uri */ uri,
-                /* HttpHeaders */ httpHeaders,
-                /* RequestBody */ exchange.getRequest().getBody()
-            ).timeout(duration, Mono.error(new TimeoutException("Response took longer than timeout: " + duration)))
+            /* MethodValue */ exchange.getRequest().getMethodValue(),
+            /* Uri */ uri,
+            /* HttpHeaders */ httpHeaders,
+            /* RequestBody */ exchange.getRequest().getBody()
+        ).timeout(duration, Mono.error(new TimeoutException("Response took longer than timeout: " + duration)))
             .doOnError(e -> LOG.error(e.getMessage(), e));
 
 

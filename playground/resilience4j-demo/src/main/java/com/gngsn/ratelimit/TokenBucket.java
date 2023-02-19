@@ -20,7 +20,7 @@ public class TokenBucket implements RateLimiter {
         refillTokens();
 
         if (currentBucketSize > 0) {
-            currentBucketSize --;
+            currentBucketSize--;
 
             return true;
         }

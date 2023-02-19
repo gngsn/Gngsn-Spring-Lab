@@ -16,7 +16,7 @@ public class SlidingWindowBucket {
         bucket.put(id, new SlidingWindowCounter(1, 1, 5));
     }
 
-    public void access(int id){
+    public void access(int id) {
         if (bucket.get(id).allow()) {
             log.info(Thread.currentThread().getName() + " -> able to access the application");
         } else {

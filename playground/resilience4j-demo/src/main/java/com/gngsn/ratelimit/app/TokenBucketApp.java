@@ -24,6 +24,7 @@ public class TokenBucketApp {
 
         executors.shutdown();
     }
+
     static void accessLog(boolean allow) {
         if (allow) {
             log.info(Thread.currentThread().getName() + " -> {}: able to access the application", System.currentTimeMillis() / 1000);

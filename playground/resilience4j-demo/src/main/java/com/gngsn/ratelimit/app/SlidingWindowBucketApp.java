@@ -11,7 +11,7 @@ public class SlidingWindowBucketApp {
         SlidingWindowBucket slidingWindowBucket = new SlidingWindowBucket(1);
         ExecutorService executors = Executors.newFixedThreadPool(12);
 
-        for(int i = 0; i < 12 ; i++) {
+        for (int i = 0; i < 12; i++) {
             executors.execute(() -> slidingWindowBucket.access(1));
             Thread.sleep(100);
         }

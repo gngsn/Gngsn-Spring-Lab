@@ -31,6 +31,7 @@ public class RequestService {
     private String throwExceptionFallback(Exception e) {
         return "<<<FALLBACK>>> Error occured | Exception : " + e.getMessage();
     }
+
     private String throwExceptionFallback(CallNotPermittedException e) {
         return "<<<FALLBACK>>> CircuitBreaker is open | Exception : " + e.getMessage();
     }

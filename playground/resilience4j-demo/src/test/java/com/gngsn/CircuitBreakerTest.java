@@ -66,8 +66,7 @@ public class CircuitBreakerTest {
             System.out.print(desc + " - " + metricName + ": " + metricValue);
             if (!tagValue.isEmpty()) {
                 System.out.println(", " + tagName + ": " + tagValue);
-            }
-            else {
+            } else {
                 System.out.println();
             }
         };
