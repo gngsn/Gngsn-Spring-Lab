@@ -13,7 +13,7 @@ target/
 .springBeans
 .sts4-cache
 *.properties
-
+.gradle
 
 ### IntelliJ IDEA ###
 .idea
