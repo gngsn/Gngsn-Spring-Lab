@@ -1,5 +1,7 @@
 package com.gngsn.elasticsearch;
 
+import com.gngsn.elasticsearch.client.DefaultElasticSearchClient;
+import com.gngsn.elasticsearch.client.SearchClientProperty;
 import com.gngsn.elasticsearch.common.RequestLog;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.AfterEach;
@@ -31,7 +33,7 @@ class DefaultElasticSearchClientTest {
     @Value("${local.elaticsearch.password}")
     private String password;
 
-    @Value("${aws.opensearch.sslCertPath}")
+    @Value("${local.elaticsearch.sslCertPath}")
     private String sslCertPath;
 
     @BeforeEach

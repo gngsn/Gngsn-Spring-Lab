@@ -1,4 +1,4 @@
-package com.gngsn.elasticsearch;
+package com.gngsn.elasticsearch.client;
 
 import co.elastic.clients.elasticsearch.ElasticsearchClient;
 import co.elastic.clients.elasticsearch.core.bulk.BulkOperation;
