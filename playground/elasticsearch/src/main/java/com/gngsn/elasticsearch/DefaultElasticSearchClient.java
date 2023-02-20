@@ -4,28 +4,31 @@ import co.elastic.clients.elasticsearch.ElasticsearchClient;
 import co.elastic.clients.elasticsearch.core.bulk.BulkOperation;
 import co.elastic.clients.json.jackson.JacksonJsonpMapper;
 import co.elastic.clients.transport.ElasticsearchTransport;
+import co.elastic.clients.transport.TransportUtils;
 import co.elastic.clients.transport.endpoints.BooleanResponse;
 import co.elastic.clients.transport.rest_client.RestClientTransport;
-import com.gngsn.RequestLog;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.gngsn.elasticsearch.common.RequestLog;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpHost;
 import org.apache.http.auth.AuthScope;
 import org.apache.http.auth.UsernamePasswordCredentials;
-import org.apache.http.client.CredentialsProvider;
 import org.apache.http.impl.client.BasicCredentialsProvider;
 import org.elasticsearch.client.RestClient;
-import org.elasticsearch.client.RestClientBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.net.ssl.SSLContext;
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public class ElasticSearchUtils {
+public class DefaultElasticSearchClient {
 
-    private static final Logger LOG = LoggerFactory.getLogger(ElasticSearchUtils.class);
+    private static final Logger LOG = LoggerFactory.getLogger(DefaultElasticSearchClient.class);
 
     private RestClient restClient;
 
@@ -33,31 +36,45 @@ public class ElasticSearchUtils {
 
     private ElasticsearchClient client;
 
-    private final String INDEX = "requestLog";
-
+    private final String INDEX = "local-request-log";
 
     /**
-     * init elasticsearch client.
+     * constructor
      *
      * @param config elasticsearch client config
      */
-    public void initClient(final ElasticSearchProperty config) {
-        RestClientBuilder builder = RestClient.builder(new HttpHost(config.getHost(), Integer.parseInt(config.getPort()), "https"));
+    public DefaultElasticSearchClient(SearchClientProperty config) {
+        BasicCredentialsProvider credsProv = new BasicCredentialsProvider();
+        credsProv.setCredentials(
+            AuthScope.ANY, new UsernamePasswordCredentials(config.getUsername(), config.getPassword())
+        );
 
-        if (!StringUtils.isBlank(config.getUsername())) {
-            final CredentialsProvider credentialsProvider = new BasicCredentialsProvider();
-            credentialsProvider.setCredentials(AuthScope.ANY, new UsernamePasswordCredentials(config.getUsername(), config.getPassword()));
-            builder.setHttpClientConfigCallback(asyncClientBuilder -> {
-//            asyncClientBuilder.disableAuthCaching();
-                return asyncClientBuilder.setDefaultCredentialsProvider(credentialsProvider);
-            });
-        }
+        restClient = RestClient
+            .builder(new HttpHost(config.getHost(), Integer.parseInt(config.getPort()), config.getSchema()))
+            .setHttpClientConfigCallback(hc -> {
+                if (StringUtils.isNotBlank(config.getSslCertPath())) {
+                    try {
+                        File certFile = new File(config.getSslCertPath());
+                        SSLContext sslContext = TransportUtils.sslContextFromHttpCaCrt(certFile);
+                        hc.setSSLContext(sslContext);
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+                return hc.setDefaultCredentialsProvider(credsProv);
+            })
+            .build();
 
-        restClient = builder.build();
-        transport = new RestClientTransport(restClient, new JacksonJsonpMapper());
+        transport = new RestClientTransport(restClient, new JacksonJsonpMapper(new ObjectMapper().registerModule(new JavaTimeModule())));
         client = new ElasticsearchClient(transport);
-        LOG.info("init ElasticSearchLogCollectClient success");
 
+        LOG.info("init ElasticSearchLogCollectClient success");
+    }
+
+    /**
+     * init elasticsearch client.
+     */
+    public void initClient() {
         if (!existsIndex(INDEX)) {
             createIndex(INDEX);
             LOG.info("create index success");
