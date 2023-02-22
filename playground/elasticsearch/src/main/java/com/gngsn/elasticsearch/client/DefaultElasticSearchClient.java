@@ -51,17 +51,17 @@ public class DefaultElasticSearchClient {
 
         restClient = RestClient
             .builder(new HttpHost(config.getHost(), Integer.parseInt(config.getPort()), config.getSchema()))
-            .setHttpClientConfigCallback(hc -> {
+            .setHttpClientConfigCallback(asyncClientBuilder -> {
                 if (StringUtils.isNotBlank(config.getSslCertPath())) {
                     try {
                         File certFile = new File(config.getSslCertPath());
                         SSLContext sslContext = TransportUtils.sslContextFromHttpCaCrt(certFile);
-                        hc.setSSLContext(sslContext);
+                        asyncClientBuilder.setSSLContext(sslContext);
                     } catch (IOException e) {
                         throw new RuntimeException(e);
                     }
                 }
-                return hc.setDefaultCredentialsProvider(credsProv);
+                return asyncClientBuilder.setDefaultCredentialsProvider(credsProv);
             })
             .build();
 

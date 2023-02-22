@@ -1,3 +1,5 @@
 rootProject.name = 'playground'
 include 'webclient'
 include 'elasticsearch'
+include 'resilience4j-demo'
+
