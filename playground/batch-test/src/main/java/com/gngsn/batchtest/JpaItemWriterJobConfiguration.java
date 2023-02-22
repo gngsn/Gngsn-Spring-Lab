@@ -13,6 +13,7 @@ import org.springframework.batch.core.step.item.ChunkOrientedTasklet;
 import org.springframework.batch.core.step.tasklet.Tasklet;
 import org.springframework.batch.core.step.tasklet.TaskletStep;
 import org.springframework.batch.item.ItemProcessor;
+import org.springframework.batch.item.ItemReader;
 import org.springframework.batch.item.database.JdbcBatchItemWriter;
 import org.springframework.batch.item.database.JpaItemWriter;
 import org.springframework.batch.item.database.JpaPagingItemReader;
@@ -22,14 +23,17 @@ import org.springframework.batch.repeat.RepeatStatus;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import javax.sql.DataSource;
+import java.util.UUID;
+
 @Slf4j
 @RequiredArgsConstructor
 @Configuration
 public class JpaItemWriterJobConfiguration {
     private final JobBuilderFactory jobBuilderFactory;
     private final StepBuilderFactory stepBuilderFactory;
-
     private final SimpleTestTasklet simpleTestTasklet;
+    private final DataSource dataSource;
 
     private static final int chunkSize = 10;
 
@@ -48,30 +52,28 @@ public class JpaItemWriterJobConfiguration {
             .build();
     }
 
-//	@Bean
-//	public Step jdbcStep() {
-//		return stepBuilderFactory.get("jpaItemWriterStep")
-//			.<User, User>chunk(chunkSize)
+	@Bean
+	public Step jdbcStep() {
+		return stepBuilderFactory.get("jpaItemWriterStep")
+			.<User, User>chunk(chunkSize)
 //			.reader(jpaItemWriterReader())
-//			.processor(jpaItemProcessor())
-//			.writer(jpaItemWriter())
-//			.build();
-//		return new ItemReader
-//		return null;
-//	}
+			.processor(jpaItemProcessor())
+			.writer(jdbcBatchItemWriter())
+			.build();
+	}
 
 
-//	@Bean
-//	public ItemProcessor<User, User> jpaItemProcessor() {
-//		return User -> new User("gngsn", "gngsn@email.com", UUID.randomUUID());
-//	}
+	@Bean
+	public ItemProcessor<User, User> jpaItemProcessor() {
+		return User -> new User("gngsn", "gngsn@email.com", UUID.randomUUID().toString());
+	}
 
-//	@Bean
-//	public JdbcBatchItemWriter<User> jdbcBatchItemWriter() {
-//		return new JdbcBatchItemWriterBuilder<User>()
-//			.dataSource(dataSource)
-//			.sql("INSERT INTO user(name, email, password) VALUES (:name, :email, :password)")
-//			.beanMapped()
-//			.build();
-//	}
+	@Bean
+	public JdbcBatchItemWriter<User> jdbcBatchItemWriter() {
+		return new JdbcBatchItemWriterBuilder<User>()
+			.dataSource(dataSource)
+			.sql("INSERT INTO user(name, email, password) VALUES (:name, :email, :password)")
+			.beanMapped()
+			.build();
+	}
 }
