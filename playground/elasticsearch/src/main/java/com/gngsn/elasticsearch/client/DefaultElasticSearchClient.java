@@ -30,11 +30,11 @@ public class DefaultElasticSearchClient {
 
     private static final Logger LOG = LoggerFactory.getLogger(DefaultElasticSearchClient.class);
 
-    private RestClient restClient;
+    private final RestClient restClient;
 
-    private ElasticsearchTransport transport;
+    private final ElasticsearchTransport transport;
 
-    private ElasticsearchClient client;
+    private final ElasticsearchClient client;
 
     private final String INDEX = "local-request-log";
 

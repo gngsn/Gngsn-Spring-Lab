@@ -8,7 +8,7 @@ import org.springframework.lang.NonNull;
 @Getter
 @AllArgsConstructor
 public class SearchClientProperty {
-    private String schema = "https";
+    private String schema;
 
     @NonNull
     private String host;
