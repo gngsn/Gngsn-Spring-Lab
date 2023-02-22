@@ -4,7 +4,7 @@ package com.gngsn.elasticsearch.client;
 import co.elastic.clients.transport.TransportUtils;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import com.gngsn.elasticsearch.common.RequestLog;
+import com.gngsn.elasticsearch.entity.RequestLog;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpHost;
 import org.apache.http.auth.AuthScope;

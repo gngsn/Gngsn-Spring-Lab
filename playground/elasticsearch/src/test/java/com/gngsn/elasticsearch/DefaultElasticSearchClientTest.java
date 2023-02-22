@@ -2,7 +2,7 @@ package com.gngsn.elasticsearch;
 
 import com.gngsn.elasticsearch.client.DefaultElasticSearchClient;
 import com.gngsn.elasticsearch.client.SearchClientProperty;
-import com.gngsn.elasticsearch.common.RequestLog;
+import com.gngsn.elasticsearch.entity.RequestLog;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -61,13 +61,13 @@ class DefaultElasticSearchClientTest {
         logs.forEach(l -> log.info(l.toString()));
     }
 
-    @AfterEach
-    public void close() {
-        elasticSearchClient.close();
-    }
-
     @Test
     public void testCreateIndex() {
         elasticSearchClient.createIndex("test");
+    }
+
+    @AfterEach
+    public void close() {
+        elasticSearchClient.close();
     }
 }

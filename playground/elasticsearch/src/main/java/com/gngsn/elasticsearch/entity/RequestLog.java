@@ -1,11 +1,8 @@
-package com.gngsn.elasticsearch.common;
+package com.gngsn.elasticsearch.entity;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
-
-import java.time.LocalDateTime;
 
 @Data
 @NoArgsConstructor
