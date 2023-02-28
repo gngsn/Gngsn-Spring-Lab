@@ -32,6 +32,8 @@ import reactor.test.StepVerifier;
 
 import java.time.Duration;
 
+import static com.gngsn.webClient.config.WebClientConfiguration.*;
+
 
 @Slf4j
 public class MockRequestExchangeTest {
@@ -47,18 +49,18 @@ public class MockRequestExchangeTest {
     }
 
     @Test
-    public void reqApiTest200() {
+    public void exchange_NonBlock_200() {
         String URI = HOST + "/test/200";
         MultiValueMap<String, String> requestBody = new LinkedMultiValueMap<>();
 
         StepVerifier.create(this.exchangePostForMono(URI, requestBody))
-            .expectNext(ResResult.success("Request Success"))
+            .expectNext(ResResult.success("Success Request"))
             .verifyComplete();
     }
 
     @Test
-    public void reqApiTest400() {
-        String URI = "http://127.0.0.1:8822/test/400";
+    public void exchange_NonBlock_400() {
+        String URI = HOST + "/test/400";
         MultiValueMap<String, String> requestBody = new LinkedMultiValueMap<>();
 
         StepVerifier.create(this.exchangePostForMono(URI, requestBody))
@@ -69,8 +71,8 @@ public class MockRequestExchangeTest {
     }
 
     @Test
-    public void reqApiTest500() {
-        String URI = "http://127.0.0.1:8822/test/500";
+    public void exchange_NonBlock_500() {
+        String URI = HOST + "/test/500";
         MultiValueMap<String, String> requestBody = new LinkedMultiValueMap<>();
 
         StepVerifier.create(this.exchangePostForMono(URI, requestBody))
@@ -81,8 +83,8 @@ public class MockRequestExchangeTest {
     }
 
     @Test
-    public void reqApiTestTimeout() {
-        String URI = "http://127.0.0.1:8822/test/timeout";
+    public void exchange_NonBlock_Timeout() {
+        String URI = HOST + "/test/timeout";
         MultiValueMap<String, String> requestBody = new LinkedMultiValueMap<>();
 
         StepVerifier.create(this.exchangePostForMono(URI, requestBody))
@@ -99,7 +101,6 @@ public class MockRequestExchangeTest {
             .body(BodyInserters.fromValue(body))
             .exchangeToMono(response -> {
                 if (response.statusCode().is2xxSuccessful()) {
-                    log.info("API 요청에 성공했습니다.");
                     return response.toEntity(ResResult.class).mapNotNull(HttpEntity::getBody);
                 }
 
@@ -112,44 +113,5 @@ public class MockRequestExchangeTest {
                 throw new TargetServerErrorException(response.rawStatusCode(), "5xx 외부 시스템 오류");
             })
             .doOnError(error -> log.error("doOnError logging: " + error));
-    }
-
-    public WebClient commonWebClient(
-        ExchangeStrategies exchangeStrategies,
-        HttpClient httpClient
-    ) {
-        return WebClient
-            .builder()
-            .clientConnector(new ReactorClientHttpConnector(httpClient))
-            .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_FORM_URLENCODED_VALUE)
-            .exchangeStrategies(exchangeStrategies)
-            .build();
-    }
-
-    public HttpClient defaultHttpClient(ConnectionProvider provider) {
-
-        return HttpClient.create(provider)
-            .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 5_000)
-            .doOnConnected(conn ->
-                conn.addHandlerLast(new ReadTimeoutHandler(5)) //읽기시간초과 타임아웃
-                    .addHandlerLast(new WriteTimeoutHandler(5)));
-    }
-
-    public ConnectionProvider connectionProvider() {
-
-        return ConnectionProvider.builder("http-pool")
-            .maxConnections(100)     // connection pool의 갯수
-            .pendingAcquireTimeout(Duration.ofMillis(0)) //커넥션 풀에서 커넥션을 얻기 위해 기다리는 최대 시간
-            .pendingAcquireMaxCount(-1) //커넥션 풀에서 커넥션을 가져오는 시도 횟수 (-1: no limit)
-            .maxIdleTime(Duration.ofMillis(2000L)) //커넥션 풀에서 idle 상태의 커넥션을 유지하는 시간
-            .build();
-    }
-
-    public ExchangeStrategies defaultExchangeStrategies() {
-        return ExchangeStrategies.builder().codecs(config -> {
-            config.defaultCodecs().jackson2JsonEncoder(new Jackson2JsonEncoder(OM, MediaType.APPLICATION_JSON));
-            config.defaultCodecs().jackson2JsonDecoder(new Jackson2JsonDecoder(OM, MediaType.APPLICATION_JSON));
-            config.defaultCodecs().maxInMemorySize(1024 * 1024); // max buffer 1MB 고정. default: 256 * 1024
-        }).build();
     }
 }
