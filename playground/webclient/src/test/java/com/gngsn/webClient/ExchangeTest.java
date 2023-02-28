@@ -6,37 +6,25 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.gngsn.webClient.exception.BadWebClientRequestException;
 import com.gngsn.webClient.exception.TargetServerErrorException;
 import com.gngsn.webClient.vo.ResResult;
-import io.netty.channel.ChannelOption;
-import io.netty.handler.timeout.ReadTimeoutHandler;
-import io.netty.handler.timeout.WriteTimeoutHandler;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
-import org.springframework.http.client.reactive.ReactorClientHttpConnector;
-import org.springframework.http.codec.json.Jackson2JsonDecoder;
-import org.springframework.http.codec.json.Jackson2JsonEncoder;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.reactive.function.BodyInserters;
-import org.springframework.web.reactive.function.client.ExchangeStrategies;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientRequestException;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.core.publisher.Mono;
-import reactor.netty.http.client.HttpClient;
-import reactor.netty.resources.ConnectionProvider;
 import reactor.test.StepVerifier;
-
-import java.time.Duration;
 
 import static com.gngsn.webClient.config.WebClientConfiguration.*;
 
 
 @Slf4j
-public class MockRequestExchangeTest {
+public class ExchangeTest {
 
     private final String HOST = "http://127.0.0.1:8822";
     private WebClient webClient;

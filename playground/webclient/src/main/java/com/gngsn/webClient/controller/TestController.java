@@ -19,7 +19,7 @@ public class TestController {
     @RequestMapping(value = "/200")
     public ResponseEntity<ResResult> res200() {
         log.info("Request res 200");
-        return new ResponseEntity<>(ResResult.success("Request Success"), HttpStatus.OK);
+        return ResponseEntity.ok(ResResult.success("Request Success"));
     }
 
     @RequestMapping(value = "/400")
