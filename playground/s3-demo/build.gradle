@@ -1,0 +1,30 @@
+plugins {
+    id 'java'
+//    id "application"
+//    id "io.spring.dependency-management" version "1.0.7.RELEASE"
+}
+
+group 'com.gngsn'
+version = '0.0.1'
+description = 's3-demo'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter-webflux:2.7.5'
+
+    implementation platform('io.projectreactor:reactor-bom:2022.0.3')
+    implementation 'io.projectreactor:reactor-core:3.5.0'
+    implementation 'io.projectreactor:reactor-test:3.5.0'
+
+    compileOnly 'org.projectlombok:lombok:1.18.26'
+    annotationProcessor 'org.projectlombok:lombok:1.18.26'
+
+    implementation 'com.amazonaws:aws-java-sdk:1.12.415'
+}
+
+test {
+    useJUnitPlatform()
+}
