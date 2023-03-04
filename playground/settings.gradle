@@ -4,4 +4,5 @@ include 'elasticsearch'
 include 'resilience4j-demo'
 include 'batch-test'
 include 's3-demo'
+include 's3-batch-demo'
 
