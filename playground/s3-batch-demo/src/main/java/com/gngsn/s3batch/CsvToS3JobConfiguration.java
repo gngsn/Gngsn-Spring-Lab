@@ -12,19 +12,11 @@ import org.springframework.batch.core.configuration.annotation.StepBuilderFactor
 import org.springframework.batch.core.step.tasklet.TaskletStep;
 import org.springframework.batch.item.ItemProcessor;
 import org.springframework.batch.item.database.JdbcCursorItemReader;
-import org.springframework.batch.item.database.JdbcPagingItemReader;
-import org.springframework.batch.item.database.Order;
 import org.springframework.batch.item.database.builder.JdbcCursorItemReaderBuilder;
-import org.springframework.batch.item.database.builder.JdbcPagingItemReaderBuilder;
-import org.springframework.batch.item.database.support.AbstractSqlPagingQueryProvider;
-import org.springframework.batch.item.database.support.Db2PagingQueryProvider;
-import org.springframework.batch.item.database.support.H2PagingQueryProvider;
-import org.springframework.batch.item.database.support.MySqlPagingQueryProvider;
 import org.springframework.batch.item.file.FlatFileItemWriter;
 import org.springframework.batch.item.file.builder.FlatFileItemWriterBuilder;
 import org.springframework.batch.item.file.transform.BeanWrapperFieldExtractor;
 import org.springframework.batch.item.file.transform.DelimitedLineAggregator;
-import org.springframework.batch.support.DatabaseType;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -32,10 +24,7 @@ import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.core.io.FileSystemResource;
 
 import javax.sql.DataSource;
-import java.io.File;
 import java.nio.charset.StandardCharsets;
-import java.util.HashMap;
-import java.util.Map;
 
 @Configuration
 public class CsvToS3JobConfiguration {
@@ -61,20 +50,21 @@ public class CsvToS3JobConfiguration {
     public Job makeMovieDataCsvToS3Job() {
         return jobBuilderFactory
             .get("makeMovieDataCsvToS3Job")
-            .start(simpleTestTaskletStep())
-            .next(makeCsvFromDb())
+            .start(simpleTestTasklet())
+            .next(makeCsvFromDbStep())
+            .next(uploadS3Tasklet())
             .build();
     }
 
     @Bean
-    public TaskletStep simpleTestTaskletStep() {
-        return stepBuilderFactory.get("simpleTestTaskletStep")
+    public TaskletStep simpleTestTasklet() {
+        return stepBuilderFactory.get("simpleTestTasklet")
             .tasklet(new SetExecutionContextTasklet())
             .build();
     }
 
     @Bean
-    public Step makeCsvFromDb() {
+    public Step makeCsvFromDbStep() {
         return stepBuilderFactory.get("makeCsvFromDb")
             .<Movie, MovieCsv>chunk(chunkSize)
             .reader(jdbcCursorItemReader())
@@ -83,40 +73,13 @@ public class CsvToS3JobConfiguration {
             .build();
     }
 
-//    @Bean
-//    public JdbcPagingItemReader<Movie> jdbcCursorItemReader() {
-//        Map<String, Order> sortKeys = new HashMap<>(1);
-//        sortKeys.put("movie_id", Order.DESCENDING);
-//
-//        JdbcPagingItemReader<Movie> reader = new JdbcPagingItemReaderBuilder<Movie>()
-//            .name("jdbcCursorItemReader")
-//            .selectClause("SELECT movie_id, title, budget, overview, runtime, revenue")
-//            .fromClause("movie")
-//            .dataSource(dataSource)
-//            .fetchSize(chunkSize)
-//            .pageSize(10)
-//            .maxItemCount(2)
-//            .sortKeys(sortKeys)
-////            .queryProvider(new H2PagingQueryProvider())
-//            .queryProvider(new MySqlPagingQueryProvider() {
-//                @Override
-//                public Map<String, Order> getSortKeysWithoutAliases() {
-//                    return super.getSortKeys();
-//                }
-//            })
-//            .rowMapper((rs, rowNum) -> new Movie(
-//                rs.getString(1),
-//                rs.getString(2),
-//                rs.getLong(3),
-//                rs.getString(4),
-//                rs.getString(5),
-//                rs.getString(6),
-//                rs.getString(7)
-//                )
-//            )
-//            .build();
-//        return reader;
-//    }
+    @Bean
+    public TaskletStep uploadS3Tasklet() {
+        return stepBuilderFactory.get("uploadS3Tasklet")
+            .tasklet(new UploadS3Tasklet())
+            .build();
+    }
+
     @Bean
     public JdbcCursorItemReader<Movie> jdbcCursorItemReader() {
         return new JdbcCursorItemReaderBuilder<Movie>()
