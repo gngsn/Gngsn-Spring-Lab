@@ -1,4 +1,4 @@
-package com.gngsn.s3batch;
+package com.gngsn.s3batch.step;
 
 import org.springframework.batch.core.StepContribution;
 import org.springframework.batch.core.configuration.annotation.JobScope;

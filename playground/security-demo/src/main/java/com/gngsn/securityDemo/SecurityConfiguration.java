@@ -29,9 +29,7 @@ public class SecurityConfiguration {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-            .authorizeHttpRequests((authz) -> authz
-                .anyRequest().authenticated()
-            )
+            .authorizeHttpRequests((authz) -> authz.anyRequest().authenticated())
             .httpBasic(withDefaults());
         return http.build();
     }

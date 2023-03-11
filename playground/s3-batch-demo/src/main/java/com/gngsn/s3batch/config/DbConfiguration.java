@@ -1,4 +1,4 @@
-package com.gngsn.s3batch;
+package com.gngsn.s3batch.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

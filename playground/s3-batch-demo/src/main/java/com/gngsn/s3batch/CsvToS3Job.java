@@ -2,6 +2,8 @@ package com.gngsn.s3batch;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.gngsn.s3batch.step.SetExecutionContextTasklet;
+import com.gngsn.s3batch.step.UploadS3Tasklet;
 import com.gngsn.s3batch.vo.Movie;
 import com.gngsn.s3batch.vo.MovieCsv;
 import org.springframework.batch.core.Job;
@@ -27,7 +29,7 @@ import javax.sql.DataSource;
 import java.nio.charset.StandardCharsets;
 
 @Configuration
-public class CsvToS3JobConfiguration {
+public class CsvToS3Job {
 
     private final JobBuilderFactory jobBuilderFactory;
     private final StepBuilderFactory stepBuilderFactory;
@@ -40,7 +42,7 @@ public class CsvToS3JobConfiguration {
     private final int chunkSize = 50;
 
 
-    public CsvToS3JobConfiguration(JobBuilderFactory jobBuilderFactory, StepBuilderFactory stepBuilderFactory, DataSource dataSource) {
+    public CsvToS3Job(JobBuilderFactory jobBuilderFactory, StepBuilderFactory stepBuilderFactory, DataSource dataSource) {
         this.jobBuilderFactory = jobBuilderFactory;
         this.stepBuilderFactory = stepBuilderFactory;
         this.dataSource = dataSource;
