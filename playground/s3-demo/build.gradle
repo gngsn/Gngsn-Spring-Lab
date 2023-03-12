@@ -13,6 +13,10 @@ repositories {
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-webflux:2.7.5'
 
+    implementation platform('software.amazon.awssdk:bom:2.20.22')
+    implementation 'software.amazon.awssdk:s3'
+    implementation 'software.amazon.awssdk:apache-client'
+
     implementation platform('io.projectreactor:reactor-bom:2022.0.3')
     implementation 'io.projectreactor:reactor-core:3.5.0'
     implementation 'io.projectreactor:reactor-test:3.5.0'
@@ -20,7 +24,7 @@ dependencies {
     compileOnly 'org.projectlombok:lombok:1.18.26'
     annotationProcessor 'org.projectlombok:lombok:1.18.26'
 
-    implementation 'com.amazonaws:aws-java-sdk:1.12.415'
+
 }
 
 test {
