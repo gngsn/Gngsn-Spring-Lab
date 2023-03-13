@@ -14,9 +14,11 @@ public class S3BucketServiceImpl implements S3BucketService {
 
     private final S3Client s3;
 
+    @Override
     public void createS3Bucket(String bucketName) {
     }
 
+    @Override
     public ListBucketsResponse listBuckets() {
         return s3.listBuckets();
     }
