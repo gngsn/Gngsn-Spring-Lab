@@ -1,13 +1,15 @@
 package com.gngsn.s3.service.impl;
 
+import com.amazonaws.AmazonServiceException;
+import com.amazonaws.services.s3.AmazonS3;
+import com.amazonaws.services.s3.model.GetObjectRequest;
+import com.amazonaws.services.s3.model.ListObjectsV2Result;
+import com.amazonaws.services.s3.model.S3Object;
+import com.amazonaws.services.s3.model.S3ObjectSummary;
 import com.gngsn.s3.service.S3Service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import reactor.util.annotation.Nullable;
-import software.amazon.awssdk.core.ResponseBytes;
-import software.amazon.awssdk.services.s3.S3Client;
-import software.amazon.awssdk.services.s3.model.*;
 
 import java.io.*;
 import java.util.List;
@@ -17,62 +19,47 @@ import java.util.List;
 @RequiredArgsConstructor
 public class S3ServiceImpl implements S3Service {
 
-    private final S3Client s3;
 
-    @Override
+    private final AmazonS3 amazonS3Client;
+
     public void putObject(String bucketName, String filePath, String keyName) {
         log.info("Uploading {} to S3 bucket {}...\n", filePath, bucketName);
-        // TODO
-    }
-
-    @Override
-    public List<S3Object> listObjects(String bucketName) {
-        log.info("Objects in S3 bucket {}:\n", bucketName);
-
-        ListObjectsRequest listObjects = ListObjectsRequest
-            .builder()
-            .bucket(bucketName)
-            .build();
-
-        ListObjectsResponse res = s3.listObjects(listObjects);
-        List<S3Object> objects = res.contents();
-        for (S3Object myValue : objects) {
-            log.info("The name of the key is " + myValue.key());
-            log.info("The object is " + myValue.size() + " KBs");
-            log.info("The owner is " + myValue.owner());
-        }
-
-        return res.contents();
-    }
-
-    @Nullable
-    @Override
-    public String downloadObject(String bucketName, String key) {
 
         try {
-            GetObjectRequest objectRequest = GetObjectRequest
-                .builder()
-                .key(key)
-                .bucket(bucketName)
-                .build();
-
-            ResponseBytes<GetObjectResponse> objectBytes = s3.getObjectAsBytes(objectRequest);
-            byte[] data = objectBytes.asByteArray();
-
-            File myFile = new File("/s3/");
-            OutputStream os = new FileOutputStream(myFile);
-            os.write(data);
-            log.info("Successfully obtained bytes from an S3 object");
-            os.close();
-
-            return myFile.getPath();
-        } catch (IOException ex) {
-            log.error(ex.getMessage());
-        } catch (S3Exception e) {
-            log.error(e.awsErrorDetails().errorMessage());
-            System.exit(1);
+            amazonS3Client.putObject(bucketName, keyName, new File(filePath));
+        } catch (AmazonServiceException e) {
+            throw new RuntimeException();
         }
-        
-        return null;
+    }
+
+    public List<S3ObjectSummary> listObjects(String bucketName) {
+        log.info("Objects in S3 bucket {}:\n", bucketName);
+
+        ListObjectsV2Result result = amazonS3Client.listObjectsV2(bucketName);
+        return result.getObjectSummaries();
+    }
+
+    public S3Object downloadObject(String bucketName, String key) {
+
+        GetObjectRequest request = new GetObjectRequest(bucketName, key);
+
+        try (
+            S3Object fullObject = amazonS3Client.getObject(request);
+        ) {
+            displayTextInputStream(fullObject.getObjectContent());
+            return fullObject;
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private static void displayTextInputStream(InputStream input) throws IOException {
+        // Read the text input stream one line at a time and display each line.
+        BufferedReader reader = new BufferedReader(new InputStreamReader(input));
+        String line = null;
+        while ((line = reader.readLine()) != null) {
+            log.info(line);
+        }
+        log.info("\n");
     }
 }

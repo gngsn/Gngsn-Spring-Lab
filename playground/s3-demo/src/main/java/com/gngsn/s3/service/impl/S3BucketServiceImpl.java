@@ -1,25 +1,41 @@
 package com.gngsn.s3.service.impl;
 
+import com.amazonaws.AmazonServiceException;
+import com.amazonaws.services.s3.AmazonS3;
+import com.amazonaws.services.s3.model.Bucket;
 import com.gngsn.s3.service.S3BucketService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import software.amazon.awssdk.services.s3.S3Client;
-import software.amazon.awssdk.services.s3.model.ListBucketsResponse;
+
+import java.util.List;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class S3BucketServiceImpl implements S3BucketService {
 
-    private final S3Client s3;
 
-    @Override
+    private final AmazonS3 amazonS3Client;
+
     public void createS3Bucket(String bucketName) {
+        if(amazonS3Client.doesBucketExistV2(bucketName)) {
+            log.info("Bucket name already in use. Try another name.");
+            return;
+        }
+        amazonS3Client.createBucket(bucketName);
     }
 
-    @Override
-    public ListBucketsResponse listBuckets() {
-        return s3.listBuckets();
+    public List<Bucket> listBuckets() {
+        return amazonS3Client.listBuckets();
+    }
+
+    public void deleteBucket(String bucketName) {
+        try {
+            amazonS3Client.deleteBucket(bucketName);
+        } catch (AmazonServiceException e) {
+            log.error(e.getErrorMessage());
+            return;
+        }
     }
 }

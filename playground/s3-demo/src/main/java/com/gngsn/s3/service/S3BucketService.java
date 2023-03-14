@@ -1,10 +1,15 @@
 package com.gngsn.s3.service;
 
-import software.amazon.awssdk.services.s3.model.ListBucketsResponse;
+
+import com.amazonaws.services.s3.model.Bucket;
+
+import java.util.List;
 
 public interface S3BucketService {
 
     void createS3Bucket(String bucketName);
 
-    ListBucketsResponse listBuckets();
+    List<Bucket> listBuckets();
+
+    void deleteBucket(String bucketName);
 }
