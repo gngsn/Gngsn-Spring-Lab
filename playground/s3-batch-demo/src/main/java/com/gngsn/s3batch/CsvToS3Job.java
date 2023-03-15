@@ -35,6 +35,8 @@ public class CsvToS3Job {
     private final StepBuilderFactory stepBuilderFactory;
     private final DataSource dataSource;
 
+    private final UploadS3Tasklet uploadS3Tasklet;
+
     private final ObjectMapper mapper = new ObjectMapper().registerModule(new JavaTimeModule());
 
     private final String GET_MOVIE_SELECT = "SELECT movie_id as movieId, title, budget, overview, runtime, revenue FROM movie";
@@ -42,10 +44,11 @@ public class CsvToS3Job {
     private final int chunkSize = 50;
 
 
-    public CsvToS3Job(JobBuilderFactory jobBuilderFactory, StepBuilderFactory stepBuilderFactory, DataSource dataSource) {
+    public CsvToS3Job(JobBuilderFactory jobBuilderFactory, StepBuilderFactory stepBuilderFactory, DataSource dataSource, UploadS3Tasklet uploadS3Tasklet) {
         this.jobBuilderFactory = jobBuilderFactory;
         this.stepBuilderFactory = stepBuilderFactory;
         this.dataSource = dataSource;
+        this.uploadS3Tasklet = uploadS3Tasklet;
     }
 
     @Bean
@@ -54,7 +57,7 @@ public class CsvToS3Job {
             .get("makeMovieDataCsvToS3Job")
             .start(simpleTestTasklet())
             .next(makeCsvFromDbStep())
-            .next(uploadS3Tasklet())
+            .next(thirdUploadS3Tasklet())
             .build();
     }
 
@@ -71,14 +74,14 @@ public class CsvToS3Job {
             .<Movie, MovieCsv>chunk(chunkSize)
             .reader(jdbcCursorItemReader())
             .processor(itemProcessor())
-            .writer(batchItemWriter(null))
+            .writer(batchItemWriter(null, null))
             .build();
     }
 
     @Bean
-    public TaskletStep uploadS3Tasklet() {
+    public TaskletStep thirdUploadS3Tasklet() {
         return stepBuilderFactory.get("uploadS3Tasklet")
-            .tasklet(new UploadS3Tasklet())
+            .tasklet(uploadS3Tasklet)
             .build();
     }
 
@@ -101,11 +104,12 @@ public class CsvToS3Job {
     @Bean
     @JobScope
     public FlatFileItemWriter<MovieCsv> batchItemWriter(
+        @Value("#{jobExecutionContext[filePath]}") String filePath,
         @Value("#{jobExecutionContext[fileName]}") String fileName
     ) {
         return new FlatFileItemWriterBuilder<MovieCsv>()
             .name("batchItemWriter")
-            .resource(new FileSystemResource(fileName))
+            .resource(new FileSystemResource(filePath + fileName))
             .append(true)
             .lineAggregator(new DelimitedLineAggregator<>() {
                 {

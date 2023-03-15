@@ -20,13 +20,15 @@ public class SetExecutionContextTasklet implements Tasklet {
     public RepeatStatus execute(StepContribution contribution, ChunkContext chunkContext) throws Exception {
 
         ExecutionContext executionContext = chunkContext.getStepContext().getStepExecution().getJobExecution().getExecutionContext();
-        String fileName = "s3-batch-demo/src/main/resources/movie-"+ Instant.now().getEpochSecond() + ".csv";
+        String filePath = "s3-batch-demo/src/main/resources/";
+        String fileName = "movie-"+ Instant.now().getEpochSecond() + ".csv";
 
+        executionContext.put("filePath", filePath);
         executionContext.put("fileName", fileName);
         try {
-            new File(fileName).createNewFile();
+            new File(filePath + fileName).createNewFile();
         } catch (IOException e) {
-            System.out.println("Error attempting to create file " + fileName + "for writing raw output." + e);
+            System.out.println("Error attempting to create file " + filePath + fileName + "for writing raw output." + e);
         }
 
         return RepeatStatus.FINISHED;
