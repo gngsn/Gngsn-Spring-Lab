@@ -9,40 +9,45 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import software.amazon.awssdk.auth.credentials.AwsBasicCredentials;
 import software.amazon.awssdk.auth.credentials.StaticCredentialsProvider;
-import software.amazon.awssdk.http.apache.ApacheHttpClient;
+import software.amazon.awssdk.core.sync.RequestBody;
 import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.model.ListObjectsV2Request;
 import software.amazon.awssdk.services.s3.paginators.ListObjectsV2Iterable;
 
+import java.io.File;
 import java.nio.ByteBuffer;
-import java.time.Duration;
 import java.util.Random;
 
 @Component
 @JobScope
 public class UploadS3Tasklet implements Tasklet {
     private S3Client s3;
-
-    @Value("${aws.accessKeyId}")
+    private String filePath;
+    private String fileName;
     private String accessKeyId;
-
-    @Value("${aws.secretAccessKey}")
     private String secretAccessKey;
-
     private final String BUCKET_NAME = "s3-bucket-example-gngsn";
+
 
     public UploadS3Tasklet(
         @Value("#{jobExecutionContext[filePath]}") String filePath,
-        @Value("#{jobExecutionContext[fileName]}") String fileName) {
-//        this.FILE_NAME = fileName;
-        AwsBasicCredentials awsCreds = AwsBasicCredentials.create(accessKeyId, secretAccessKey);
+        @Value("#{jobExecutionContext[fileName]}") String fileName,
+        S3Client s3,
+        @Value("${aws.accessKeyId}") String accessKeyId,
+        @Value("${aws.secretAccessKey}") String secretAccessKey) {
+        this.s3 = s3;
+        this.fileName = fileName;
+        this.filePath = filePath;
+
+        this.accessKeyId = accessKeyId;
+        this.secretAccessKey = secretAccessKey;
 
         this.s3 = S3Client.builder()
             .region(Region.AP_SOUTHEAST_1)
-            .httpClientBuilder(ApacheHttpClient.builder().connectionTimeout(Duration.ofSeconds(5)))
+//            .httpClientBuilder(ApacheHttpClient.builder().connectionTimeout(Duration.ofSeconds(5)))
 //            .credentialsProvider(InstanceProfileCredentialsProvider.builder().profileName("local").build())
-            .credentialsProvider(StaticCredentialsProvider.create(awsCreds))
+            .credentialsProvider(StaticCredentialsProvider.create(AwsBasicCredentials.create(accessKeyId, secretAccessKey)))
             .build();
     }
 
@@ -60,7 +65,7 @@ public class UploadS3Tasklet implements Tasklet {
                 .flatMap(r -> r.contents().stream())
                 .forEach(content -> System.out.println(" Key: " + content.key() + " size = " + content.size()));
 
-//            s3.putObject(objectRequest, RequestBody.fromByteBuffer(getRandomByteBuffer(10_000)));
+            s3.putObject(new File(filePath+fileName), RequestBody.fromByteBuffer(getRandomByteBuffer(10_000)));
             return RepeatStatus.FINISHED;
         } catch (Exception e) {
             throw new RuntimeException(e.getMessage());
