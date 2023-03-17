@@ -2,8 +2,8 @@ package com.gngsn.s3batch;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import com.gngsn.s3batch.step.SetExecutionContextTasklet;
-import com.gngsn.s3batch.step.UploadS3Tasklet;
+import com.gngsn.s3batch.steps.SetExecutionContextTasklet;
+import com.gngsn.s3batch.steps.UploadS3Tasklet;
 import com.gngsn.s3batch.vo.Movie;
 import com.gngsn.s3batch.vo.MovieCsv;
 import org.springframework.batch.core.Job;

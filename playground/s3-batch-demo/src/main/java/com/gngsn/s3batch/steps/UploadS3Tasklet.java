@@ -1,4 +1,4 @@
-package com.gngsn.s3batch.step;
+package com.gngsn.s3batch.steps;
 
 import org.springframework.batch.core.StepContribution;
 import org.springframework.batch.core.configuration.annotation.JobScope;
@@ -9,13 +9,11 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import software.amazon.awssdk.auth.credentials.AwsBasicCredentials;
 import software.amazon.awssdk.auth.credentials.StaticCredentialsProvider;
-import software.amazon.awssdk.core.sync.RequestBody;
 import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.model.ListObjectsV2Request;
 import software.amazon.awssdk.services.s3.paginators.ListObjectsV2Iterable;
 
-import java.io.File;
 import java.nio.ByteBuffer;
 import java.util.Random;
 
@@ -60,12 +58,10 @@ public class UploadS3Tasklet implements Tasklet {
                 .build();
             ListObjectsV2Iterable listRes = s3.listObjectsV2Paginator(listReq);
 
-
             listRes.stream()
                 .flatMap(r -> r.contents().stream())
                 .forEach(content -> System.out.println(" Key: " + content.key() + " size = " + content.size()));
 
-            s3.putObject(new File(filePath+fileName), RequestBody.fromByteBuffer(getRandomByteBuffer(10_000)));
             return RepeatStatus.FINISHED;
         } catch (Exception e) {
             throw new RuntimeException(e.getMessage());
