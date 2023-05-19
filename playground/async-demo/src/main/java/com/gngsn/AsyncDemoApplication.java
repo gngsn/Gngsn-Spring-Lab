@@ -9,9 +9,6 @@ import org.springframework.scheduling.annotation.EnableAsync;
 public class AsyncDemoApplication {
 
     public static void main(String[] args) {
-        // close the application context to shut down the custom ExecutorService
-        SpringApplication.run(AsyncDemoApplication.class, args)
-//                .close()
-        ;
+        SpringApplication.run(AsyncDemoApplication.class, args);
     }
 }
