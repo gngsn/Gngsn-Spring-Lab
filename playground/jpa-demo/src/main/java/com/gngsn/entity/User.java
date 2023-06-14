@@ -17,12 +17,28 @@ public class User {
     private String username;
     private LocalDate registrationDate;
 
+    private String email;
+    private int level;
+    private boolean active;
+
     public User() {
     }
 
     public User(String username, LocalDate registrationDate) {
         this.username = username;
         this.registrationDate = registrationDate;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public void setLevel(int level) {
+        this.level = level;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
     }
 
     @Override
