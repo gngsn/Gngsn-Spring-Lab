@@ -40,4 +40,13 @@ class User {
     public void setName(final String name) {
         this.name = name;
     }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "email='" + email + '\'' +
+                ", name='" + name + '\'' +
+                ", createDate=" + createDate +
+                '}';
+    }
 }
