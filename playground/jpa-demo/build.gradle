@@ -16,9 +16,14 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-test'
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 
-    runtimeOnly 'mysql:mysql-connector-java:8.0.30'
-    runtimeOnly 'com.h2database:h2'
+    // hibernate
+    implementation 'org.hibernate:hibernate-hikaricp:6.2.0.CR3'
+    implementation 'org.hibernate:hibernate-core:6.2.0.CR3'
+
+    implementation 'mysql:mysql-connector-java:8.0.30'
+
     implementation 'com.fasterxml.jackson.core:jackson-annotations:2.14.2'
+    runtimeOnly 'com.h2database:h2'
 }
 
 test {

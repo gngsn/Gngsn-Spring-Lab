@@ -214,7 +214,7 @@ Grade.S1.ordinal()
 
 #### GenerationType.IDENTITY
 
-- `GeneratedValue(strategy = @GenerationType.IDENTITY)`
+- `@GeneratedValue(strategy = @GenerationType.IDENTITY)`
 - DB 식별 칼럼에 매핑 (ex. MySQL 자동 증가 칼럼)
 - DB가 식별자를 생성하므로 객체 생성시에 식별값을 설정하지 않음
 - INSERT Query 실행 후 사용
@@ -331,6 +331,7 @@ Hotel hotel = new Hotel("H00", "HN", 2022, Grade.S7, address);
 em.persist(hotel);
 tx.commit();
 ```
+
 ```mysql
 insert into hotel_info
 (addr1, addr2, zipcode, created, grade, modified, nm, year, hotel_id)
@@ -348,5 +349,7 @@ logger.info("주소: {}", hotel.getAddress());
 ```
 
 - address 객체를 가져와서 Address Entity에 알맞게 넣어줌
+
+
 
 
