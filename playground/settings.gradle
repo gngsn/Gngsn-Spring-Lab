@@ -1,4 +1,6 @@
 rootProject.name = 'playground'
+include 'demo'
+include 'async-demo'
 include 'webclient'
 include 'elasticsearch'
 include 'resilience4j-demo'
@@ -7,3 +9,5 @@ include 's3-demo'
 include 's3-batch-demo'
 include 'security-demo'
 include 'jpa-demo'
+include 'transaction-demo'
+
