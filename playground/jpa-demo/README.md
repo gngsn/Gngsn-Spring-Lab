@@ -404,8 +404,63 @@ logger.info("주소: {}", hotel.getAddress());
 
 ### DDL 생성 기능
 
+```java
+@Entity
+@Table(name="MEMBER")
+public class Member {
+    
+    @Id
+    @Column(name="ID")
+    private String id;
+    
+    @Column(name = "NAME", nullable = false, length = 10)
+    private String username;
+  
+    //...
+}
+```
+
+- `nullable = false`: `not null` 제약 조건 추가
+- `length = 10`: 자동 생성되는 DDL 문자 크기 지정 가능
+
+```java
+@Entity(name = "Member")
+@Table(name = "MEMBER", uniqueConstraints = {
+        @UniqueConstraint(
+                name = "NAME_AGE_UNIQUE",
+                columnNames = {"NAME", "AGE"})})
+public class Member {
+    
+    @Id 
+    @column(name = "id")
+    private String id;
+    
+    @Column(name = "name")
+    private String username;
+    
+    private Integer age;
+    // ..
+}
+```
+
+위와 같이 설정하면 아래와 같은 DDL이 생성된다.
+
+```sql
+ALTER TABLE MEMBER
+  ADD CONSTRAINT NAME_AGE_UNIQUE UNIQUE (NAME, AGE)
+```
 
 ### 기본 키 매핑
+
+- 직접 할당: 기본키를 애플리케이션에서 직접 할당
+- 자동 생성: 대리 키 사용 방식
+  - IDENTITY: 기본 키 생성을 데이터베이스에 위임
+  - SEQUENCE: 데이터베이스 시퀀스를 사용해서 기본 키를 할당
+  - TABLE: 키 생성 테이블 사용
+
+
+데이터베이스 벤더마다 지원하는 방식이 다르기 때문에 이처럼 다양
+
 
 ### 필드와 컬럼 매핑: 레퍼런스
 
