@@ -350,6 +350,66 @@ logger.info("주소: {}", hotel.getAddress());
 
 - address 객체를 가져와서 Address Entity에 알맞게 넣어줌
 
+<br/>
+
+## Entity Mapping
+
+- 객체와 테이블 매핑: @Entity, @Table
+- 기본 키 매핑: @Id
+- 필드와 컬럼 매핑: @Column
+- 연관관계 매핑: @ManyToOne, @JoinColumn
+
+<br/>
+
+### @Entity
+
+- 테이블과 매핑 시 붙이는 필수 어노테이션
+
+**properties**
+
+| 속성   | 기능                                                  | 기본값    |
+|------|-----------------------------------------------------|--------|
+| name | JPA에서 사용할 엔티티 이름 지정. 보통 기본값인 클래스 이름 사용. 중복 이름 지정 불가 | 클래스 명  |
+
+
+- 기본 생성자 필수 (public, protected 생성자)
+- `final` 클래스, `enum`, `interface`, `inner` 클래스에는 사용 불가
+- 저장할 필드에 `final`을 사용하면 안됨
+
+
+<br/>
+
+### @Table
+
+- 엔티티와 매핑할 테이블 지정
+
+**properties**
+
+| 속성                | 기능                                              | 기본값       |
+|-------------------|-------------------------------------------------|-----------|
+| name              | 매핑할 테이블 이름                                      | 엔티티 이름 사용 |
+| catalog           | catalog 기능이 있는 데이터베이스에서 catalog 매핑              |           |
+| schema            | schema 기능이 있는 데이터베이스에서 schema 매핑                |           |
+| uniqueConstraints | DDL 생성 시 유니크 조건 생성. 2개 이상의 복합 유니크 제약조건도 만들 수 있음 |           |
+
+<br/>
+
+### 데이터베이스 스키마 자동 생성
+
+`spring.jpa.properties.hibernate.show_sql=true`
+
+콘솔에 실행되는 테이블 생성 DDL<small>Data Definition Language</small> 출력
+
+<br/>
+
+### DDL 생성 기능
+
+
+### 기본 키 매핑
+
+### 필드와 컬럼 매핑: 레퍼런스
+
+
 
 
 
