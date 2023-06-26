@@ -452,19 +452,45 @@ ALTER TABLE MEMBER
 
 ### 기본 키 매핑
 
-- 직접 할당: 기본키를 애플리케이션에서 직접 할당
-- 자동 생성: 대리 키 사용 방식
-  - IDENTITY: 기본 키 생성을 데이터베이스에 위임
-  - SEQUENCE: 데이터베이스 시퀀스를 사용해서 기본 키를 할당
-  - TABLE: 키 생성 테이블 사용
+- 직접 할당: 기본키를 애플리케이션에서 직접 할당. `em.persist()` 를 호출하기 전, 애플리케이션에서 직접 식별자 값을 할당해야 함. 만약 식별자 값이 없으면 예외가 발생.
+- SEQUENCE: 데이터베이스 시퀀스에서 식별자 값을 획득한 후 영속성 컨텍스트에 저장.
+- TABLE: 데이터베이스 시퀀스 생성용 테이블에서 식별자 값을 획득한 후 영속성 컨텍스트에 저장.
+- IDENTITY ：데이터베이스에 엔티티를 저장해서 식별자 값을 획득한 후 영속성 컨 텍스트에 저장 (IDENTITY 전략은 테이블에 데이터를 저장해야 식별자값을 획득할 수 있다).
 
+```java
+@Entity
+@TableGenerator(
+        name = "BOARD_SEQ_GENERATOR", 
+        table = "MY_SEQUENCES", 
+        pkColumnValue = "BOARD_SEQ", allocationSize = 1) 
+public class Board {
+    @Id
+    @GeneratedValue(strategy = GenerationType.TABLE,
+            generator = MBOARD_SEQ_GENERATORM)
+    private Long id;
+    // ...
+}
+```
 
 데이터베이스 벤더마다 지원하는 방식이 다르기 때문에 이처럼 다양
 
 
 ### 필드와 컬럼 매핑: 레퍼런스
 
+@GenerationType.AUTO 
+: 선택한 데이터베이스 방언에 따라 IDENTITY, SEQUENCE, TABLE 전략 중 하나를 자동으로 선택
 
+<br/>
+
+<table>
+<tr><th>분류</th><th>Annotation</th><th>Description</th></tr>
+<tr><td rowspan="5">필드와 컬럼 매핑</td><td>@column</td><td>컬럼을 매핑</td></tr>
+<tr><td>@Enumerated</td><td>자바의 enum 타입을 매핑</td></tr>
+<tr><td>@Temporal</td><td>날짜 타입을 매핑</td></tr>
+<tr><td>@Lob</td><td>BLOB, CL0B 타입을 매핑</td></tr>
+<tr><td>@Transient</td><td>특정 필드를 데이터베이스에 매핑</td></tr>
+<tr><td>필드와 컬럼 매핑</td><td>@Access</td><td>JPA가 엔티티에 접근하는 방식을 지정</td></tr>
+</table>
 
 
 
