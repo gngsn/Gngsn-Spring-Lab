@@ -91,3 +91,124 @@ class B {
 
 </td>
 </tr></table>
+
+#### Example) 순수한 객체 연관관계 
+
+<table>
+<tr>
+<th>Objects</th>
+<td>
+
+```java
+public class Member {
+    private String id; 
+    private String username;
+
+    private Team team; // 팀의 참조를 보관
+
+    public void setTeam(Team team) {
+        this.team = team;
+    }
+    
+    // Getter, Setter ...
+}
+```
+</td>
+<td>
+
+```java
+public class Team {
+    private String id;
+    private String name;
+
+    // Getter, Setter ...
+}
+```
+
+</td></tr>
+<tr><th>Relationship</th>
+<td colspan="2">
+회원 1과 회원2를 팀 1에 소속
+
+```java
+public static void main(String[] args) {
+    Member member 1 = new Member("member1", "회원");
+    Member member2 = new Member("member2", "회원2");
+    
+    Team team1 = new Team("team1", "팀1");
+
+    member1.setTeam(team1);
+    member2.setTeam(team1);
+
+    Team findTeam = member1.getTeam();
+}
+```
+
+</td></tr></table>
+
+<br/>
+
+#### 테이블 연관관계
+
+- 회원 테이블과 팀 테이블은 **양방향 관계**
+- 회원 테이블은 `TEAM_ID` 외래 키로 팀 테이블과 연관관계를 맺음
+- 회원 테이블의 `TEAM_ID` **외래 키**를 통해 회원과 팀을 조인할 수 있고 반대로 팀과 회원도 조인할 수 있음
+    - `TEAM_ID` 외래 키로 `MEMBER JOIN TEAM` 과 `TEAM JOIN MEMBER`
+
+<br/>
+
+
+#### Example) 순수한 객체 연관관계
+
+<table>
+<tr>
+<th>Objects</th>
+<td>
+
+```sql
+CREATE TABLE MEMBER (
+        MEMBER_ID VARCHAR(255) NOT NULL,,
+        TEAM_ID VARCHAR(255),
+        USERNAME VARCHAR(255),
+        PRIMARY KEY (MEMBER_ID)
+)
+```
+</td>
+<td>
+
+```sql
+CREATE TABLE TEAM (
+        TEAM_ID VARCHAR(255) NOT NULL,
+        NAME VARCHAR(255),
+        PRIMARY KEY (TEAM_ID)
+)
+```
+
+</td></tr>
+<tr><th>Relationship</th>
+<td colspan="2">
+
+```sql
+ALTER TABLE MEMBER ADD CONSTRAINT FK_MEMBER_TEAM 
+    FOREIGN KEY (TEAM_ID) 
+    REFERENCES TEAM
+```
+
+```sql
+INSERT INTO TEAM (TEAM_ID, NAME) VALUES ('team1', '팀1'); 
+INSERT INTO MEMBER(MEMBER_ID, TEAM_ID, USERNAME) 
+VALUES ('member1', 'team1', '회원1');
+INSERT INTO MEMBER(MEMBER_ID, TEAM_ID, USERNAME) 
+VALUES ('member2', 'team2', '회원2');
+```
+
+```sql
+SELECT T.* 
+FROM MEMBER M 
+    JOIN TEAM T ON M.TEAM_ID = T.TEAM_ID 
+WHERE M.MEMBER_ID = 'member1'
+```
+
+</td></tr></table>
+
+<br/>
