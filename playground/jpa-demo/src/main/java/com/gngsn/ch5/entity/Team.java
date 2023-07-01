@@ -9,5 +9,13 @@ import jakarta.persistence.Id;public class Team {
 
     private String name;
 
+    public Team() {
+    }
+
+    public Team(final String id, final String name) {
+        this.id = id;
+        this.name = name;
+    }
+
     // Getter, Setter ...
 }
