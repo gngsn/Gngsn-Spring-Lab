@@ -212,3 +212,117 @@ WHERE M.MEMBER_ID = 'member1'
 </td></tr></table>
 
 <br/>
+
+### 객체 관계 매핑
+
+
+<table>
+<tr>
+<td>
+
+```java
+@Entity 
+public class Member {
+
+    @Id
+    @Column(name = "MEMBER_ID")
+    private String id;
+    private String username;
+
+    // 연관관계 매핑
+    @ManyToOne  // 다대일(N:1) 관계를 나타내는 매핑 정보
+    @JoinColumn(name = "TEAM_ID")   // 외래 키를 매핑할 때 사용
+    private Team team;
+
+    // 연관 관계 설정
+    public void setTeam(Team team) {
+        this.team = team;
+    }
+
+    // Getter, Setter ...
+}
+```
+
+</td>
+<td>
+
+```java
+public class Team {
+    
+    @Id
+    @Column(name = "TEAM_ID")
+    private String id;
+    
+    private String name;
+
+    // Getter, Setter ...
+}
+```
+
+</td></tr></table>
+
+<br/>
+
+### @JoinColumn
+
+| 속성   | 기능                                            | 기본 값                                                                                                         |
+|------|-----------------------------------------------|--------------------------------------------------------------------------------------------------------------|
+| name | 매핑할 외래 키 이름                                   | 외래키 기본 전략 사용<br/> - 기본 키 컬럼명: "**_필드명_참조하는 테이블_**" <br/> - 필드명(team) + _ (밑줄) + 참조하는 테이블의 컬럼명(TEAM_ID) 👉🏻 `team_TEAM_ID` |
+| referencedColumnName     | 외래 키가 참조하는 대상 테이블의 컬럼명                        | 참조하는 테이블의 기본 키 컬럼명                                                                                           |
+| foreignKey(DDL)     | 외래 키 제약조건을 직접 지정할 수 있다. 이 속성은 테이블을 생성할 때만 사용한다. |                                                                                                              |
+| unique <br/>nullable<br/> insertable<br/> updatable<br/> columnDefinition<br/> table     | @Column의 속성과 동일                               |                                                                                                              |
+
+<br/>
+
+#### @ManyToOne
+
+다대일 관계에서 사용
+
+
+| 속성           | 기능                                                          | 기본 값                                                           |
+|--------------|-------------------------------------------------------------|----------------------------------------------------------------|
+| optional     | false로 설정하면 연관된 엔티티가 항상 있어야 함                               | false                                                          | 
+| fetch        | 글로벌 페치 전략을 설정                                               | - @ManyToOne=FetchType.EAGER <br/> - @OneToMany=FetchType.LAZY |
+| cascade      | 영속성 전이 기능을 사용                                               |                                                                |
+| targetEntity | 연관된 엔티티의 타입 정보를 설정. 거의 사용 안함. 컬렉션을 사용해도 제네릭으로 타입 정보를 알 수 있음<br/>Example)<br/> - `@OneToMany private List<Member> members;` → 제네릭으로 타입 정보를 알 수 있음.<br/>- `@OneToMany(targetEntity=Member.class) private List members;` 제네릭이 없으면 타입 정보를 알 수 없음.
+  |                                                                |
+
+
+<br/><br/>
+
+## 연관관계 사용
+
+### 조회
+
+- 객체 그래프 탐색 (객체 연관관계를 사용한 조회)
+- 객체지향 쿼리 사용 JPQL
+
+**JPQL 조인 검색**
+
+```java
+private static void queryLogicJoin(EntityManager em) {
+    String jpql = "select m from Member m join m.team t where " + "t.name=:teamName";
+
+    List<Member> resultList = em.createQuery(jpql, Member.class)
+        .setParameter("teamName", "팀1")
+        .getResultList();
+
+    for (Member member : resultList) {
+        System.out.println("[query] member.username=" +
+        member.getUsername());
+    }
+}
+```
+
+### 수정
+
+
+### 연관관계 제거
+
+## 양방향 연관관계
+
+## 연관관계의 주인
+
+## 양방향 연관관계 저장
+
+## 양방향 연관관계의 주의점
