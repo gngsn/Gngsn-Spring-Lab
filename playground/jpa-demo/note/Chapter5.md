@@ -314,14 +314,60 @@ private static void queryLogicJoin(EntityManager em) {
 }
 ```
 
+<br/>
+
 ### 수정
 
+```java
+private static void updateRelation(EntityManager em){
+        // 새로운 팀2
+        Team team2=new Team(nteam2”,”팀2”);em.persist(team2);
+
+        // 회원1 에 새로운 팀2 설정
+        Member member=em.find(Member.class,"member1");
+        member.setTeam(team2);
+}
+```
+
+- `em.update()` 같은 메소드가 없음
+- 단순히 불러온 엔티티의 값만 변경해두면 **트랜잭션을 커밋**할 때 **플러시**가 일어나면서 변경 감지 기능 작동. 
+- 그리고 변경사항을 데이터베이스에 자동으로 반영.
+
+<br/>
 
 ### 연관관계 제거
 
+```java
+private static void deleteRelation(EntityManager em) {
+    // 연관관계 제거
+    Member member 1 = em.find(Member.class, "member1"); 
+    member1.setTeam(null);
+}
+```
+
+- 연관된 엔티티를 삭제하려면 기존에 있던 연관관계를 먼저 제거하고 삭제해야 함. (그렇지 않으면, 외래키 제약조건으로 인해 데이터베이스에서 오류가 발생)
+
+```java
+member1.setTeam(null); // 회원 1 연관관계 제거
+member2.setTeam(null); // 회원 2 연관관계 제거
+em.remove(team); // 팀 삭제
+```
+
+<br/>
+
 ## 양방향 연관관계
 
+- [ch5.entity.twoway.Member Class 참고](../src/main/java/com/gngsn/ch5/entity/twoway/Member.java)
+- [ch5.entity.twoway.Team Class 참고](../src/main/java/com/gngsn/ch5/entity/twoway/Team.java)
+
+- 팀에서 회원으로 접근하는 관계를 추가
+
+<br/>
+
 ## 연관관계의 주인
+
+- 회원 컬렉션으로 객체 그래프 탐색을 사용해서 조회한 회원들을 출력
+- 
 
 ## 양방향 연관관계 저장
 

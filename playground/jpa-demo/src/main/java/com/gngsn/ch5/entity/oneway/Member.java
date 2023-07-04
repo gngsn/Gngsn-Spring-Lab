@@ -1,4 +1,4 @@
-package com.gngsn.ch5.entity;
+package com.gngsn.ch5.entity.oneway;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

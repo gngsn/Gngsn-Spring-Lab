@@ -1,7 +1,7 @@
 package com.gngsn.ch5.jpql;
 
-import com.gngsn.ch5.entity.Member;
-import com.gngsn.ch5.entity.Team;
+import com.gngsn.ch5.entity.oneway.Member;
+import com.gngsn.ch5.entity.oneway.Team;
 import com.gngsn.secondaryTable.CustomEntityManager;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityTransaction;
