@@ -1,4 +1,4 @@
-package com.gngsn.ch5.entity.oneway;
+package com.gngsn.ch5.entity.oneDirection;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Id;public class Team {

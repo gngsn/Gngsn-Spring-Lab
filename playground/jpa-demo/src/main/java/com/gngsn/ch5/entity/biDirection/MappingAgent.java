@@ -1,4 +1,4 @@
-package com.gngsn.ch5.entity.twoway;
+package com.gngsn.ch5.entity.biDirection;
 
 import com.gngsn.secondaryTable.CustomEntityManager;
 import jakarta.persistence.EntityManager;
