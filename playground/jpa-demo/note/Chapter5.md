@@ -357,8 +357,8 @@ em.remove(team); // 팀 삭제
 
 ## 양방향 연관관계
 
-- [ch5.entity.twoway.Member Class 참고](../src/main/java/com/gngsn/ch5/entity/twoway/Member.java)
-- [ch5.entity.twoway.Team Class 참고](../src/main/java/com/gngsn/ch5/entity/twoway/Team.java)
+- [ch5.entity.twoway.Member Class 참고](../src/main/java/com/gngsn/ch5/entity/biDirection/Member.java)
+- [ch5.entity.twoway.Team Class 참고](../src/main/java/com/gngsn/ch5/entity/biDirection/Team.java)
 
 - 팀에서 회원으로 접근하는 관계를 추가
 
@@ -367,7 +367,34 @@ em.remove(team); // 팀 삭제
 ## 연관관계의 주인
 
 - 회원 컬렉션으로 객체 그래프 탐색을 사용해서 조회한 회원들을 출력
-- 
+
+
+@OneToMany(mappedBy = "team")
+
+#### 객체 연관관계
+
+- 회원 → 팀 연관관계 1개 (단방향)
+- 팀 → 회원 연관관계 1개 (단방향)
+
+객체에는 양방향 연관관계라는 것이 없음.
+서로 다른 단방향 연관관계 2개를 애플리케이션 로직으로 잘 묶어서 양방향인 것처럼 보이게 할 뿐.
+
+
+#### 테이블 연관관계
+
+- 회원 ↔ 팀의 연관관계 1개 (양방향)
+
+
+- **연관관계의 주인**만 데이터베이스 연관관계와 매핑되고 + 외래 키를 관리 (등록, 수정, 삭제)할 수 있음
+- **주인이 아닌 객체**는 읽기만 할 수 있음
+
+
+#### mappedBy
+
+- 어떤 연관관계를 주인으로 정할 때 사용하면 됨
+- 주인은 mappedBy 속성을 사용하지 않는다.
+- 주인이 아니면 mappedBy 속성을 사용해서 속성의 값으로 연관관계의 주인을 지 정해야 함
+
 
 ## 양방향 연관관계 저장
 
