@@ -20,6 +20,9 @@ dependencies {
     implementation 'org.hibernate:hibernate-hikaricp:6.2.0.CR3'
     implementation 'org.hibernate:hibernate-core:6.2.0.CR3'
 
+    implementation 'com.querydsl:querydsl-apt:5.0.0'
+    implementation 'com.querydsl:querydsl-jpa:5.0.0:jakarta'
+
     implementation 'mysql:mysql-connector-java:8.0.30'
 
     implementation 'com.fasterxml.jackson.core:jackson-annotations:2.14.2'
