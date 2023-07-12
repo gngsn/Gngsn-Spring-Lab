@@ -1,7 +1,6 @@
 package com.gngsn.demo.bulkUpsert;
 
 import org.apache.ibatis.session.SqlSession;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -11,8 +10,11 @@ public class BulkUpsertUserDAO {
 
     private static final String NAMESPACE = "demo.bulkUpsert.";
 
-    @Autowired
-    private SqlSession sqlSession;
+    private final SqlSession sqlSession;
+
+    public BulkUpsertUserDAO(final SqlSession sqlSession) {
+        this.sqlSession = sqlSession;
+    }
 
     public int insertInit(List<UserVO> users) {
         return sqlSession.insert(NAMESPACE + "insertInit", users);
@@ -24,7 +26,7 @@ public class BulkUpsertUserDAO {
 
 
     public int bulkUpdateFromTempTable(List<UserVO> users) {
-        return sqlSession.update(NAMESPACE + "bulkUpdateFromTempTable", users);
+       return sqlSession.update(NAMESPACE + "bulkUpdateFromTempTable", users);
     }
 
 
