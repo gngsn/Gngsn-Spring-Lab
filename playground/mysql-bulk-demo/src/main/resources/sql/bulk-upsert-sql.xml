@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="demo.bulkUpsert">
+    <insert id="insertInit" parameterType="com.gngsn.demo.bulkUpsert.UserVO">
+        INSERT INTO user (name, type) VALUES
+        <foreach collection="list" item="item" separator=",">
+            (#{item.name}, #{item.type})
+        </foreach>
+    </insert>
+
+    <insert id="bulkUpsertUserList" parameterType="com.gngsn.demo.bulkUpsert.UserVO">
+        INSERT INTO user (name, type) VALUES
+        <foreach collection="list" item="item" separator=",">
+            (#{item.name}, #{item.type})
+        </foreach>
+        ON DUPLICATE KEY UPDATE
+        type = VALUES(type)
+    </insert>
+
+    <delete id="truncate">
+        TRUNCATE user;
+    </delete>
+</mapper>

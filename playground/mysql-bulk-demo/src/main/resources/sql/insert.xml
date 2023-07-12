@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="demo.UserDAO">
+    <insert id="insertUser" parameterType="com.gngsn.demo.bulkInsert.UserVO">
+        INSERT INTO test (name, email, PASSWORD)
+        VALUES (#{name}, #{email}, #{password})
+    </insert>
+
+    <insert id="bulkInsertUserList" parameterType="java.util.List">
+        INSERT INTO test (name, email, PASSWORD) VALUES
+        <foreach collection="list" item="item" separator=",">
+            (#{item.name}, #{item.email}, #{item.password})
+        </foreach>
+    </insert>
+
+    <select id="selectUser" parameterType="String" resultType="com.gngsn.demo.bulkInsert.UserVO">
+        SELECT `name`, email, password
+        FROM test
+        WHERE `name` = #{userName}
+    </select>
+
+    <select id="selectUserList" resultType="com.gngsn.demo.bulkInsert.UserVO">
+        SELECT `name`, email, password
+        FROM test
+    </select>
+
+</mapper>
+
