@@ -1,12 +1,5 @@
 package com.gngsn.demo.cleanCodeWithEnum;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.Setter;
-
-@Getter
-@Setter
-@AllArgsConstructor
 public class Account {
     private long balance;
 
@@ -16,5 +9,13 @@ public class Account {
 
     public void deposit(long cash) {
         this.balance = this.balance + cash;
+    }
+
+    public Account(final long balance) {
+        this.balance = balance;
+    }
+
+    public long getBalance() {
+        return balance;
     }
 }

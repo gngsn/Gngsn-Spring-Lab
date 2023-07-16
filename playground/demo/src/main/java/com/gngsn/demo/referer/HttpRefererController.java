@@ -1,20 +1,17 @@
 package com.gngsn.demo.referer;
 
-import org.springframework.http.HttpRequest;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.ResponseEntity;
-import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
-import javax.servlet.http.HttpServletRequest;
 import java.net.URI;
-import java.net.URISyntaxException;
 
 
 @RestController
-public class httpRefererController {
+public class HttpRefererController {
 
     @RequestMapping("/test")
     public ResponseEntity<String> itJustTest(HttpServletRequest request) {

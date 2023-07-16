@@ -1,14 +1,15 @@
 package com.gngsn.demo.common;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import lombok.Data;
 
-@Data
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class ResJson {
     private int statusCode;
     private String msg;
     private Object data;
+
+    public ResJson() {
+    }
 
     public ResJson(int statusCode, String msg) {
         this.statusCode = statusCode;
