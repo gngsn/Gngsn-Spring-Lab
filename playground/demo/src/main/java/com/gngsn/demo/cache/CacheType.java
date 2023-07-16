@@ -1,13 +1,5 @@
 package com.gngsn.demo.cache;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-
-
-@Getter
-@NoArgsConstructor
-@AllArgsConstructor
 public enum CacheType {
     USERS(ConstName.USERS),
     VIEWS(ConstName.VIEWS, 2000, 1);
@@ -16,10 +8,19 @@ public enum CacheType {
     private int expireAfterWrite;
     private int maximumSize;
 
+    CacheType() {
+    }
+
     CacheType(String name) {
         this.name = name;
         this.expireAfterWrite = ConstConfig.DEFAULT_TTL;
         this.maximumSize = ConstConfig.DEFAULT_MAX_SIZE;
+    }
+
+    CacheType(final String name, final int expireAfterWrite, final int maximumSize) {
+        this.name = name;
+        this.expireAfterWrite = expireAfterWrite;
+        this.maximumSize = maximumSize;
     }
 
     static class ConstConfig {
@@ -30,6 +31,18 @@ public enum CacheType {
     public static class ConstName {
         static final String USERS = "users";
         static final String VIEWS = "views";
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public int getExpireAfterWrite() {
+        return expireAfterWrite;
+    }
+
+    public int getMaximumSize() {
+        return maximumSize;
     }
 }
 

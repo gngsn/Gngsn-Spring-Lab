@@ -1,30 +1,42 @@
 package com.gngsn.demo.cache;
 
+import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Policy;
 import com.github.benmanes.caffeine.cache.stats.CacheStats;
 import com.gngsn.demo.common.ResJson;
-import lombok.RequiredArgsConstructor;
-import com.github.benmanes.caffeine.cache.Cache;
-import lombok.extern.log4j.Log4j2;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.caffeine.CaffeineCache;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
 
 @RestController
-@Log4j2
 @RequestMapping("monitor/caches")
-@RequiredArgsConstructor
 public class CacheController {
 
+    public static final Logger log = LoggerFactory.getLogger(CacheConfig.class);
     private final CacheManager cacheManager;
+
+    public CacheController(final CacheManager cacheManager) {
+        this.cacheManager = cacheManager;
+    }
 
     /**
      * 등록된 모든 캐시된 키 정보들을 조회

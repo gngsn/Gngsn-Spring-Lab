@@ -2,7 +2,8 @@ package com.gngsn.demo.cache;
 
 import com.github.benmanes.caffeine.cache.Caffeine;
 import com.github.benmanes.caffeine.cache.RemovalCause;
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.cache.caffeine.CaffeineCache;
@@ -15,10 +16,11 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
-@Slf4j
 @EnableCaching
 @Configuration
 public class CacheConfig {
+
+    public final Logger log = LoggerFactory.getLogger(CacheConfig.class);
 
     @Bean
     public CacheManager cacheManager() {

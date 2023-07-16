@@ -1,14 +1,22 @@
 package com.gngsn.demo.cache;
 
-import lombok.Data;
-import lombok.NoArgsConstructor;
-
-import java.util.List;
-
-@Data
-@NoArgsConstructor
 public class CacheKeysDTO {
     private String cacheName;
     private Object keys;
-//    private List<Object> keys;
+
+    public CacheKeysDTO() {
+    }
+
+    public CacheKeysDTO(final String cacheName, final Object keys) {
+        this.cacheName = cacheName;
+        this.keys = keys;
+    }
+
+    public void setCacheName(final String cacheName) {
+        this.cacheName = cacheName;
+    }
+
+    public void setKeys(final Object keys) {
+        this.keys = keys;
+    }
 }
