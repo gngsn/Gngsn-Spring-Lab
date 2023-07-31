@@ -7,12 +7,17 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.gngsn.demo.deadlock.ReqDTO;
 import com.gngsn.demo.deadlock.ReqDetailDTO;
 import lombok.extern.slf4j.Slf4j;
-import okhttp3.*;
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.MediaType;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -24,6 +29,7 @@ public class DeadLockTests {
     static final String API_URI = "http://localhost:8080/test/save";
     public static final ObjectMapper OM = new ObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
     public static OkHttpClient CLIENT = new OkHttpClient.Builder().readTimeout(2, TimeUnit.SECONDS).connectTimeout(2, TimeUnit.SECONDS).writeTimeout(2, TimeUnit.SECONDS).build();
+
 
     @Test
     public void invokeDeadLock() throws JsonProcessingException, InterruptedException {

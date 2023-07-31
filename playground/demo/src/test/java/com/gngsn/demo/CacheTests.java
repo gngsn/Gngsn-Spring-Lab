@@ -2,23 +2,17 @@ package com.gngsn.demo;
 
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.stats.CacheStats;
-import com.gngsn.demo.cache.CacheType;
 import com.gngsn.demo.common.user.UserVO;
-import lombok.extern.log4j.Log4j2;
+import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.cache.CacheManager;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.caffeine.CaffeineCache;
 
-import javax.annotation.PostConstruct;
 
 @Slf4j
-@Log4j2
 @SpringBootTest
 public class CacheTests {
 
@@ -47,8 +41,7 @@ public class CacheTests {
         }
 
     /*   Functional
-
-    cacheManager.getCacheNames().forEach(log::info);
+        cacheManager.getCacheNames().forEach(log::info);
     */
     }
 

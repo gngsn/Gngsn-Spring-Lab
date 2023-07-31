@@ -10,4 +10,6 @@ include 's3-batch-demo'
 include 'security-demo'
 include 'jpa-demo'
 include 'transaction-demo'
+include 'mysql-bulk-demo'
+include 'kotlin-demo'
 
