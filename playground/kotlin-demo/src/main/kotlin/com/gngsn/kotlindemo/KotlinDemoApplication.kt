@@ -5,8 +5,7 @@ import org.springframework.boot.runApplication
 import org.springframework.context.annotation.PropertySource
 import org.springframework.context.annotation.PropertySources
 
-
-@PropertySources(*[PropertySource("classpath:jdbc.properties"), PropertySource("classpath:application-shenyu.yml")])
+@PropertySources(*[PropertySource("classpath:jdbc.properties"), PropertySource("classpath:application.yml")])
 @SpringBootApplication
 class KotlinDemoApplication
 
