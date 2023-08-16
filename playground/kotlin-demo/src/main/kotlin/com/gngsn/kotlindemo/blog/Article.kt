@@ -1,12 +1,11 @@
 package com.gngsn.kotlindemo.blog
 
 import com.gngsn.kotlindemo.demo.toSlug
+import jakarta.persistence.Entity
+import jakarta.persistence.GeneratedValue
+import jakarta.persistence.Id
+import jakarta.persistence.ManyToOne
 import java.time.LocalDateTime
-import javax.persistence.Entity
-import javax.persistence.GeneratedValue
-import javax.persistence.Id
-import javax.persistence.ManyToOne
-
 @Entity
 class Article(
     var title: String,
