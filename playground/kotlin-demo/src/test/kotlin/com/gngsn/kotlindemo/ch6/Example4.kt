@@ -18,13 +18,21 @@ class Example4 {
 
     fun printShippingLabel(person: Person) {
         val address = person.company?.address
-            ?: throw IllegalArgumentException("No address") // 주소가 없으면 예외를 발생시킨다.
+            ?: throw IllegalArgumentException("No address") // 주소가 없으면 예외를 발생
 
         with(address) {
-            println(streetAddress) // address는 null이 아님
-            println("$zipCode $city, $country")
+            println("$streetAddress \n$zipCode $city, $country")
         }
     }
+//    fun printShippingLabel(person: Person) {
+//        val address = person.company?.address
+//            ?: throw IllegalArgumentException("No address") // 주소가 없으면 예외를 발생시킨다.
+//
+//        with(address) {
+//            println(streetAddress) // address는 null이 아님
+//            println("$zipCode $city, $country")
+//        }
+//    }
 
     @Test
     fun test_countryName() {

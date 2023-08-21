@@ -1,5 +1,7 @@
 package com.gngsn.kotlindemo.ch6.Example6
 
+import org.junit.jupiter.api.Test
+
 class People(
     val firstName: String,
     val lastName: String) {
@@ -11,4 +13,20 @@ class People(
     
     override fun hashCode(): Int
         = firstName.hashCode() * 37 + lastName.hashCode()
+}
+
+class Example6 {
+    fun strLen(s: String?): Int {
+        return if (s != null) s.length else 0
+    }
+
+    fun <T> printHashCode(t: T) {
+        println(t.hashCode())  // t"가 null이 될 수 있으므로 안전한 호출을 써야만 한다.
+        println(t.toString())  // t"가 null이 될 수 있으므로 안전한 호출을 써야만 한다.
+    }
+
+    @Test fun test() {
+        println("\n\n\n\n\n")
+        printHashCode(null) // <— T의 타입은 "Any?”로 추론된다.
+    }
 }
