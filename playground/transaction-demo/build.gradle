@@ -5,7 +5,7 @@ plugins {
 
 group = 'com.gngsn'
 version = '0.0.1'
-description = 'transaction-demo'
+description = 'transaction-test'
 
 repositories {
     mavenCentral()
