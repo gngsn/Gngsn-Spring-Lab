@@ -1,7 +1,10 @@
 package com.gngsn.webClient.reactor;
 
 import org.junit.jupiter.api.Test;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PathVariable;
 import reactor.core.publisher.Mono;
+import reactor.core.scheduler.Schedulers;
 import reactor.test.StepVerifier;
 import reactor.util.function.Tuple2;
 import reactor.util.function.Tuple3;
@@ -9,7 +12,9 @@ import reactor.util.function.Tuple4;
 import reactor.util.function.Tuples;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.function.Function;
+import java.util.stream.Stream;
 
 public class MonoZipTest {
 
@@ -67,16 +72,27 @@ public class MonoZipTest {
 
         mono.subscribe(System.out::println);
     }
-
     @Test
     public void zipWhenCombines() {
-        Mono<Tuple2<String, String>> mono = Mono.just("Republic of Korea")
-            .zipWith(Mono.just("Seoul"));
-        Mono<String> mono2 = Mono.just("Seoul")
-            .zipWith(Mono.just(" is Republic of Korea"), (s1, s2) -> s1 + s2);
 
-        mono.subscribe(System.out::println);
-        mono2.subscribe(System.out::println);
+        record User (
+                Integer userId,
+                String username,
+                List<String> attributes
+        ) {}
+
+        Mono<User> userMono = Mono.just(new User(1, "Sunny", List.of("Lovely", "Curious")));
+        Mono<Boolean> emailSentMono = Mono.just(/* some logic */ true);
+        Mono<String> databaseResultMono = Mono.just("'new user 'sunny' is created");
+
+        Mono<String> responseEntityMono = userMono.zipWhen(user -> emailSentMono, (t1, t2) -> Tuples.of(t1, t2))
+                .zipWhen(tuple -> databaseResultMono, (tuple, databaseResult) -> {
+                    User user = tuple.getT1();
+                    Boolean emailSent = tuple.getT2();
+                    return "Response: " + user + ", Email Sent: " + emailSent + ", Database Result: " + databaseResult;
+                });
+
+        responseEntityMono.subscribe(System.out::println);
     }
 
     @Test
