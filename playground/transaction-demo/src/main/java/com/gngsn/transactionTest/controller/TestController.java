@@ -1,7 +1,7 @@
 package com.gngsn.webClient.controller;
 
+import com.gngsn.transactionTest.controller.ResponseView;
 import com.gngsn.webClient.exception.BadWebClientRequestException;
-import com.gngsn.webClient.vo.ResResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -17,29 +17,29 @@ public class TestController {
 
 
     @RequestMapping(value = "/200")
-    public ResponseEntity<ResResult> res200() {
+    public ResponseEntity<ResponseView> res200() {
         log.info("Request res 200");
-        return ResponseEntity.ok(ResResult.success("Request Success"));
+        return ResponseEntity.ok(ResponseView.success("Request Success"));
     }
 
     @RequestMapping(value = "/400")
-    public ResponseEntity<ResResult> res400() {
+    public ResponseEntity res400() {
         log.info("Request res400");
-        return new ResponseEntity<>(ResResult.success("Bad Request"), HttpStatus.BAD_REQUEST);
+        return new ResponseEntity(ResponseView.success("Bad Request"), HttpStatus.BAD_REQUEST);
     }
 
 
     @RequestMapping(value = "/500")
-    public ResponseEntity<ResResult> res500() {
+    public ResponseEntity<ResponseView> res500() {
         log.info("Request res500");
         throw new BadWebClientRequestException(500, "Server Error");
     }
 
 
     @RequestMapping(value = "/timeout")
-    public ResResult timeout() throws InterruptedException {
+    public ResponseView timeout() throws InterruptedException {
         log.info("timeout test");
         Thread.sleep(10_000);
-        return ResResult.success("timeout test");
+        return ResponseView.success("timeout test");
     }
 }
