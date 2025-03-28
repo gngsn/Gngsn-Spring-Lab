@@ -4,6 +4,7 @@ plugins {
 
 group = "com.gngsn"
 version = "1.0-SNAPSHOT"
+var mockkVersion = "1.13.17"
 
 repositories {
     mavenCentral()
