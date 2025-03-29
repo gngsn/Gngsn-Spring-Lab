@@ -1,7 +1,11 @@
-package kotlin.com.gngsn
+package com.gngsn
+
+import com.fasterxml.jackson.core.type.TypeReference
+
+import GetJsonInputPort
 
 class GetUseCase(
-    val overloadInputPort: GetJsonInputPort
+    private val overloadInputPort: GetJsonInputPort
 ) {
     fun getAll(): List<Type1> {
         return overloadInputPort

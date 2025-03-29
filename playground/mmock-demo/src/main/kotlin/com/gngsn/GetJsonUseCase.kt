@@ -1,7 +1,8 @@
-package kotlin.com.gngsn
+package com.gngsn
 import com.fasterxml.jackson.databind.ObjectMapper
 
 import GetJsonInputPort
+import com.fasterxml.jackson.core.type.TypeReference
 
 
 class GetJsonUseCase: GetJsonInputPort {

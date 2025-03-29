@@ -15,6 +15,7 @@ dependencies {
 
     testImplementation(kotlin("test"))
     testImplementation("io.mockk:mockk:${mockkVersion}")
+    implementation(kotlin("stdlib-jdk8"))
 }
 
 tasks.test {
